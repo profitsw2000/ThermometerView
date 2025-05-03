@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 rootProject.name = "ThermometerView"
 include(":app")
 include(":tableTab")
+include(":graphTab")
