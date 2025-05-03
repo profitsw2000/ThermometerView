@@ -24,3 +24,5 @@ rootProject.name = "ThermometerView"
 include(":app")
 include(":tableTab")
 include(":graphTab")
+include(":core")
+include(":data")
