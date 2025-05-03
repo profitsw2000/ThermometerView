@@ -1,9 +1,10 @@
 plugins {
-    alias(libs.plugins.tv.main.app.gradle.plugin)
+    alias(libs.plugins.tv.main.lib.gradle.plugin)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = "ru.profitsw2000.thermometerview"
+    namespace = "ru.profitsw2000.tabletab"
 }
 
 dependencies {
@@ -11,8 +12,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

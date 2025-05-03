@@ -1,6 +1,8 @@
 [versions]
+
+app = "8.1.4"
 agp = "8.6.1"
-kotlin = "1.9.0"
+kotlin = "2.1.20"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -9,6 +11,14 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
+
+applicationId = "ru.profitsw2000.thermometerview"
+compileSdk = "35"
+minSdk = "28"
+targetSdk = "35"
+versionCode = "1"
+versionName = "1.0"
+testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -20,7 +30,13 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+android-gradlePlugin = {group = "com.android.tools.build", name = "gradle", version.ref = "app"}
+kotlin-gradlePlugin = {group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin"}
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+tv-main-app-gradle-plugin = { id = "tv.main.app.gradle.plugin", version = "unspecified"}
+tv-main-lib-gradle-plugin = { id = "tv.main.lib.gradle.plugin", version = "unspecified"}
+android-library = { id = "com.android.library", version.ref = "agp" }
 
