@@ -2,6 +2,29 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/main">
+
+    <fragment
+        android:id="@+id/main"
+        android:name="ru.profitsw2000.mainfragment.presentation.view.MainFragment"
+        android:label="@string/bottom_nav_home_tab_text"
+        tools:layout="@layout/fragment_main">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/table"
+        android:name="ru.profitsw2000.tabletab.presentation.view.TableFragment"
+        android:label="@string/bottom_nav_table_tab_text"
+        tools:layout="@layout/fragment_table">
+    </fragment>
+
+    <fragment
+        android:id="@+id/graph"
+        android:name="ru.profitsw2000.graphtab.presentation.view.GraphFragment"
+        android:label="@string/bottom_nav_graph_tab_text"
+        tools:layout="@layout/fragment_graph">
+    </fragment>
 
 </navigation>

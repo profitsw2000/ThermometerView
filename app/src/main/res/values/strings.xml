@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="bottom_nav_home_tab_text">Главная</string>
-    <string name="bottom_nav_table_tab_text">Таблица</string>
-    <string name="bottom_nav_graph_tab_text">График</string>
-</resources>
