@@ -1,10 +1,8 @@
-package ru.profitsw2000.thermometerview
+package ru.profitsw2000.thermometerview.presentation.view
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import ru.profitsw2000.thermometerview.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
