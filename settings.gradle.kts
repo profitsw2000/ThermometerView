@@ -22,4 +22,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "ThermometerView"
 include(":app")
- 
+include(":tableTab")
+include(":graphTab")
+include(":core")
+include(":data")
+include(":mainFragment")
+include(":navigator")
