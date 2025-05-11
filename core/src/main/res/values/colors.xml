@@ -2,8 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#00FF00</color>
-    <color name="blue_elis">#ECF7FF</color>
-    <color name="white_aluminium">#A7A7A7</color>
-    <color name="king_blue">#5566FF</color>
+    <color name="green">#FF00FF00</color>
+    <color name="blue_elis">#FFECF7FF</color>
+    <color name="white_aluminium">#FFA7A7A7</color>
+    <color name="king_blue">#FF5566FF</color>
+    <color name="red">#FFFF0000</color>
+    <color name="dark_green">#FF00B300</color>
+    <color name="dark_red">#FFB30000</color>
 </resources>
