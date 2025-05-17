@@ -16,6 +16,13 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.recyclerview)
+    //ViewModel
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.livedata)
+    implementation(libs.androidx.viewmodel)
+    //Koin
+    implementation(libs.koin)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
