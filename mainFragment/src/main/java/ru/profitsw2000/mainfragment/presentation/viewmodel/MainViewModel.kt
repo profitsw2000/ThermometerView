@@ -33,12 +33,11 @@ class MainViewModel(
         if (bluetoothIsEnabledData.value == true) {
             when(bluetoothConnectionStatus.value) {
                 BluetoothConnectionStatus.Disconnected -> bluetoothConnectionStatus.value = BluetoothConnectionStatus.DeviceSelection
-                BluetoothConnectionStatus.DeviceSelection -> bluetoothConnectionStatus.value = BluetoothConnectionStatus.DeviceSelection
                 BluetoothConnectionStatus.Connected -> disconnectDevice()
                 BluetoothConnectionStatus.Failed -> bluetoothConnectionStatus.value = BluetoothConnectionStatus.DeviceSelection
                 else -> {}
             }
-        }
+        } else BluetoothConnectionStatus.Disconnected
     }
 
     fun setCurrentState(bluetoothConnectionStatus: BluetoothConnectionStatus) {
