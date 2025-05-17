@@ -12,4 +12,7 @@
     <dimen name="devices_list_title_size">24sp</dimen>
     <dimen name="paired_devices_list_bottom_sheet_padding">24dp</dimen>
     <dimen name="paired_devices_list_bottom_sheet_margin_between_views">12dp</dimen>
+    <dimen name="paired_devices_list_item_vertical_padding">8dp</dimen>
+    <dimen name="paired_devices_list_item_name_text_size">24sp</dimen>
+    <dimen name="paired_devices_list_item_margin_between_views">4dp</dimen>
 </resources>

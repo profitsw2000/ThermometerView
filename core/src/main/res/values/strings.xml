@@ -7,5 +7,17 @@
     <string name="bluetooth_permission_rationale_dialog_text">При подключении к термометру используется Bluetooth. Для получения данных с термометра необходимо предоставить приложению разрешение на использование Bluetooth.</string>
     <string name="bluetooth_on_warning_dialog_title">Включение Bluetooth</string>
     <string name="bluetooth_on_warning_dialog_text">Для получения данных с термометра необходимо включить Bluetooth.</string>
+    <string name="data_exchange_field_title_text">Обмен данными</string>
+    <string name="date_time_field_title_text">Время</string>
+    <string name="phone_time_field_title_text">Телефон</string>
+    <string name="phone_time_default_text">8:34:56 11.05.2013</string>
+    <string name="thermometer_time_field_title_text">Термометр</string>
+    <string name="thermometer_time_default_text">12:34:56 15.05.2013</string>
+    <string name="update_time_button_text">ОБНОВИТЬ</string>
+    <string name="memory_field_title_text">Память</string>
+    <string name="memory_percentage_value_default_text">Undefined</string>
+    <string name="change_memory_button_text">ИЗМЕНИТЬ</string>
+    <string name="temperature_field_title_text">Температура</string>
+    <string name="devices_list_title_text">Список устройств</string>
 
 </resources>
