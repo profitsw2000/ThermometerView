@@ -17,14 +17,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.mainfragment.R
 import ru.profitsw2000.mainfragment.databinding.FragmentMainBinding
+import ru.profitsw2000.mainfragment.presentation.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+    private val mainViewModel: MainViewModel by viewModel()
     private var bluetoothIsEnabled = false
     private val requestCodeForEnable = 1
     private val requestPermissionLauncher = registerForActivityResult(
@@ -37,9 +41,10 @@ class MainFragment : Fragment() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel.initBluetooth(bluetoothPermissionIsGranted())
+        lifecycle.addObserver(mainViewModel)
         setHasOptionsMenu(true)
     }
 
@@ -54,6 +59,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -77,6 +83,24 @@ class MainFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
+        if (bluetoothIsEnabled)
+            menu.findItem(R.id.bluetooth).setIcon(ru.profitsw2000.core.R.drawable.bluetooth_on_icon)
+        else
+            menu.findItem(R.id.bluetooth).setIcon(ru.profitsw2000.core.R.drawable.bluetooth_off_icon)
+    }
+
+    private fun observeData() {
+        observeBluetoothStateData()
+    }
+
+    private fun observeBluetoothStateData() {
+        val observer = Observer<Boolean> { renderBluetoothStateData(it) }
+        mainViewModel.bluetoothIsEnabledData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderBluetoothStateData(isEnabled: Boolean) {
+        bluetoothIsEnabled = isEnabled
+        requireActivity().invalidateOptionsMenu()
     }
 
     private fun bluetoothOperation() {
@@ -108,7 +132,7 @@ class MainFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun switchBluetooth() {
         if (bluetoothIsEnabled) {
-            //updateTimeViewModel.disableBluetooth()
+            mainViewModel.disableBluetooth()
         } else {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBtIntent, requestCodeForEnable)
