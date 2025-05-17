@@ -12,4 +12,5 @@
     <string name="memory_percentage_value_default_text">Undefined</string>
     <string name="change_memory_button_text">ИЗМЕНИТЬ</string>
     <string name="temperature_field_title_text">Температура</string>
+    <string name="devices_list_title_text">Список устройств</string>
 </resources>
