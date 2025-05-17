@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,6 +45,14 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setFragmentResultListener(BluetoothPairedDevicesListFragment.REQUEST_KEY) { _, bundle ->
+            val selectedDeviceIndex = bundle.getInt(BluetoothPairedDevicesListFragment.RESULT_EXTRA_KEY)
+            if (selectedDeviceIndex != -1) {
+                mainViewModel.connectSelectedDevice(selectedDeviceIndex)
+            } else {
+                mainViewModel.setCurrentState(BluetoothConnectionStatus.Disconnected)
+            }
+        }
         mainViewModel.initBluetooth(bluetoothPermissionIsGranted())
         lifecycle.addObserver(mainViewModel)
         setHasOptionsMenu(true)
@@ -201,10 +210,10 @@ class MainFragment : Fragment() {
     }
 
     private fun startBottomSheetDialog() {
-        //val bluetoothPairedDevicesListFragment = BluetoothPairedDevicesListFragment()
+        val bluetoothPairedDevicesListFragment = BluetoothPairedDevicesListFragment()
 
         setButtonsState(false)
-        //bluetoothPairedDevicesListFragment.show(parentFragmentManager, "devices list")
+        bluetoothPairedDevicesListFragment.show(parentFragmentManager, "devices list")
     }
 
     private fun setButtonsState(isEnabled: Boolean) = with(binding) {
@@ -218,7 +227,7 @@ class MainFragment : Fragment() {
             BluetoothConnectionStatus.Connecting -> ru.profitsw2000.core.R.drawable.icon_connecting
             BluetoothConnectionStatus.DeviceSelection -> ru.profitsw2000.core.R.drawable.icon_disconnected
             BluetoothConnectionStatus.Disconnected -> ru.profitsw2000.core.R.drawable.icon_disconnected
-            BluetoothConnectionStatus.Failed -> ru.profitsw2000.core.R.drawable.icon_disconnected
+            BluetoothConnectionStatus.Failed -> ru.profitsw2000.core.R.drawable.icon_connection_failed
             else -> ru.profitsw2000.core.R.drawable.icon_disconnected
         }
     }

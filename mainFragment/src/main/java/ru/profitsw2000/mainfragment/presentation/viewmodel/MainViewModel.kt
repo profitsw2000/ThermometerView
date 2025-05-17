@@ -20,7 +20,6 @@ class MainViewModel(
 ) : ViewModel(), DefaultLifecycleObserver {
 
     val bluetoothIsEnabledData: LiveData<Boolean> = bluetoothRepository.bluetoothIsEnabledData.asLiveData()
-    val pairedDevicesStringList: LiveData<List<String>> = bluetoothRepository.bluetoothPairedDevicesStringList.asLiveData()
     private lateinit var pairedDevicesList: List<BluetoothDevice>
     private var _bluetoothConnectionStatus: MutableLiveData<BluetoothConnectionStatus> = MutableLiveData(BluetoothConnectionStatus.Disconnected)
     val bluetoothConnectionStatus by this::_bluetoothConnectionStatus
@@ -46,9 +45,12 @@ class MainViewModel(
 
     fun connectSelectedDevice(index: Int) {
         _bluetoothConnectionStatus.value = BluetoothConnectionStatus.Connecting
-        val device = pairedDevicesList[index]
-        viewModelScope.launch {
-            _bluetoothConnectionStatus.value = bluetoothRepository.connectDevice(device)
+        pairedDevicesList = bluetoothRepository.getPairedDevicesStringList()
+        pairedDevicesList[index].let {
+            val device = pairedDevicesList[index]
+            viewModelScope.launch {
+                _bluetoothConnectionStatus.value = bluetoothRepository.connectDevice(device)
+            }
         }
     }
 
