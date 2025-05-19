@@ -13,11 +13,18 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.domain.DateTimeRepository
 import ru.profitsw2000.data.model.BluetoothConnectionStatus
 
 class MainViewModel(
-    private val bluetoothRepository: BluetoothRepository
+    private val bluetoothRepository: BluetoothRepository,
+    private val dateTimeRepository: DateTimeRepository
 ) : ViewModel(), DefaultLifecycleObserver {
+
+
+    val dateLiveData: LiveData<String> = dateTimeRepository.dateDataString.asLiveData()
+    val timeLiveData: LiveData<String> = dateTimeRepository.timeDataString.asLiveData()
+    val dataExchangeStartSignalData: LiveData<Boolean> = dateTimeRepository.dataExchangeStartSignal.asLiveData()
 
     val bluetoothIsEnabledData: LiveData<Boolean> = bluetoothRepository.bluetoothIsEnabledData.asLiveData()
     private lateinit var pairedDevicesList: List<BluetoothDevice>

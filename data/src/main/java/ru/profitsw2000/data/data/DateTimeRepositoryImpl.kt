@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.DATA_EXCHANGE_INTERVAL
+import ru.profitsw2000.core.utils.constants.DATE_TIME_DATA_INTERVAL_MS
 import ru.profitsw2000.data.domain.DateTimeRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -23,6 +25,10 @@ class DateTimeRepositoryImpl : DateTimeRepository {
     private val mutableTimeDataString: MutableStateFlow<String> = MutableStateFlow(getCurrentTimeString())
     override val timeDataString: StateFlow<String>
         get() = mutableTimeDataString
+    private val mutableDataExchangeStartSignal: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    override val dataExchangeStartSignal: StateFlow<Boolean>
+        get() = mutableDataExchangeStartSignal
+    private var intervalsCounter = 0
 
     init {
         startDateTimeFlow()
@@ -48,9 +54,11 @@ class DateTimeRepositoryImpl : DateTimeRepository {
     private fun startDateTimeFlow() {
         coroutineScope.launch {
             while (isActive) {
+                intervalsCounter = (intervalsCounter++) % DATA_EXCHANGE_INTERVAL
+                mutableDataExchangeStartSignal.value = (intervalsCounter == 0)
                 mutableDateDataString.value = getCurrentDateString()
                 mutableTimeDataString.value = getCurrentTimeString()
-                delay(500)
+                delay(DATE_TIME_DATA_INTERVAL_MS)
             }
         }
     }
@@ -65,18 +73,5 @@ class DateTimeRepositoryImpl : DateTimeRepository {
         val formatter = SimpleDateFormat("HH:mm:ss")
         val time = Date()
         return formatter.format(time)
-    }
-
-    private fun getDayOfWeek(): String {
-        return when(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-            1 -> "Вс"
-            2 -> "Пн"
-            3 -> "Вт"
-            4 -> "Ср"
-            5 -> "Чт"
-            6 -> "Пт"
-            7 -> "Сб"
-            else -> "Пн"
-        }
     }
 }

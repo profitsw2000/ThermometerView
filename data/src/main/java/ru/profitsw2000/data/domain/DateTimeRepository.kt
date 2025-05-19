@@ -6,6 +6,7 @@ interface DateTimeRepository {
 
     val dateDataString: StateFlow<String>
     val timeDataString: StateFlow<String>
+    val dataExchangeStartSignal: StateFlow<Boolean>
 
     fun getCurrentDateTimeArray(): Array<Int>
 }
