@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="thermometerViewBottomNavStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="background">@drawable/gradient_bar_color</item>
+    </style>
+
+</resources>

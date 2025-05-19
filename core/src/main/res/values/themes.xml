@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ThermometerView" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="colorOnSurfaceVariant">@color/white_aluminium</item>
+        <item name="colorOnSurface">@color/king_blue</item>
+        <item name="colorSecondaryContainer">@color/blue_elis</item>
+        <item name="colorOnSecondaryContainer">@color/king_blue</item>
+        <item name="colorSurfaceContainer">@color/blue_elis</item>
+        <item name="colorSurfaceContainerLow">@color/blue_elis</item>
+        <item name="colorPrimaryDark">@color/blue_elis</item>
+        <item name="colorOutline">@color/white_aluminium</item>
+        <item name="colorOutlineVariant">@color/king_blue</item>
+        <item name="colorPrimary">@color/king_blue</item>
+        <item name="colorSurfaceVariant">@color/white_aluminium</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="android:navigationBarColor">@color/blue_elis</item>
+    </style>
+
+    <style name="Theme.ThermometerView" parent="Base.Theme.ThermometerView" />
+</resources>
