@@ -104,6 +104,7 @@ class MainFragment : Fragment() {
     private fun observeData() {
         observeBluetoothStateData()
         observeBluetoothConnectionStatus()
+
     }
 
     private fun observeBluetoothStateData() {
@@ -130,6 +131,15 @@ class MainFragment : Fragment() {
             BluetoothConnectionStatus.Failed -> setButtonsState(false)
         }
         requireActivity().invalidateOptionsMenu()
+    }
+
+    private fun observeDataExchangeStartSignalData() {
+        val observer = Observer<Boolean> { renderDataExchangeStartSignalData(it) }
+        mainViewModel.dataExchangeStartSignalData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderDataExchangeStartSignalData(startExchange: Boolean) {
+
     }
 
     private fun bluetoothOperation() {

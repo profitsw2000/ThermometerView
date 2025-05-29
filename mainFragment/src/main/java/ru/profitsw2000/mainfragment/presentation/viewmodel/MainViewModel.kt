@@ -21,7 +21,7 @@ class MainViewModel(
     private val dateTimeRepository: DateTimeRepository
 ) : ViewModel(), DefaultLifecycleObserver {
 
-
+    var bluetoothRequestId = 0
     val dateLiveData: LiveData<String> = dateTimeRepository.dateDataString.asLiveData()
     val timeLiveData: LiveData<String> = dateTimeRepository.timeDataString.asLiveData()
     val dataExchangeStartSignalData: LiveData<Boolean> = dateTimeRepository.dataExchangeStartSignal.asLiveData()
@@ -71,6 +71,10 @@ class MainViewModel(
         if (bluetoothIsEnabledData.value == true) {
             pairedDevicesList = bluetoothRepository.getPairedDevicesStringList()
         }
+    }
+
+    fun sendRequest() {
+
     }
 
     @SuppressLint("SuspiciousIndentation")
