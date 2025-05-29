@@ -96,6 +96,21 @@ class BluetoothRepositoryImpl(
         return deferred.await()
     }
 
+    override suspend fun writeByteArray(byteArray: ByteArray): Boolean {
+        return if (bluetoothSocket.isConnected) {
+            val outputStream = bluetoothSocket.outputStream
+            val deferred: Deferred<Boolean> = coroutineScope.async {
+                try {
+                    outputStream.write(byteArray)
+                    true
+                } catch (exception: Exception) {
+                    false
+                }
+            }
+            deferred.await()
+        } else false
+    }
+
     override fun registerReceiver() {
         context.registerReceiver(bluetoothStateBroadcastReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
