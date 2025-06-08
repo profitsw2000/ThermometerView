@@ -19,15 +19,14 @@ class DateTimeRepositoryImpl : DateTimeRepository {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    private val mutableDateDataString: MutableStateFlow<String> = MutableStateFlow(getCurrentDateString())
-    override val dateDataString: StateFlow<String>
-        get() = mutableDateDataString
-    private val mutableTimeDataString: MutableStateFlow<String> = MutableStateFlow(getCurrentTimeString())
-    override val timeDataString: StateFlow<String>
-        get() = mutableTimeDataString
+    private val mutableDateTimeDataString: MutableStateFlow<String> = MutableStateFlow(getCurrentDateTimeString())
+    override val dateTimeDataString: StateFlow<String>
+        get() = mutableDateTimeDataString
+
     private val mutableDataExchangeStartSignal: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val dataExchangeStartSignal: StateFlow<Boolean>
         get() = mutableDataExchangeStartSignal
+
     private var intervalsCounter = 0
 
     init {
@@ -56,22 +55,15 @@ class DateTimeRepositoryImpl : DateTimeRepository {
             while (isActive) {
                 intervalsCounter = (intervalsCounter++) % DATA_EXCHANGE_INTERVAL
                 mutableDataExchangeStartSignal.value = (intervalsCounter == 0)
-                mutableDateDataString.value = getCurrentDateString()
-                mutableTimeDataString.value = getCurrentTimeString()
+                mutableDateTimeDataString.value = getCurrentDateTimeString()
                 delay(DATE_TIME_DATA_INTERVAL_MS)
             }
         }
     }
 
-    private fun getCurrentDateString(): String {
-        val formatter = SimpleDateFormat("dd.MM.yy")
+    private fun getCurrentDateTimeString(): String {
+        val formatter = SimpleDateFormat("HH:mm:ss dd.MM.yy")
         val date = Date()
-        return "${formatter.format(date)}"
-    }
-
-    private fun getCurrentTimeString(): String {
-        val formatter = SimpleDateFormat("HH:mm:ss")
-        val time = Date()
-        return formatter.format(time)
+        return formatter.format(date)
     }
 }

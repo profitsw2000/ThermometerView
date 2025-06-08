@@ -104,7 +104,8 @@ class MainFragment : Fragment() {
     private fun observeData() {
         observeBluetoothStateData()
         observeBluetoothConnectionStatus()
-
+        observeDateTimeData()
+        observeStartDataExchangeSignal()
     }
 
     private fun observeBluetoothStateData() {
@@ -140,6 +141,24 @@ class MainFragment : Fragment() {
 
     private fun renderDataExchangeStartSignalData(startExchange: Boolean) {
 
+    }
+
+    private fun observeDateTimeData() {
+        val observer = Observer<String> { renderDateTimeData(it) }
+        mainViewModel.dateTimeLiveData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderDateTimeData(dateTimeString: String) = with(binding) {
+        phoneTimeTextView.text = dateTimeString
+    }
+
+    private fun observeStartDataExchangeSignal() {
+        val observer = Observer<Boolean> { renderDataExchangeStartSignal(it) }
+        mainViewModel.dataExchangeStartSignalData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderDataExchangeStartSignal(dataExchangeStartSignal: Boolean) = with(binding) {
+        if (dataExchangeStartSignal) mainViewModel.requestMainScreenData()
     }
 
     private fun bluetoothOperation() {

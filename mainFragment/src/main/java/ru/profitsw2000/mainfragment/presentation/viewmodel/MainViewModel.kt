@@ -22,8 +22,7 @@ class MainViewModel(
 ) : ViewModel(), DefaultLifecycleObserver {
 
     var bluetoothRequestId = 0
-    val dateLiveData: LiveData<String> = dateTimeRepository.dateDataString.asLiveData()
-    val timeLiveData: LiveData<String> = dateTimeRepository.timeDataString.asLiveData()
+    val dateTimeLiveData: LiveData<String> = dateTimeRepository.dateTimeDataString.asLiveData()
     val dataExchangeStartSignalData: LiveData<Boolean> = dateTimeRepository.dataExchangeStartSignal.asLiveData()
 
     val bluetoothIsEnabledData: LiveData<Boolean> = bluetoothRepository.bluetoothIsEnabledData.asLiveData()
@@ -74,6 +73,10 @@ class MainViewModel(
     }
 
     fun sendRequest() {
+
+    }
+
+    fun requestMainScreenData() {
 
     }
 
