@@ -7,29 +7,35 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.IntentFilter
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.bluetooth.BluetoothStateBroadcastReceiver
 import ru.profitsw2000.core.utils.bluetooth.OnBluetoothStateListener
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.BluetoothConnectionStatus
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.util.UUID
 
 class BluetoothRepositoryImpl(
     private val context: Context
 ) : BluetoothRepository, OnBluetoothStateListener {
+    private val TAG = "VVV"
 
     private val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private lateinit var bluetoothDevice: BluetoothDevice
     private lateinit var bluetoothSocket: BluetoothSocket
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var isDeviceConnected = false
 
     private val bluetoothManager: BluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
@@ -75,6 +81,8 @@ class BluetoothRepositoryImpl(
                 bluetoothSocket.let {
                     bluetoothSocket.connect()
                 }
+                isDeviceConnected = true
+                readByteArray()
                 BluetoothConnectionStatus.Connected
             } catch (ioException: IOException) {
                 return@async BluetoothConnectionStatus.Failed
@@ -89,6 +97,7 @@ class BluetoothRepositoryImpl(
                 bluetoothSocket.let {
                     bluetoothSocket.close()
                 }
+                isDeviceConnected = false
                 BluetoothConnectionStatus.Disconnected
             } catch (ioException: IOException) {
                 return@async BluetoothConnectionStatus.Connected
@@ -110,6 +119,25 @@ class BluetoothRepositoryImpl(
             }
             deferred.await()
         } else false
+    }
+
+    override fun readByteArray() {
+        val inputStream: InputStream = bluetoothSocket.inputStream
+        val byteArray = ByteArray(1024)
+
+        coroutineScope.launch {
+            var bytesNumber: Int
+            while (isDeviceConnected) {
+                bytesNumber = try {
+                    inputStream.read(byteArray)
+                    Log.d(TAG, "readByteArray: $byteArray")
+                } catch (ioException: IOException) {
+                    Log.d(TAG, "ioException: IOException")
+                    break
+                }
+                Log.d(TAG, "bytesNumber: $bytesNumber")
+            }
+        }
     }
 
     override fun registerReceiver() {
