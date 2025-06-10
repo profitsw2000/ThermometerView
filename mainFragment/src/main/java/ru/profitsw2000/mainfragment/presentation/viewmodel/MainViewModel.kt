@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Build
 import android.os.Build.VERSION
+import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -15,6 +16,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.mainDataBluetoothRequestsList
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.domain.DateTimeRepository
 import ru.profitsw2000.data.model.BluetoothConnectionStatus
@@ -97,12 +99,20 @@ class MainViewModel(
         }
     }
 
-    fun sendRequest() {
-
+    fun sendRequest(byteArray: ByteArray) {
+        if (bluetoothConnectionStatus.value == BluetoothConnectionStatus.Connected) {
+            viewModelScope.launch {
+                bluetoothRepository.writeByteArray(byteArray)
+                Log.d("VVV", "sendRequest: ${byteArray.toHex()}")
+            }
+        }
     }
 
     fun requestMainScreenData() {
-
+        val requestByteArray = mainDataBluetoothRequestsList[bluetoothRequestId]
+        bluetoothRequestId++
+        bluetoothRequestId %= 3
+        sendRequest(requestByteArray)
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -123,4 +133,6 @@ class MainViewModel(
         super.onStop(owner)
         bluetoothRepository.unregisterReceiver()
     }
+
+    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

@@ -54,7 +54,7 @@ class BluetoothRepositoryImpl(
         get() = bluetoothPairedDevicesMutableStringList
     private val bluetoothReadByteMutableArray = MutableStateFlow<ByteArray>(ByteArray(1024))
     override val bluetoothReadByteArray: StateFlow<ByteArray>
-        get() = TODO("Not yet implemented")
+        get() = bluetoothReadByteMutableArray
 
 
     override fun initBluetooth() {
@@ -133,7 +133,7 @@ class BluetoothRepositoryImpl(
             while (isDeviceConnected) {
                 bytesNumber = try {
                     inputStream.read(byteArray)
-                    Log.d(TAG, "readByteArray: $byteArray")
+                    Log.d(TAG, "readByteArray: ${byteArray.toHex()}")
                 } catch (ioException: IOException) {
                     Log.d(TAG, "ioException: IOException")
                     break
@@ -160,4 +160,6 @@ class BluetoothRepositoryImpl(
     override fun onBluetoothStateChanged(bluetoothIsEnabled: Boolean) {
         mutableBluetoothEnabledData.value = bluetoothIsEnabled
     }
+
+    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

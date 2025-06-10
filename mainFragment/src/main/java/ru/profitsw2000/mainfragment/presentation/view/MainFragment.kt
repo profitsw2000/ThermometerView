@@ -134,15 +134,6 @@ class MainFragment : Fragment() {
         requireActivity().invalidateOptionsMenu()
     }
 
-    private fun observeDataExchangeStartSignalData() {
-        val observer = Observer<Boolean> { renderDataExchangeStartSignalData(it) }
-        mainViewModel.dataExchangeStartSignalData.observe(viewLifecycleOwner, observer)
-    }
-
-    private fun renderDataExchangeStartSignalData(startExchange: Boolean) {
-
-    }
-
     private fun observeDateTimeData() {
         val observer = Observer<String> { renderDateTimeData(it) }
         mainViewModel.dateTimeLiveData.observe(viewLifecycleOwner, observer)
@@ -157,7 +148,7 @@ class MainFragment : Fragment() {
         mainViewModel.dataExchangeStartSignalData.observe(viewLifecycleOwner, observer)
     }
 
-    private fun renderDataExchangeStartSignal(dataExchangeStartSignal: Boolean) = with(binding) {
+    private fun renderDataExchangeStartSignal(dataExchangeStartSignal: Boolean) {
         if (dataExchangeStartSignal) mainViewModel.requestMainScreenData()
     }
 
