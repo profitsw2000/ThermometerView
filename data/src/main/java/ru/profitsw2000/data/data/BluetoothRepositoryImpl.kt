@@ -52,6 +52,9 @@ class BluetoothRepositoryImpl(
     private val bluetoothPairedDevicesMutableStringList = MutableStateFlow<List<String>>(listOf())
     override val bluetoothPairedDevicesStringList: StateFlow<List<String>>
         get() = bluetoothPairedDevicesMutableStringList
+    private val bluetoothReadByteMutableArray = MutableStateFlow<ByteArray>(ByteArray(1024))
+    override val bluetoothReadByteArray: StateFlow<ByteArray>
+        get() = TODO("Not yet implemented")
 
 
     override fun initBluetooth() {
