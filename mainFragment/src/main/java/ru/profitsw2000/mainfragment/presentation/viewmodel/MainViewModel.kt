@@ -37,10 +37,10 @@ class MainViewModel(
     private var _bluetoothConnectionStatus: MutableLiveData<BluetoothConnectionStatus> = MutableLiveData(BluetoothConnectionStatus.Disconnected)
     val bluetoothConnectionStatus by this::_bluetoothConnectionStatus
 
-    private val bluetoothReadByteArray: LiveData<ByteArray> = bluetoothRepository.bluetoothReadByteArray.asLiveData()
+/*    private val bluetoothReadByteArray: LiveData<ByteArray> = bluetoothRepository.bluetoothReadByteArray.asLiveData()
     private val bluetoothSuccessRequestStatus = bluetoothReadByteArray.map {
         bytes: ByteArray -> getBluetoothRequestStatus(bytes)
-    }
+    }*/
     private var _bluetoothErrorRequestStatus: MutableLiveData<BluetoothRequestStatus> = MutableLiveData(BluetoothRequestStatus.onError)
     val bluetoothErrorRequestStatus by this::_bluetoothErrorRequestStatus
 
@@ -53,9 +53,9 @@ class MainViewModel(
 
     fun initBluetooth(permissionIsGranted: Boolean) {
         if (permissionIsGranted) bluetoothRepository.initBluetooth()
-        bluetoothRequestStatus.addSource(bluetoothSuccessRequestStatus) { value ->
+/*        bluetoothRequestStatus.addSource(bluetoothSuccessRequestStatus) { value ->
             bluetoothRequestStatus.value = value
-        }
+        }*/
         bluetoothRequestStatus.addSource(bluetoothErrorRequestStatus) { value ->
             bluetoothRequestStatus.value = value
         }

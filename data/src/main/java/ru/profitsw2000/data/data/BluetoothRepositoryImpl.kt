@@ -52,9 +52,9 @@ class BluetoothRepositoryImpl(
     private val bluetoothPairedDevicesMutableStringList = MutableStateFlow<List<String>>(listOf())
     override val bluetoothPairedDevicesStringList: StateFlow<List<String>>
         get() = bluetoothPairedDevicesMutableStringList
-    private val bluetoothReadByteMutableArray = MutableStateFlow<ByteArray>(ByteArray(1024))
-    override val bluetoothReadByteArray: StateFlow<ByteArray>
-        get() = bluetoothReadByteMutableArray
+    private val bluetoothReadByteMutableList = MutableStateFlow<List<Byte>>(listOf())
+    override val bluetoothReadByteList: StateFlow<List<Byte>>
+        get() = bluetoothReadByteMutableList
 
 
     override fun initBluetooth() {
@@ -97,10 +97,10 @@ class BluetoothRepositoryImpl(
     override suspend fun disconnectDevice(): BluetoothConnectionStatus {
         val deferred: Deferred<BluetoothConnectionStatus> = coroutineScope.async {
             try {
+                isDeviceConnected = false
                 bluetoothSocket.let {
                     bluetoothSocket.close()
                 }
-                isDeviceConnected = false
                 BluetoothConnectionStatus.Disconnected
             } catch (ioException: IOException) {
                 return@async BluetoothConnectionStatus.Connected
@@ -129,16 +129,25 @@ class BluetoothRepositoryImpl(
         val byteArray = ByteArray(1024)
 
         coroutineScope.launch {
-            var bytesNumber: Int
             while (isDeviceConnected) {
-                bytesNumber = try {
+                val bytesNumber: Int = try {
+                    inputStream.read(byteArray)
+                } catch (ioException: IOException) {
+                    Log.d(TAG, "ioException: IOException")
+                    break
+                }
+                    //inputStream.read(byteArray)
+                bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
+/*                try {
                     inputStream.read(byteArray)
                     Log.d(TAG, "readByteArray: ${byteArray.toHex()}")
                 } catch (ioException: IOException) {
                     Log.d(TAG, "ioException: IOException")
                     break
-                }
+                }*/
                 Log.d(TAG, "bytesNumber: $bytesNumber")
+                Log.d(TAG, "readByteArray: ${byteArray.toHex()}")
+                Log.d(TAG, "readByteArray: ${bluetoothReadByteList.value}")
             }
         }
     }
@@ -161,5 +170,13 @@ class BluetoothRepositoryImpl(
         mutableBluetoothEnabledData.value = bluetoothIsEnabled
     }
 
-    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    private fun byteArrayToList(byteArray: ByteArray, size: Int): List<Byte> {
+        val mutableList: MutableList<Byte> = mutableListOf()
+        for(i in 0..<size) {
+            mutableList.add(byteArray[i])
+        }
+        return mutableList
+    }
+
+    private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }
