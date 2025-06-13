@@ -1,5 +1,9 @@
 package ru.profitsw2000.core.utils.constants
 
+const val DATE_TIME_PACKET_ID = 0x01
+const val CURRENT_MEMORY_PACKET_ID = 0x05
+const val SENSORS_INFO_PACKET_ID = 0x09
+
 //пакет для запроса времени термометра
 val dateTimeRequestPacket = byteArrayOf(0x53, 0x0A, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0B)
 //часть пакета, посылаемого на термометр для обновления времени

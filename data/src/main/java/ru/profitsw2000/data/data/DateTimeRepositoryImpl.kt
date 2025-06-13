@@ -54,7 +54,7 @@ class DateTimeRepositoryImpl : DateTimeRepository {
         coroutineScope.launch {
             while (isActive) {
                 intervalsCounter++
-                intervalsCounter = intervalsCounter % DATA_EXCHANGE_INTERVAL
+                intervalsCounter %= DATA_EXCHANGE_INTERVAL
                 mutableDataExchangeStartSignal.value = (intervalsCounter == 0)
                 mutableDateTimeDataString.value = getCurrentDateTimeString()
                 delay(DATE_TIME_DATA_INTERVAL_MS)
