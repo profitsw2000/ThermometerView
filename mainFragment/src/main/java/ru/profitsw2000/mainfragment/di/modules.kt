@@ -2,6 +2,7 @@ package ru.profitsw2000.mainfragment.di
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import ru.profitsw2000.data.data.BluetoothPacketManagerImpl
 import ru.profitsw2000.data.data.BluetoothRepositoryImpl
 import ru.profitsw2000.data.data.DateTimeRepositoryImpl
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -12,6 +13,7 @@ import ru.profitsw2000.mainfragment.presentation.viewmodel.PairedDevicesViewMode
 val mainModule = module {
     single<BluetoothRepository> { BluetoothRepositoryImpl(androidContext()) }
     single<DateTimeRepository> { DateTimeRepositoryImpl() }
-    single { MainViewModel(get(), get()) }
+    single { BluetoothPacketManagerImpl(get()) }
+    single { MainViewModel(get(), get(), get()) }
     single { PairedDevicesViewModel(get()) }
 }

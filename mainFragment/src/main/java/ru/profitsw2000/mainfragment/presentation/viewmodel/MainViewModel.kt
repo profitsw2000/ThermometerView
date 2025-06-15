@@ -12,20 +12,23 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.mainDataBluetoothRequestsList
+import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.domain.DateTimeRepository
 import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
-import ru.profitsw2000.data.model.BluetoothRequestStatus
+import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
 
 class MainViewModel(
     private val bluetoothRepository: BluetoothRepository,
-    private val dateTimeRepository: DateTimeRepository
+    private val dateTimeRepository: DateTimeRepository,
+    private val bluetoothPacketManager: BluetoothPacketManager
 ) : ViewModel(), DefaultLifecycleObserver {
 
-    var bluetoothRequestId = 0
+    private var bluetoothRequestId = 0
     private var isRequestInProgress = false
     val dateTimeLiveData: LiveData<String> = dateTimeRepository.dateTimeDataString.asLiveData()
     val dataExchangeStartSignalData: LiveData<Boolean> = dateTimeRepository.dataExchangeStartSignal.asLiveData()
@@ -36,28 +39,27 @@ class MainViewModel(
         BluetoothConnectionStatus.Disconnected)
     val bluetoothConnectionStatus by this::_bluetoothConnectionStatus
 
-/*    private val bluetoothReadByteArray: LiveData<ByteArray> = bluetoothRepository.bluetoothReadByteArray.asLiveData()
-    private val bluetoothSuccessRequestStatus = bluetoothReadByteArray.map {
-        bytes: ByteArray -> getBluetoothRequestStatus(bytes)
-    }*/
-/*    private var _bluetoothErrorRequestStatus: MutableLiveData<BluetoothRequestStatus> = MutableLiveData(BluetoothRequestStatus.onError)
-    val bluetoothErrorRequestStatus by this::_bluetoothErrorRequestStatus
+    private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
+    private val bluetoothReceivedDataRequestStatus = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
+        getBluetoothReceivedDataRequestStatus(status)
+    }
+    private var _bluetoothErrorRequestStatus: MutableLiveData<BluetoothRequestResultStatus> = MutableLiveData(BluetoothRequestResultStatus.Error)
+    private val bluetoothErrorRequestStatus by this::_bluetoothErrorRequestStatus
+    var bluetoothDataExchangeStatus = MediatorLiveData<BluetoothRequestResultStatus>()
 
-    private var bluetoothRequestStatus = MediatorLiveData<BluetoothRequestStatus>()
-
-    private fun getBluetoothRequestStatus(byteArray: ByteArray): BluetoothRequestStatus {
+    private fun getBluetoothReceivedDataRequestStatus(bluetoothRequestResultStatus: BluetoothRequestResultStatus): BluetoothRequestResultStatus {
         isRequestInProgress = false
-        return BluetoothRequestStatus.onSuccess(byteArray)
-    }*/
+        return bluetoothRequestResultStatus
+    }
 
     fun initBluetooth(permissionIsGranted: Boolean) {
         if (permissionIsGranted) bluetoothRepository.initBluetooth()
-/*        bluetoothRequestStatus.addSource(bluetoothSuccessRequestStatus) { value ->
-            bluetoothRequestStatus.value = value
-        }*/
-/*        bluetoothRequestStatus.addSource(bluetoothErrorRequestStatus) { value ->
-            bluetoothRequestStatus.value = value
-        }*/
+        bluetoothDataExchangeStatus.addSource(bluetoothReceivedDataRequestStatus) { value ->
+            bluetoothDataExchangeStatus.value = value
+        }
+        bluetoothDataExchangeStatus.addSource(bluetoothErrorRequestStatus) { value ->
+            bluetoothDataExchangeStatus.value = value
+        }
     }
 
     fun deviceConnection() {
@@ -98,7 +100,7 @@ class MainViewModel(
         }
     }
 
-    fun sendRequest(byteArray: ByteArray) {
+    private fun sendRequest(byteArray: ByteArray) {
         if (bluetoothConnectionStatus.value == BluetoothConnectionStatus.Connected) {
             viewModelScope.launch {
                 bluetoothRepository.writeByteArray(byteArray)
@@ -108,10 +110,15 @@ class MainViewModel(
     }
 
     fun requestMainScreenData() {
-        val requestByteArray = mainDataBluetoothRequestsList[bluetoothRequestId]
+        if (isRequestInProgress) _bluetoothErrorRequestStatus.value = BluetoothRequestResultStatus.Error
+        isRequestInProgress = true
+        sendRequest(getRequestByteArray())
+    }
+
+    private fun getRequestByteArray(): ByteArray {
         bluetoothRequestId++
         bluetoothRequestId %= 3
-        sendRequest(requestByteArray)
+        return mainDataBluetoothRequestsList[bluetoothRequestId]
     }
 
     @SuppressLint("SuspiciousIndentation")
