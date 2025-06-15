@@ -154,7 +154,7 @@ class BluetoothPacketManagerImpl(
                     (data[1].toInteger() shl 8) or
                     (data[2].toInteger() shl 16) or
                     (data[3].toInteger() shl 24)
-            val percentage = (address.toFloat() / 1048575) * 100
+            val percentage = ((address.toFloat() / 1048575) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
 
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.CurrentMemorySpace(
                 MemoryInfoModel(address, percentage)

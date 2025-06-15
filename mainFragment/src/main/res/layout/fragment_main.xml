@@ -36,6 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/data_exchange_status_button"
                 style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
                 android:layout_width="@dimen/data_exchange_indicator_size"
                 android:layout_height="@dimen/data_exchange_indicator_size"
@@ -237,7 +238,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/temperature_text_view" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/sensors_temperature_text_view"
+                android:id="@+id/sensors_temperature_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/temperature_divider"
