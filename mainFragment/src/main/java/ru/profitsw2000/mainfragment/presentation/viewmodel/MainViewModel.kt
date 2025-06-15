@@ -104,7 +104,7 @@ class MainViewModel(
         if (bluetoothConnectionStatus.value == BluetoothConnectionStatus.Connected) {
             viewModelScope.launch {
                 bluetoothRepository.writeByteArray(byteArray)
-                Log.d("VVV", "sendRequest: ${byteArray.toHex()}")
+                //Log.d("VVV", "sendRequest: ${byteArray.toHex()}")
             }
         }
     }

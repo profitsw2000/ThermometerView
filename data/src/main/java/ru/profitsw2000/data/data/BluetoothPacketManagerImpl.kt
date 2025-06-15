@@ -1,5 +1,6 @@
 package ru.profitsw2000.data.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,12 +28,13 @@ import kotlin.experimental.inv
 class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
 ) : BluetoothPacketManager {
+    val TAG = "VVV"
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    override val ringBuffer: MutableList<Byte> = arrayListOf()
-    override val packetBuffer: MutableList<Byte> = arrayListOf()
-    override var byteCount = 0
+    override val ringBuffer: MutableList<Byte> = mutableListOf()
+    override val packetBuffer: MutableList<Byte> = mutableListOf()
+    @Volatile override var byteCount = 0
     override var bufferTail = 0
     override var bufferHead = 0
     override var packetState = 0
@@ -53,6 +55,7 @@ class BluetoothPacketManagerImpl(
         coroutineScope.launch {
             bluetoothRepository.bluetoothReadByteList.collect { value ->
                 insertBytesToRingBuffer(value)
+                Log.d(TAG, "observeBluetoothBytesFlow: $value")
             }
         }
     }
@@ -69,8 +72,9 @@ class BluetoothPacketManagerImpl(
     override fun parseBuffer() {
         coroutineScope.launch {
             while (isActive) {
-                val symbol = getNextBufferByte()
                 if (byteCount > 0) {
+                    val symbol = getNextBufferByte()
+                    //Log.d(TAG, "parseBuffer: $symbol")
                     when (packetState) {
                         0 -> checkStartByte(symbol = symbol)
                         1 -> checkPacketSize(symbol = symbol)
@@ -78,7 +82,7 @@ class BluetoothPacketManagerImpl(
                         else -> getPacketData(symbol = symbol)
                     }
                 }
-                delay(1)
+                delay(10)
             }
         }
     }
@@ -93,13 +97,18 @@ class BluetoothPacketManagerImpl(
     }
 
     override fun getNextBufferByte(): Byte {
-        return if (byteCount > 0) {
-            ringBuffer[bufferHead]
-        } else 0
+
+        val symbol: Byte = ringBuffer[bufferHead]
+        bufferHead++
+        bufferHead %= RING_BUFFER_SIZE
+        byteCount--
+
+        return symbol
     }
 
     private fun checkStartByte(symbol: Byte) {
         if (symbol.toInteger() == 0x53) {
+            Log.d(TAG, "start byte")
             packetState = 1
             checkSum = 0
             packetBuffer.clear()
@@ -108,6 +117,7 @@ class BluetoothPacketManagerImpl(
 
     private fun checkPacketSize(symbol: Byte) {
         packetSize = symbol.toInteger()
+        Log.d(TAG, "checkPacketSize: $packetSize")
         checkSum += packetSize
         packetState = if (packetSize > RING_BUFFER_SIZE) 0
         else 2
@@ -115,6 +125,7 @@ class BluetoothPacketManagerImpl(
 
     private fun checkPacketId(symbol: Byte) {
         packetId = symbol.toInteger()
+        Log.d(TAG, "checkPacketId: $packetId")
         checkSum += packetId
         packetState = if (packetId > 0x20) 0
         else 3
@@ -122,11 +133,13 @@ class BluetoothPacketManagerImpl(
 
     private fun getPacketData(symbol: Byte) {
         packetBuffer.add((packetState - 3), symbol)
+        Log.d(TAG, "getPacketData: $symbol")
         if (packetState < (packetSize - 1)) {
             checkSum += symbol.toInteger()
             packetState++
         } else {
             if (checkSum == symbol.toInteger()) decodePacket(packetBuffer, packetId, packetSize - 3)
+            Log.d(TAG, "getPacketData: $packetBuffer")
             packetState = 0
         }
     }

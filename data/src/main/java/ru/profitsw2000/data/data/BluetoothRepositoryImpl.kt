@@ -134,18 +134,7 @@ class BluetoothRepositoryImpl(
                     Log.d(TAG, "ioException: IOException")
                     break
                 }
-                    //inputStream.read(byteArray)
                 bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
-/*                try {
-                    inputStream.read(byteArray)
-                    Log.d(TAG, "readByteArray: ${byteArray.toHex()}")
-                } catch (ioException: IOException) {
-                    Log.d(TAG, "ioException: IOException")
-                    break
-                }*/
-                Log.d(TAG, "bytesNumber: $bytesNumber")
-                Log.d(TAG, "readByteArray: ${byteArray.toHex()}")
-                Log.d(TAG, "readByteArray: ${bluetoothReadByteList.value}")
             }
         }
     }
