@@ -3,7 +3,7 @@ package ru.profitsw2000.data.domain
 import android.bluetooth.BluetoothDevice
 import kotlinx.coroutines.flow.StateFlow
 import ru.profitsw2000.core.utils.bluetooth.BluetoothStateBroadcastReceiver
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 
 interface BluetoothRepository {
     val bluetoothIsEnabledData: StateFlow<Boolean>

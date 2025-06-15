@@ -11,7 +11,6 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +19,9 @@ import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.bluetooth.BluetoothStateBroadcastReceiver
 import ru.profitsw2000.core.utils.bluetooth.OnBluetoothStateListener
 import ru.profitsw2000.data.domain.BluetoothRepository
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.util.UUID
 
 class BluetoothRepositoryImpl(

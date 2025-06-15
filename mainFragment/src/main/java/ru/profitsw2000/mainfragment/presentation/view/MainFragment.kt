@@ -21,7 +21,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 import ru.profitsw2000.mainfragment.R
 import ru.profitsw2000.mainfragment.databinding.FragmentMainBinding
 import ru.profitsw2000.mainfragment.presentation.viewmodel.MainViewModel

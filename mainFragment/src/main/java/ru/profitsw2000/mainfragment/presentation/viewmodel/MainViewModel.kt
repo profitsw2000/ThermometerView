@@ -12,14 +12,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.mainDataBluetoothRequestsList
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.domain.DateTimeRepository
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 import ru.profitsw2000.data.model.BluetoothRequestStatus
 
 class MainViewModel(
@@ -34,14 +32,15 @@ class MainViewModel(
 
     val bluetoothIsEnabledData: LiveData<Boolean> = bluetoothRepository.bluetoothIsEnabledData.asLiveData()
     private lateinit var pairedDevicesList: List<BluetoothDevice>
-    private var _bluetoothConnectionStatus: MutableLiveData<BluetoothConnectionStatus> = MutableLiveData(BluetoothConnectionStatus.Disconnected)
+    private var _bluetoothConnectionStatus: MutableLiveData<BluetoothConnectionStatus> = MutableLiveData(
+        BluetoothConnectionStatus.Disconnected)
     val bluetoothConnectionStatus by this::_bluetoothConnectionStatus
 
 /*    private val bluetoothReadByteArray: LiveData<ByteArray> = bluetoothRepository.bluetoothReadByteArray.asLiveData()
     private val bluetoothSuccessRequestStatus = bluetoothReadByteArray.map {
         bytes: ByteArray -> getBluetoothRequestStatus(bytes)
     }*/
-    private var _bluetoothErrorRequestStatus: MutableLiveData<BluetoothRequestStatus> = MutableLiveData(BluetoothRequestStatus.onError)
+/*    private var _bluetoothErrorRequestStatus: MutableLiveData<BluetoothRequestStatus> = MutableLiveData(BluetoothRequestStatus.onError)
     val bluetoothErrorRequestStatus by this::_bluetoothErrorRequestStatus
 
     private var bluetoothRequestStatus = MediatorLiveData<BluetoothRequestStatus>()
@@ -49,16 +48,16 @@ class MainViewModel(
     private fun getBluetoothRequestStatus(byteArray: ByteArray): BluetoothRequestStatus {
         isRequestInProgress = false
         return BluetoothRequestStatus.onSuccess(byteArray)
-    }
+    }*/
 
     fun initBluetooth(permissionIsGranted: Boolean) {
         if (permissionIsGranted) bluetoothRepository.initBluetooth()
 /*        bluetoothRequestStatus.addSource(bluetoothSuccessRequestStatus) { value ->
             bluetoothRequestStatus.value = value
         }*/
-        bluetoothRequestStatus.addSource(bluetoothErrorRequestStatus) { value ->
+/*        bluetoothRequestStatus.addSource(bluetoothErrorRequestStatus) { value ->
             bluetoothRequestStatus.value = value
-        }
+        }*/
     }
 
     fun deviceConnection() {

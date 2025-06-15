@@ -1,4 +1,4 @@
-package ru.profitsw2000.data.model
+package ru.profitsw2000.data.model.status
 
 sealed class BluetoothConnectionStatus {
     data object Disconnected: BluetoothConnectionStatus()

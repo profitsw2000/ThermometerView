@@ -1,5 +1,8 @@
 package ru.profitsw2000.data.domain
 
+import kotlinx.coroutines.flow.StateFlow
+import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
+
 interface BluetoothPacketManager {
 
     val ringBuffer: MutableList<Byte>
@@ -12,6 +15,7 @@ interface BluetoothPacketManager {
     var packetId: Int
     var packetSize: Int
 
+    val bluetoothRequestResult: StateFlow<BluetoothRequestResultStatus>
 
     fun insertBytesToRingBuffer(bytesList: List<Byte>)
 

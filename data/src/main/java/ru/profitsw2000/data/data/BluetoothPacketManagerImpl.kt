@@ -5,6 +5,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
@@ -12,8 +14,15 @@ import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
+import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.model.MemoryInfoModel
+import ru.profitsw2000.data.model.SensorModel
+import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
+import java.math.RoundingMode
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
@@ -30,6 +39,15 @@ class BluetoothPacketManagerImpl(
     override var checkSum = 0
     override var packetId = 0
     override var packetSize = 0
+    private val _bluetoothRequestResult =
+        MutableStateFlow<BluetoothRequestResultStatus>(BluetoothRequestResultStatus.Error)
+    override val bluetoothRequestResult: StateFlow<BluetoothRequestResultStatus> =
+        _bluetoothRequestResult
+
+    init {
+        observeBluetoothBytesFlow()
+        parseBuffer()
+    }
 
     private fun observeBluetoothBytesFlow() {
         coroutineScope.launch {
@@ -53,7 +71,7 @@ class BluetoothPacketManagerImpl(
             while (isActive) {
                 val symbol = getNextBufferByte()
                 if (byteCount > 0) {
-                    when(packetState) {
+                    when (packetState) {
                         0 -> checkStartByte(symbol = symbol)
                         1 -> checkPacketSize(symbol = symbol)
                         2 -> checkPacketId(symbol = symbol)
@@ -66,11 +84,11 @@ class BluetoothPacketManagerImpl(
     }
 
     override fun decodePacket(bytesList: List<Byte>, command: Int, packetSize: Int) {
-        when(command) {
-            DATE_TIME_PACKET_ID -> TODO()
-            CURRENT_MEMORY_PACKET_ID -> TODO()
-            SENSORS_INFO_PACKET_ID -> TODO()
-            else -> TODO()
+        when (command) {
+            DATE_TIME_PACKET_ID -> emitDateTimeData(bytesList, packetSize)
+            CURRENT_MEMORY_PACKET_ID -> emitMemoryInfo(bytesList, packetSize)
+            SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
+            else -> {}
         }
     }
 
@@ -113,5 +131,107 @@ class BluetoothPacketManagerImpl(
         }
     }
 
+    private fun emitDateTimeData(data: List<Byte>, listSize: Int) {
+        if (listSize >= 7) {
+            val seconds = data[0].fromBCDtoInt().toDateTimeString()
+            val minutes = data[1].fromBCDtoInt().toDateTimeString()
+            val hours = data[2].fromBCDtoInt().toDateTimeString()
+            val day = data[4].fromBCDtoInt().toDateTimeString()
+            val month = data[5].fromBCDtoInt().toDateTimeString()
+            val year = data[6].fromBCDtoInt().toDateTimeString()
+
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.DateTimeInfo(
+                "$hours:$minutes:$seconds $day.$month.$year"
+            )
+        } else {
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+        }
+    }
+
+    private fun emitMemoryInfo(data: List<Byte>, listSize: Int) {
+        if (listSize >= 4) {
+            val address = data[0].toInteger() or
+                    (data[1].toInteger() shl 8) or
+                    (data[2].toInteger() shl 16) or
+                    (data[3].toInteger() shl 24)
+            val percentage = (address.toFloat() / 1048575) * 100
+
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.CurrentMemorySpace(
+                MemoryInfoModel(address, percentage)
+            )
+        } else {
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+        }
+    }
+
+    private fun emitSensorsInfo(data: List<Byte>, listSize: Int) {
+        if (listSize > 0) {
+            val sensorsNumber = data[0]
+            if (listSize >= (sensorsNumber * 12 + 1)) {
+                val sensorModelList: MutableList<SensorModel> = mutableListOf()
+
+                for (index in 0..<sensorsNumber) {
+                    val sensorIdList = data.subList((1 + index * 12), (1 + index * 12 + 8))
+                    val sensorLetterCodeList =
+                        data.subList((1 + index * 12 + 8), (1 + index * 12 + 10))
+                    val sensorTemperatureList =
+                        data.subList((1 + index * 12 + 10), (1 + index * 12 + 12))
+
+                    sensorModelList.add(
+                        SensorModel(
+                            sensorIdList.toULongBigEndian(),
+                            getLetterFromCode(sensorLetterCodeList.toLetterCode()),
+                            sensorTemperatureList.toTemperature()
+                        )
+                    )
+                }
+            } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
     private fun Byte.toInteger(): Int = this.toInt() and 0xFF
+
+    private fun Byte.fromBCDtoInt(): Int {
+        val units = (this and 0x0F).toInt()
+        val decimals = (this and 0xF0.toByte()).toInt() shr 4
+        return (decimals * 10 + units)
+    }
+
+    private fun Int.toDateTimeString(): String = if (this < 10) "0$this"
+    else this.toString()
+
+    private fun List<Byte>.toULongBigEndian(): ULong {
+        if (this.size != 8) {
+            throw IllegalArgumentException("List must contain exactly 8 bytes")
+        }
+
+        var result: ULong = 0u
+        for (i in 0..7) {
+            result = result or ((this[i].toULong() and 0xFFu) shl ((7 - i) * 8))
+        }
+        return result
+    }
+
+    private fun List<Byte>.toLetterCode(): Int {
+        if (this.size != 2) {
+            throw IllegalArgumentException("List must contain exactly 2 bytes")
+        }
+        return (this[0].toInteger() shl 8) or (this[1].toInteger())
+    }
+
+    private fun List<Byte>.toTemperature(): Double {
+        if (this.size != 2) {
+            throw IllegalArgumentException("List must contain exactly 2 bytes")
+        }
+
+        return if (this[0] < 0) {
+            val fractionalPart = ((this[1].inv().toInt() and 0x0F) + 1)*0.0625
+            val wholePart = (this[0].inv().toInt() shl 4) or ((this[1].inv().toInt() and 0xFF) shr 4)
+            ((wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble())*(-1)
+        } else {
+            val fractionalPart = (this[1].toInt() and 0x0F)*0.0625
+            val wholePart = (this[0].toInt() shl 4) or (this[1].toInt() shr 4)
+            (wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
+        }
+    }
 }

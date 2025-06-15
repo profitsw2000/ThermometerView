@@ -1,7 +1,7 @@
 package ru.profitsw2000.data.model
 
 data class SensorModel(
-    val sensorId: Int,
+    val sensorId: ULong,
     val sensorLetter: String,
-    val sensorTemperature: Float
+    val sensorTemperature: Double
 )
