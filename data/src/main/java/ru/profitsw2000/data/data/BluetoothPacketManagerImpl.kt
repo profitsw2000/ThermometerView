@@ -1,15 +1,12 @@
 package ru.profitsw2000.data.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
@@ -28,7 +25,7 @@ import kotlin.experimental.inv
 class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
 ) : BluetoothPacketManager {
-    val TAG = "VVV"
+    
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -55,7 +52,6 @@ class BluetoothPacketManagerImpl(
         coroutineScope.launch {
             bluetoothRepository.bluetoothReadByteList.collect { value ->
                 insertBytesToRingBuffer(value)
-                Log.d(TAG, "observeBluetoothBytesFlow: $value")
             }
         }
     }
@@ -74,7 +70,6 @@ class BluetoothPacketManagerImpl(
             while (isActive) {
                 if (byteCount > 0) {
                     val symbol = getNextBufferByte()
-                    //Log.d(TAG, "parseBuffer: $symbol")
                     when (packetState) {
                         0 -> checkStartByte(symbol = symbol)
                         1 -> checkPacketSize(symbol = symbol)
@@ -108,7 +103,6 @@ class BluetoothPacketManagerImpl(
 
     private fun checkStartByte(symbol: Byte) {
         if (symbol.toInteger() == 0x53) {
-            Log.d(TAG, "start byte")
             packetState = 1
             checkSum = 0
             packetBuffer.clear()
@@ -117,7 +111,6 @@ class BluetoothPacketManagerImpl(
 
     private fun checkPacketSize(symbol: Byte) {
         packetSize = symbol.toInteger()
-        Log.d(TAG, "checkPacketSize: $packetSize")
         checkSum += packetSize
         packetState = if (packetSize > RING_BUFFER_SIZE) 0
         else 2
@@ -125,21 +118,18 @@ class BluetoothPacketManagerImpl(
 
     private fun checkPacketId(symbol: Byte) {
         packetId = symbol.toInteger()
-        Log.d(TAG, "checkPacketId: $packetId")
         checkSum += packetId
         packetState = if (packetId > 0x20) 0
         else 3
     }
 
     private fun getPacketData(symbol: Byte) {
-        packetBuffer.add((packetState - 3), symbol)
-        Log.d(TAG, "getPacketData: $symbol")
-        if (packetState < (packetSize - 1)) {
+        if (packetState < packetSize) {
+            packetBuffer.add((packetState - 3), symbol)
             checkSum += symbol.toInteger()
             packetState++
         } else {
-            if (checkSum == symbol.toInteger()) decodePacket(packetBuffer, packetId, packetSize - 3)
-            Log.d(TAG, "getPacketData: $packetBuffer")
+            if ((checkSum and 0xFF) == symbol.toInteger()) decodePacket(packetBuffer, packetId, packetSize - 3)
             packetState = 0
         }
     }
@@ -163,10 +153,10 @@ class BluetoothPacketManagerImpl(
 
     private fun emitMemoryInfo(data: List<Byte>, listSize: Int) {
         if (listSize >= 4) {
-            val address = data[0].toInteger() or
-                    (data[1].toInteger() shl 8) or
-                    (data[2].toInteger() shl 16) or
-                    (data[3].toInteger() shl 24)
+            val address = data[3].toInteger() or
+                    (data[2].toInteger() shl 8) or
+                    (data[1].toInteger() shl 16) or
+                    (data[0].toInteger() shl 24)
             val percentage = ((address.toFloat() / 1048575) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
 
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.CurrentMemorySpace(
@@ -198,6 +188,7 @@ class BluetoothPacketManagerImpl(
                         )
                     )
                 }
+                _bluetoothRequestResult.value = BluetoothRequestResultStatus.SensorsCurrentInfo(sensorModelList)
             } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }

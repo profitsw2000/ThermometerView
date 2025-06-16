@@ -187,11 +187,12 @@ class MainFragment : Fragment() {
     private fun updateMemoryInfo(memoryInfoModel: MemoryInfoModel) = with(binding) {
         setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.green)
         progressBar.progress = memoryInfoModel.currentMemoryAddress
-        memorySpacePercentageTextView.text = memoryInfoModel.memoryPercentUsage.toString()
+        memorySpacePercentageTextView.text = "${memoryInfoModel.memoryPercentUsage} %"
     }
 
     private fun updateSensorInfoList(sensorModelList: List<SensorModel>) = with(binding) {
         setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.green)
+        memorySpacePercentageTextView.setTextColor(resources.getColor(ru.profitsw2000.core.R.color.king_blue))
         adapter.setData(sensorModelList)
     }
 

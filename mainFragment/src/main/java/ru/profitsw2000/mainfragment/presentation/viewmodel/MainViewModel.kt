@@ -94,17 +94,10 @@ class MainViewModel(
         }
     }
 
-    fun getPairedDevicesStringList() {
-        if (bluetoothIsEnabledData.value == true) {
-            pairedDevicesList = bluetoothRepository.getPairedDevicesStringList()
-        }
-    }
-
     private fun sendRequest(byteArray: ByteArray) {
         if (bluetoothConnectionStatus.value == BluetoothConnectionStatus.Connected) {
             viewModelScope.launch {
                 bluetoothRepository.writeByteArray(byteArray)
-                //Log.d("VVV", "sendRequest: ${byteArray.toHex()}")
             }
         }
     }

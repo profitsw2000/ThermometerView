@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.mainfragment.databinding.SensorsTemperatureRvItemBinding
+import java.util.Locale
 
 class SensorsTemperatureListAdapter : RecyclerView.Adapter<SensorsTemperatureListAdapter.ViewHolder>() {
 
@@ -27,7 +28,7 @@ class SensorsTemperatureListAdapter : RecyclerView.Adapter<SensorsTemperatureLis
     override fun onBindViewHolder(holder: SensorsTemperatureListAdapter.ViewHolder, position: Int) {
         val sensorModel = data[position]
 
-        holder.sensorId.text = sensorModel.sensorId.toString()
+        holder.sensorId.text = "#${sensorModel.sensorId.toString(16).uppercase(Locale.getDefault())}"
         holder.sensorLetter.text = sensorModel.sensorLetter
         holder.sensorTemperature.text = sensorModel.sensorTemperature.toString()
     }
