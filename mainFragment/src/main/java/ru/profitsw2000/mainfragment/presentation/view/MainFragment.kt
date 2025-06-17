@@ -82,6 +82,9 @@ class MainFragment : Fragment() {
 
     private fun initViews() = with(binding) {
         sensorsTemperatureRecyclerView.adapter = adapter
+        updateTimeButton.setOnClickListener {
+            mainViewModel.updateThermometerTime()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

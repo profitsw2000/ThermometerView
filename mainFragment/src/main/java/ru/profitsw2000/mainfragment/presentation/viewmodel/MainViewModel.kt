@@ -15,6 +15,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.getDateTimePacket
 import ru.profitsw2000.core.utils.constants.mainDataBluetoothRequestsList
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -30,6 +31,7 @@ class MainViewModel(
 
     private var bluetoothRequestId = 0
     private var isRequestInProgress = false
+    private var writeBufferIsBusy = false
     val dateTimeLiveData: LiveData<String> = dateTimeRepository.dateTimeDataString.asLiveData()
     val dataExchangeStartSignalData: LiveData<Boolean> = dateTimeRepository.dataExchangeStartSignal.asLiveData()
 
@@ -97,9 +99,20 @@ class MainViewModel(
     private fun sendRequest(byteArray: ByteArray) {
         if (bluetoothConnectionStatus.value == BluetoothConnectionStatus.Connected) {
             viewModelScope.launch {
+                writeBufferIsBusy = true
                 bluetoothRepository.writeByteArray(byteArray)
+                writeBufferIsBusy = false
             }
         }
+    }
+
+    fun updateThermometerTime() {
+        val dateTimePacket = getDateTimePacket(dateTimeRepository.getCurrentDateTimeArray())
+        Log.d("VVV", "updateThermometerTime: ${dateTimePacket.toHex()}")
+        viewModelScope.launch {
+            while(writeBufferIsBusy) {}
+        }
+        sendRequest(dateTimePacket)
     }
 
     fun requestMainScreenData() {

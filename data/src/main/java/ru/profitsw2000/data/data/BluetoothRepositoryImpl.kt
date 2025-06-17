@@ -113,6 +113,7 @@ class BluetoothRepositoryImpl(
             val deferred: Deferred<Boolean> = coroutineScope.async {
                 try {
                     outputStream.write(byteArray)
+                    Log.d(TAG, "writeByteArray: ${byteArray}")
                     true
                 } catch (exception: Exception) {
                     false
