@@ -25,7 +25,8 @@ import kotlin.experimental.inv
 class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
 ) : BluetoothPacketManager {
-    
+
+    private val TAG = "VVV"
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -58,6 +59,7 @@ class BluetoothPacketManagerImpl(
 
     override fun insertBytesToRingBuffer(bytesList: List<Byte>) {
         bytesList.forEach { item ->
+            Log.d(TAG, "insertBytesToRingBuffer: $item")
             ringBuffer.add(bufferTail, item)
             bufferTail++
             bufferTail %= RING_BUFFER_SIZE
@@ -77,7 +79,7 @@ class BluetoothPacketManagerImpl(
                         else -> getPacketData(symbol = symbol)
                     }
                 }
-                delay(10)
+                delay(5)
             }
         }
     }
@@ -193,6 +195,9 @@ class BluetoothPacketManagerImpl(
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
+
+    private fun List<Byte>.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+
     private fun Byte.toInteger(): Int = this.toInt() and 0xFF
 
     private fun Byte.fromBCDtoInt(): Int {
@@ -234,7 +239,7 @@ class BluetoothPacketManagerImpl(
             ((wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble())*(-1)
         } else {
             val fractionalPart = (this[1].toInt() and 0x0F)*0.0625
-            val wholePart = (this[0].toInt() shl 4) or (this[1].toInt() shr 4)
+            val wholePart = (this[0].toInt() shl 4) or (this[1].toInteger() shr 4)
             (wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
         }
     }

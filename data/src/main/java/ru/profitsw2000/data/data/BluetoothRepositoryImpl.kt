@@ -13,6 +13,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -113,7 +114,7 @@ class BluetoothRepositoryImpl(
             val deferred: Deferred<Boolean> = coroutineScope.async {
                 try {
                     outputStream.write(byteArray)
-                    Log.d(TAG, "writeByteArray: ${byteArray}")
+                    Log.d(TAG, "writeByteArray: ${byteArray.toHex()}")
                     true
                 } catch (exception: Exception) {
                     false
@@ -125,7 +126,7 @@ class BluetoothRepositoryImpl(
 
     override fun readByteArray() {
         val inputStream: InputStream = bluetoothSocket.inputStream
-        val byteArray = ByteArray(1024)
+        val byteArray = ByteArray(128)
 
         coroutineScope.launch {
             while (isDeviceConnected) {
@@ -135,7 +136,9 @@ class BluetoothRepositoryImpl(
                     Log.d(TAG, "ioException: IOException")
                     break
                 }
+                Log.d(TAG, "bytesNumber: $bytesNumber")
                 bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
+                delay(10)
             }
         }
     }
