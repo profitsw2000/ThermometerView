@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.bluetooth.BluetoothStateBroadcastReceiver
 import ru.profitsw2000.core.utils.bluetooth.OnBluetoothStateListener
+import ru.profitsw2000.core.utils.constants.BLUETOOTH_INPUT_STREAM_READ_TIMEOUT
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 import java.io.IOException
@@ -114,7 +115,6 @@ class BluetoothRepositoryImpl(
             val deferred: Deferred<Boolean> = coroutineScope.async {
                 try {
                     outputStream.write(byteArray)
-                    Log.d(TAG, "writeByteArray: ${byteArray.toHex()}")
                     true
                 } catch (exception: Exception) {
                     false
@@ -133,12 +133,10 @@ class BluetoothRepositoryImpl(
                 val bytesNumber: Int = try {
                     inputStream.read(byteArray)
                 } catch (ioException: IOException) {
-                    Log.d(TAG, "ioException: IOException")
                     break
                 }
-                Log.d(TAG, "bytesNumber: $bytesNumber")
                 bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
-                delay(10)
+                delay(BLUETOOTH_INPUT_STREAM_READ_TIMEOUT)
             }
         }
     }
@@ -169,5 +167,5 @@ class BluetoothRepositoryImpl(
         return mutableList
     }
 
-    private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    //private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

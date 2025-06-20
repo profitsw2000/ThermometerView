@@ -11,6 +11,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
+import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
@@ -26,7 +27,7 @@ class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
 ) : BluetoothPacketManager {
 
-    private val TAG = "VVV"
+    //private val TAG = "VVV"
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -59,7 +60,6 @@ class BluetoothPacketManagerImpl(
 
     override fun insertBytesToRingBuffer(bytesList: List<Byte>) {
         bytesList.forEach { item ->
-            Log.d(TAG, "insertBytesToRingBuffer: $item")
             ringBuffer.add(bufferTail, item)
             bufferTail++
             bufferTail %= RING_BUFFER_SIZE
@@ -79,7 +79,7 @@ class BluetoothPacketManagerImpl(
                         else -> getPacketData(symbol = symbol)
                     }
                 }
-                delay(5)
+                delay(RING_BUFFER_BYTE_PARSING_PERIOD)
             }
         }
     }

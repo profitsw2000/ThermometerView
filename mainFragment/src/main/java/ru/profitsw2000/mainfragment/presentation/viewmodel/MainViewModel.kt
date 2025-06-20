@@ -108,7 +108,6 @@ class MainViewModel(
 
     fun updateThermometerTime() {
         val dateTimePacket = getDateTimePacket(dateTimeRepository.getCurrentDateTimeArray())
-        Log.d("VVV", "updateThermometerTime: ${dateTimePacket.toHex()}")
         viewModelScope.launch {
             while(writeBufferIsBusy) {}
         }
@@ -146,5 +145,5 @@ class MainViewModel(
         bluetoothRepository.unregisterReceiver()
     }
 
-    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    //fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }
