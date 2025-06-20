@@ -7,28 +7,35 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.IntentFilter
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.bluetooth.BluetoothStateBroadcastReceiver
 import ru.profitsw2000.core.utils.bluetooth.OnBluetoothStateListener
+import ru.profitsw2000.core.utils.constants.BLUETOOTH_INPUT_STREAM_READ_TIMEOUT
 import ru.profitsw2000.data.domain.BluetoothRepository
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
 import java.io.IOException
+import java.io.InputStream
 import java.util.UUID
 
 class BluetoothRepositoryImpl(
     private val context: Context
 ) : BluetoothRepository, OnBluetoothStateListener {
+    private val TAG = "VVV"
 
     private val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private lateinit var bluetoothDevice: BluetoothDevice
     private lateinit var bluetoothSocket: BluetoothSocket
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var isDeviceConnected = false
 
     private val bluetoothManager: BluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
@@ -45,6 +52,9 @@ class BluetoothRepositoryImpl(
     private val bluetoothPairedDevicesMutableStringList = MutableStateFlow<List<String>>(listOf())
     override val bluetoothPairedDevicesStringList: StateFlow<List<String>>
         get() = bluetoothPairedDevicesMutableStringList
+    private val bluetoothReadByteMutableList = MutableStateFlow<List<Byte>>(listOf())
+    override val bluetoothReadByteList: StateFlow<List<Byte>>
+        get() = bluetoothReadByteMutableList
 
 
     override fun initBluetooth() {
@@ -74,6 +84,8 @@ class BluetoothRepositoryImpl(
                 bluetoothSocket.let {
                     bluetoothSocket.connect()
                 }
+                isDeviceConnected = true
+                readByteArray()
                 BluetoothConnectionStatus.Connected
             } catch (ioException: IOException) {
                 return@async BluetoothConnectionStatus.Failed
@@ -85,6 +97,7 @@ class BluetoothRepositoryImpl(
     override suspend fun disconnectDevice(): BluetoothConnectionStatus {
         val deferred: Deferred<BluetoothConnectionStatus> = coroutineScope.async {
             try {
+                isDeviceConnected = false
                 bluetoothSocket.let {
                     bluetoothSocket.close()
                 }
@@ -111,6 +124,23 @@ class BluetoothRepositoryImpl(
         } else false
     }
 
+    override fun readByteArray() {
+        val inputStream: InputStream = bluetoothSocket.inputStream
+        val byteArray = ByteArray(128)
+
+        coroutineScope.launch {
+            while (isDeviceConnected) {
+                val bytesNumber: Int = try {
+                    inputStream.read(byteArray)
+                } catch (ioException: IOException) {
+                    break
+                }
+                bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
+                delay(BLUETOOTH_INPUT_STREAM_READ_TIMEOUT)
+            }
+        }
+    }
+
     override fun registerReceiver() {
         context.registerReceiver(bluetoothStateBroadcastReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
@@ -128,4 +158,14 @@ class BluetoothRepositoryImpl(
     override fun onBluetoothStateChanged(bluetoothIsEnabled: Boolean) {
         mutableBluetoothEnabledData.value = bluetoothIsEnabled
     }
+
+    private fun byteArrayToList(byteArray: ByteArray, size: Int): List<Byte> {
+        val mutableList: MutableList<Byte> = mutableListOf()
+        for(i in 0..<size) {
+            mutableList.add(byteArray[i])
+        }
+        return mutableList
+    }
+
+    //private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

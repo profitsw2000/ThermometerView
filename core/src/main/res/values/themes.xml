@@ -16,6 +16,9 @@
         <item name="colorOnPrimary">@color/white</item>
 
         <item name="android:navigationBarColor">@color/blue_elis</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@color/blue_elis</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.ThermometerView" parent="Base.Theme.ThermometerView" />

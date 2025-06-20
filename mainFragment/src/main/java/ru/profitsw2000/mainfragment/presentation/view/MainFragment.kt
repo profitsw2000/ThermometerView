@@ -21,9 +21,13 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.profitsw2000.data.model.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.MemoryInfoModel
+import ru.profitsw2000.data.model.SensorModel
+import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
+import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
 import ru.profitsw2000.mainfragment.R
 import ru.profitsw2000.mainfragment.databinding.FragmentMainBinding
+import ru.profitsw2000.mainfragment.presentation.view.adapter.SensorsTemperatureListAdapter
 import ru.profitsw2000.mainfragment.presentation.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
@@ -33,6 +37,9 @@ class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel by viewModel()
     private var bluetoothIsEnabled = false
     private val requestCodeForEnable = 1
+    private val adapter: SensorsTemperatureListAdapter by lazy {
+        SensorsTemperatureListAdapter()
+    }
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -69,7 +76,15 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         observeData()
+    }
+
+    private fun initViews() = with(binding) {
+        sensorsTemperatureRecyclerView.adapter = adapter
+        updateTimeButton.setOnClickListener {
+            mainViewModel.updateThermometerTime()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -104,6 +119,9 @@ class MainFragment : Fragment() {
     private fun observeData() {
         observeBluetoothStateData()
         observeBluetoothConnectionStatus()
+        observeDateTimeData()
+        observeStartDataExchangeSignal()
+        observeBluetoothExchangeData()
     }
 
     private fun observeBluetoothStateData() {
@@ -130,6 +148,63 @@ class MainFragment : Fragment() {
             BluetoothConnectionStatus.Failed -> setButtonsState(false)
         }
         requireActivity().invalidateOptionsMenu()
+    }
+
+    private fun observeDateTimeData() {
+        val observer = Observer<String> { renderDateTimeData(it) }
+        mainViewModel.dateTimeLiveData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderDateTimeData(dateTimeString: String) = with(binding) {
+        phoneTimeTextView.text = dateTimeString
+    }
+
+    private fun observeStartDataExchangeSignal() {
+        val observer = Observer<Boolean> { renderDataExchangeStartSignal(it) }
+        mainViewModel.dataExchangeStartSignalData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderDataExchangeStartSignal(dataExchangeStartSignal: Boolean) {
+        if (dataExchangeStartSignal) mainViewModel.requestMainScreenData()
+    }
+
+    private fun observeBluetoothExchangeData() {
+        val observer = Observer<BluetoothRequestResultStatus> { renderBluetoothExchangeData(it) }
+        mainViewModel.bluetoothDataExchangeStatus.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderBluetoothExchangeData(bluetoothRequestResultStatus: BluetoothRequestResultStatus) {
+        when(bluetoothRequestResultStatus) {
+            is BluetoothRequestResultStatus.CurrentMemorySpace -> updateMemoryInfo(bluetoothRequestResultStatus.memoryInfoModel)
+            is BluetoothRequestResultStatus.DateTimeInfo -> updateDateTimeInfo(bluetoothRequestResultStatus.dateTimeString)
+            is BluetoothRequestResultStatus.SensorsCurrentInfo -> updateSensorInfoList(bluetoothRequestResultStatus.sensorModelList)
+            BluetoothRequestResultStatus.Error -> setErrorBluetoothDataExchange()
+        }
+    }
+
+    private fun updateDateTimeInfo(dateTimeString: String)= with(binding) {
+        setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.green)
+        thermometerTimeTextView.text = dateTimeString
+    }
+
+    private fun updateMemoryInfo(memoryInfoModel: MemoryInfoModel) = with(binding) {
+        setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.green)
+        progressBar.progress = memoryInfoModel.currentMemoryAddress
+        memorySpacePercentageTextView.text = "${memoryInfoModel.memoryPercentUsage} %"
+    }
+
+    private fun updateSensorInfoList(sensorModelList: List<SensorModel>) = with(binding) {
+        setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.green)
+        memorySpacePercentageTextView.setTextColor(resources.getColor(ru.profitsw2000.core.R.color.king_blue))
+        adapter.setData(sensorModelList)
+    }
+
+    private fun setErrorBluetoothDataExchange() {
+        setDataExchangeStatusInfoButton(ru.profitsw2000.core.R.color.red)
+    }
+
+    private fun setDataExchangeStatusInfoButton(color: Int) = with(binding) {
+        dataExchangeStatusButton.backgroundTintList = ContextCompat.getColorStateList(requireActivity(), color)
     }
 
     private fun bluetoothOperation() {
