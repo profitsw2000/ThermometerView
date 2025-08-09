@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.SensorInfoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/sensor_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Датчик"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="@dimen/devices_list_title_size"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sensor_rom_code_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Заводской код:"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensor_title_text_view" />
+
+        <TextView
+            android:id="@+id/sensor_rom_code_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:text="0x234567853FF"
+            app:layout_constraintBottom_toBottomOf="@+id/sensor_rom_code_title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/sensor_rom_code_title_text_view"
+            app:layout_constraintTop_toTopOf="@+id/sensor_rom_code_title_text_view" />
+
+        <TextView
+            android:id="@+id/local_id_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Локальный id:"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensor_rom_code_title_text_view" />
+
+        <TextView
+            android:id="@+id/local_id_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:text="0x01"
+            app:layout_constraintBottom_toBottomOf="@+id/local_id_title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/local_id_title_text_view"
+            app:layout_constraintTop_toTopOf="@+id/local_id_title_text_view" />
+
+        <TextView
+            android:id="@+id/sensor_temperature_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Температура:"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/local_id_title_text_view" />
+
+        <TextView
+            android:id="@+id/sensor_temperature_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            tools:text="18,3 \u2103"
+            app:layout_constraintBottom_toBottomOf="@+id/sensor_temperature_title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/sensor_temperature_title_text_view"
+            app:layout_constraintTop_toTopOf="@+id/sensor_temperature_title_text_view" />
+
+        <TextView
+            android:id="@+id/sensor_letter_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Буквенный код:"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensor_temperature_title_text_view" />
+
+        <TextView
+            android:id="@+id/sensor_letter_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:text="N"
+            app:layout_constraintBottom_toBottomOf="@+id/sensor_letter_title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/sensor_letter_title_text_view"
+            app:layout_constraintTop_toTopOf="@+id/sensor_letter_title_text_view" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sensor_letter_input_layout"
+            style="@style/letterInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/sensor_letter_title_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sensor_letter_title_text_view">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/content_input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:maxLength="1"
+                android:inputType="text"
+                android:lines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_time_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/update_time_button_text"
+            app:layout_constraintBottom_toBottomOf="@+id/sensor_letter_input_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sensor_letter_input_layout"
+            app:layout_constraintTop_toTopOf="@+id/sensor_letter_input_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
