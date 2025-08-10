@@ -185,6 +185,7 @@ class BluetoothPacketManagerImpl(
                     sensorModelList.add(
                         SensorModel(
                             sensorIdList.toULongBigEndian(),
+                            index,
                             getLetterFromCode(sensorLetterCodeList.toLetterCode()),
                             sensorTemperatureList.toTemperature()
                         )
