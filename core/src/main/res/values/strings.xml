@@ -19,5 +19,11 @@
     <string name="change_memory_button_text">ИЗМЕНИТЬ</string>
     <string name="temperature_field_title_text">Температура</string>
     <string name="devices_list_title_text">Список устройств</string>
-
+    <string name="sensor_info_load_error_text">Не удалось загрузить данные датчика</string>
+    <string name="sensor_info_bottom_sheet_title_text_view">Датчик</string>
+    <string name="sensor_factory_code_title_text">Заводской код:</string>
+    <string name="sensor_local_id_title_text">Локальный id:</string>
+    <string name="sensor_temperature_title">Температура:</string>
+    <string name="sensor_letter_code_title">Буквенный код:</string>
+    <string name="sensor_temperature_text">%1$s ℃</string>
 </resources>
