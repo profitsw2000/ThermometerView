@@ -35,7 +35,8 @@ class BluetoothRepositoryImpl(
     private lateinit var bluetoothDevice: BluetoothDevice
     private lateinit var bluetoothSocket: BluetoothSocket
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private var isDeviceConnected = false
+    var isDeviceConnected = false
+        private set
 
     private val bluetoothManager: BluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
