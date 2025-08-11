@@ -32,3 +32,36 @@ fun getLetterFromCode(letterCode: Int): String {
         else -> "N"
     }
 }
+
+fun getIntCodeFromLetter(letter: String): Int {
+    return when (letter) {
+        "А" -> 0x78C6
+        "Б" -> 0x38DE
+        "В" -> 0x7A1D
+        "Г" -> 0x00C6
+        "Д" -> 0x4A1F
+        "Е" -> 0x10DE
+        "Ж" -> 0x8721
+        "З" -> 0x681E
+        "И" -> 0xC8E0
+        "К" -> 0x94C0
+        "Л" -> 0xC820
+        "М" -> 0xC9C0
+        "Н" -> 0x78C0
+        "О" -> 0x48DE
+        "П" -> 0x48C6
+        "Р" -> 0x7207
+        "С" -> 0x00DE
+        "Т" -> 0x0207
+        "У" -> 0x7898
+        "Ф" -> 0x7287
+        "Х" -> 0x8520
+        "Ц" -> 0x02D9
+        "Ч" -> 0x3281
+        "Ш" -> 0x4AD9
+        "Э" -> 0x320B
+        "Ю" -> 0x5AD5
+        "Я" -> 0x32C3
+        else -> 0xFFFF
+    }
+}

@@ -13,6 +13,7 @@ import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
 import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -89,6 +90,7 @@ class BluetoothPacketManagerImpl(
             DATE_TIME_PACKET_ID -> emitDateTimeData(bytesList, packetSize)
             CURRENT_MEMORY_PACKET_ID -> emitMemoryInfo(bytesList, packetSize)
             SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
+            SENSOR_INFO_PACKET_ID -> emitSensorInfo(bytesList, packetSize)
             else -> {}
         }
     }
@@ -196,6 +198,29 @@ class BluetoothPacketManagerImpl(
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
+    private fun emitSensorInfo(data: List<Byte>, listSize: Int) {
+        if (listSize >= 13) {
+            _bluetoothRequestResult.value =
+                BluetoothRequestResultStatus.SensorInfo(
+                    getSensorModelFromList(data)
+                )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun getSensorModelFromList(data: List<Byte>): SensorModel {
+        val sensorLocalId = data[0]
+        val sensorId = data.subList(1, 9)
+        val sensorLetterCode = data.subList(9, 11)
+        val sensorTemperature = data.subList(11, 13)
+
+        return SensorModel(
+            sensorId = sensorId.toULongBigEndian(),
+            sensorLocalId = sensorLocalId.toInteger(),
+            getLetterFromCode(sensorLetterCode.toLetterCode()),
+            sensorTemperature.toTemperature()
+        )
+
+    }
 
     private fun List<Byte>.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 

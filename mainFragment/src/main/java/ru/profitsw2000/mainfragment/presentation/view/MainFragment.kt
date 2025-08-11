@@ -179,6 +179,7 @@ class MainFragment : Fragment() {
             is BluetoothRequestResultStatus.DateTimeInfo -> updateDateTimeInfo(bluetoothRequestResultStatus.dateTimeString)
             is BluetoothRequestResultStatus.SensorsCurrentInfo -> updateSensorInfoList(bluetoothRequestResultStatus.sensorModelList)
             BluetoothRequestResultStatus.Error -> setErrorBluetoothDataExchange()
+            is BluetoothRequestResultStatus.SensorInfo -> {}
         }
     }
 
