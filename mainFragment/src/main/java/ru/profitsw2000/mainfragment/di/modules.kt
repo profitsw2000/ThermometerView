@@ -10,6 +10,7 @@ import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.domain.DateTimeRepository
 import ru.profitsw2000.mainfragment.presentation.viewmodel.MainViewModel
 import ru.profitsw2000.mainfragment.presentation.viewmodel.PairedDevicesViewModel
+import ru.profitsw2000.mainfragment.presentation.viewmodel.SensorInfoViewModel
 
 val mainModule = module {
     single<BluetoothRepository> { BluetoothRepositoryImpl(androidContext()) }
@@ -17,4 +18,5 @@ val mainModule = module {
     single<BluetoothPacketManager> { BluetoothPacketManagerImpl(get()) }
     single { MainViewModel(get(), get(), get()) }
     single { PairedDevicesViewModel(get()) }
+    single { SensorInfoViewModel(get(), get()) }
 }
