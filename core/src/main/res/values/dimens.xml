@@ -19,6 +19,7 @@
     <dimen name="sensor_info_load_error_text_size">18sp</dimen>
     <dimen name="sensor_info_bottom_sheet_vertical_margin_between_views">12dp</dimen>
     <dimen name="sensor_info_bottom_sheet_horizontal_margin_between_views">16dp</dimen>
+    <dimen name="sensor_info_bottom_sheet_big_horizontal_margin_between_views">32dp</dimen>
     <dimen name="sensor_parameter_title_size">18sp</dimen>
     <dimen name="sensor_parameter_value_size">16sp</dimen>
 </resources>

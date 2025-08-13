@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.view.SensorInfoFragment">
@@ -11,6 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/sensor_info_bottom_sheet_padding">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/sensor_info_load_error_text_view"
@@ -129,6 +140,16 @@
             app:layout_constraintStart_toEndOf="@+id/sensor_letter_title_text_view"
             app:layout_constraintTop_toTopOf="@+id/sensor_letter_title_text_view" />
 
+        <TextView
+            android:id="@+id/edit_hide_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_edit_sensor_letter_form_text"
+            android:layout_marginLeft="@dimen/sensor_info_bottom_sheet_big_horizontal_margin_between_views"
+            android:textColor="@color/king_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/sensor_letter_text_view"
+            app:layout_constraintStart_toEndOf="@+id/sensor_letter_text_view"
+            app:layout_constraintTop_toTopOf="@+id/sensor_letter_text_view" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sensor_letter_input_layout"
@@ -136,7 +157,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sensor_info_bottom_sheet_vertical_margin_between_views"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/sensor_letter_title_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sensor_letter_title_text_view">
@@ -153,16 +173,31 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/update_time_button"
+            android:id="@+id/update_letter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:text="@string/update_time_button_text"
             app:layout_constraintBottom_toBottomOf="@+id/sensor_letter_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/sensor_letter_input_layout"
             app:layout_constraintTop_toTopOf="@+id/sensor_letter_input_layout" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/main_views_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="sensor_rom_code_title_text_view, sensor_rom_code_text_view,
+            local_id_title_text_view, local_id_text_view, sensor_letter_title_text_view, sensor_letter_text_view,
+            sensor_temperature_title_text_view, sensor_temperature_text_view, edit_hide_text_view"
+            android:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/update_sensor_letter_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="sensor_letter_input_layout, update_letter_button"
+            android:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

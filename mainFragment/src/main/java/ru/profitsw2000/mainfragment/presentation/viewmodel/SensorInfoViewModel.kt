@@ -26,6 +26,7 @@ class SensorInfoViewModel(
 ) : ViewModel() {
 
     private var writeBufferIsBusy = false
+    private var sensorInfoIsLoaded = false
     var sensorInfoLiveData = MediatorLiveData<SensorInfoState>()
     private var _sensorInfoRequestLiveData: MutableLiveData<SensorInfoState> = MutableLiveData(SensorInfoState.Loading)
     private val sensorInfoRequestLiveData by this::_sensorInfoRequestLiveData
@@ -53,19 +54,25 @@ class SensorInfoViewModel(
 
     private suspend fun sendSensorInfoRequest(index: Int) {
         if (bluetoothRepository.isDeviceConnected) {
-            _sensorInfoRequestLiveData.value = SensorInfoState.Loading
+            setState(SensorInfoState.Loading)
             writeBufferIsBusy = false
-            bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
+            val writeSuccess = bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
+            if (!writeSuccess) setState(SensorInfoState.Error)
             writeBufferIsBusy = true
-        } else _sensorInfoRequestLiveData.value = SensorInfoState.Error
+        } else setState(SensorInfoState.Error)
     }
 
     private suspend fun sendSensorInfoRequest(index: Int, letter: String) {
         if (bluetoothRepository.isDeviceConnected) {
             writeBufferIsBusy = false
-            bluetoothRepository.writeByteArray(getSensorLetterCodePacket(index, letter))
+            val writeSuccess = bluetoothRepository.writeByteArray(getSensorLetterCodePacket(index, letter))
+            if (!writeSuccess) setState(SensorInfoState.Error)
             writeBufferIsBusy = true
         }
+    }
+
+    private fun setState(state: SensorInfoState) {
+        if (!sensorInfoIsLoaded) _sensorInfoRequestLiveData.value = state
     }
 
     fun startSensorInfoFlow(index: Int) {
