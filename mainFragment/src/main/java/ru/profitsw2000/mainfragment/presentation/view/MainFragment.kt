@@ -22,6 +22,8 @@ import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.profitsw2000.core.utils.constants.SENSOR_INDEX_BUNDLE
+import ru.profitsw2000.core.utils.listeners.OnSensorItemClickListener
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
@@ -41,7 +43,15 @@ class MainFragment : Fragment() {
     private var bluetoothIsEnabled = false
     private val requestCodeForEnable = 1
     private val adapter: SensorsTemperatureListAdapter by lazy {
-        SensorsTemperatureListAdapter()
+        SensorsTemperatureListAdapter(object : OnSensorItemClickListener{
+            override fun onClick(sensorIndex: Int) {
+                val bundle = Bundle().apply {
+                    putInt(SENSOR_INDEX_BUNDLE, sensorIndex)
+                }
+                this@MainFragment.arguments = bundle
+                navigator.navigateToSensorInfoBottomSheet(bundle)
+            }
+        })
     }
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
