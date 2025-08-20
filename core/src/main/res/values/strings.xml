@@ -27,6 +27,6 @@
     <string name="sensor_letter_code_title">Буквенный код:</string>
     <string name="sensor_temperature_text">%1$s ℃</string>
     <string name="hex_string">0x%1$s</string>
-    <string name="show_edit_sensor_letter_form_text"><![CDATA[<u>Изменить</u>]]></string>
-    <string name="hide_edit_sensor_letter_form_text"><![CDATA[<u>Скрыть</u>]]></string>
+    <string name="show_edit_sensor_letter_form_text">Изменить</string>
+    <string name="hide_edit_sensor_letter_form_text">Скрыть</string>
 </resources>

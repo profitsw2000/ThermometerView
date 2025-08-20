@@ -1,5 +1,6 @@
 package ru.profitsw2000.mainfragment.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.DATA_EXCHANGE_INTERVAL
 import ru.profitsw2000.core.utils.constants.SENSOR_INFO_REQUEST_INTERVAL
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.core.utils.constants.getSensorLetterCodePacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
@@ -32,9 +34,10 @@ class SensorInfoViewModel(
     private val sensorInfoRequestLiveData by this::_sensorInfoRequestLiveData
     private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
     private val sensorInfoResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
+        sensorInfoIsLoaded = true
         getBluetoothReceivedDataRequestStatus(status)
     }
-    private val lifecycleScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var lifecycleScope: CoroutineScope
 
     init {
         sensorInfoLiveData.addSource(sensorInfoRequestLiveData) { value ->
@@ -55,19 +58,20 @@ class SensorInfoViewModel(
     private suspend fun sendSensorInfoRequest(index: Int) {
         if (bluetoothRepository.isDeviceConnected) {
             setState(SensorInfoState.Loading)
-            writeBufferIsBusy = false
+            //Log.d(TAG, "sendSensorInfoRequest: Start load data.")
+            writeBufferIsBusy = true
             val writeSuccess = bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
             if (!writeSuccess) setState(SensorInfoState.Error)
-            writeBufferIsBusy = true
+            writeBufferIsBusy = false
         } else setState(SensorInfoState.Error)
     }
 
     private suspend fun sendSensorInfoRequest(index: Int, letter: String) {
         if (bluetoothRepository.isDeviceConnected) {
-            writeBufferIsBusy = false
+            writeBufferIsBusy = true
             val writeSuccess = bluetoothRepository.writeByteArray(getSensorLetterCodePacket(index, letter))
             if (!writeSuccess) setState(SensorInfoState.Error)
-            writeBufferIsBusy = true
+            writeBufferIsBusy = false
         }
     }
 
@@ -75,10 +79,13 @@ class SensorInfoViewModel(
         if (!sensorInfoIsLoaded) _sensorInfoRequestLiveData.value = state
     }
 
-    fun startSensorInfoFlow(index: Int) {
+    fun startSensorInfoFlow(index: Int, coroutineScope: CoroutineScope) {
+        lifecycleScope = coroutineScope
         lifecycleScope.launch {
             while (isActive) {
-                if (!writeBufferIsBusy) sendSensorInfoRequest(index)
+                if (!writeBufferIsBusy) {
+                    sendSensorInfoRequest(index)
+                }
                 delay(SENSOR_INFO_REQUEST_INTERVAL)
             }
         }
@@ -86,9 +93,9 @@ class SensorInfoViewModel(
 
     fun updateLetter(index: Int, letter: String) {
         lifecycleScope.launch {
-            while (isActive) {
-                if (!writeBufferIsBusy) sendSensorInfoRequest(index, letter)
-            }
+            if (!writeBufferIsBusy) sendSensorInfoRequest(index, letter)
         }
     }
+
+    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

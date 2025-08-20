@@ -36,7 +36,8 @@ class BluetoothRepositoryImpl(
     private lateinit var bluetoothSocket: BluetoothSocket
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var _isDeviceConnected = false
-    override val isDeviceConnected = _isDeviceConnected
+    override val isDeviceConnected
+        get() = _isDeviceConnected
 
     private val bluetoothManager: BluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
@@ -168,5 +169,5 @@ class BluetoothRepositoryImpl(
         return mutableList
     }
 
-    //private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

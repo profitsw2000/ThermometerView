@@ -23,5 +23,4 @@
     </style>
 
     <style name="Theme.ThermometerView" parent="Base.Theme.ThermometerView" />
-    <style name="letterInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox"/>
 </resources>

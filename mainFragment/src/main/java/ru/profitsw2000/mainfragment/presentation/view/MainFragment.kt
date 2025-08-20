@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,10 +20,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.SENSOR_INDEX_BUNDLE
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_DISMISS
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.listeners.OnSensorItemClickListener
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.SensorModel
@@ -49,6 +53,7 @@ class MainFragment : Fragment() {
                     putInt(SENSOR_INDEX_BUNDLE, sensorIndex)
                 }
                 this@MainFragment.arguments = bundle
+                mainViewModel.pauseDataExchange()
                 navigator.navigateToSensorInfoBottomSheet(bundle)
             }
         })
@@ -91,6 +96,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         observeData()
+        observeSensorInfoBottomSheetDismiss()
     }
 
     private fun initViews() = with(binding) {
@@ -135,6 +141,15 @@ class MainFragment : Fragment() {
         observeDateTimeData()
         observeStartDataExchangeSignal()
         observeBluetoothExchangeData()
+    }
+
+    private fun observeSensorInfoBottomSheetDismiss() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(SENSOR_INFO_DISMISS)
+            ?.observe(viewLifecycleOwner) {dismissed ->
+                if (dismissed) {
+                    mainViewModel.resumeDataExchange()
+                }
+            }
     }
 
     private fun observeBluetoothStateData() {
@@ -325,5 +340,4 @@ class MainFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 }

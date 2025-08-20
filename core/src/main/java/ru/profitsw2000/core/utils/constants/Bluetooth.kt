@@ -49,7 +49,7 @@ fun getSensorLetterCodePacket(index: Int, letter: String): ByteArray {
             + letterCodePacketData[1].toInteger()
             + letterCodePacketData[0].toInteger()) and 0xFF).toUByte().toByte()
 
-    return sensorInfoRequestPacketHead +
+    return sensorLetterCodePacketHead +
             byteArrayOf(indexByte) +
             letterCodePacketData +
             byteArrayOf(checkSum)
