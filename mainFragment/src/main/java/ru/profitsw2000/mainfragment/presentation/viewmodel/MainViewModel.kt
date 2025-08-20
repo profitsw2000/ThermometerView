@@ -15,6 +15,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getDateTimePacket
 import ru.profitsw2000.core.utils.constants.mainDataBluetoothRequestsList
 import ru.profitsw2000.data.domain.BluetoothPacketManager
@@ -29,6 +30,7 @@ class MainViewModel(
     private val bluetoothPacketManager: BluetoothPacketManager
 ) : ViewModel(), DefaultLifecycleObserver {
 
+    private var isPaused = false
     private var bluetoothRequestId = 0
     private var isRequestInProgress = false
     private var writeBufferIsBusy = false
@@ -115,9 +117,11 @@ class MainViewModel(
     }
 
     fun requestMainScreenData() {
-        if (isRequestInProgress) _bluetoothErrorRequestStatus.value = BluetoothRequestResultStatus.Error
-        isRequestInProgress = true
-        sendRequest(getRequestByteArray())
+        if (!isPaused) {
+            if (isRequestInProgress) _bluetoothErrorRequestStatus.value = BluetoothRequestResultStatus.Error
+            isRequestInProgress = true
+            sendRequest(getRequestByteArray())
+        }
     }
 
     private fun getRequestByteArray(): ByteArray {
@@ -135,6 +139,14 @@ class MainViewModel(
         }
     }
 
+    fun pauseDataExchange() {
+        isPaused = true
+    }
+
+    fun resumeDataExchange() {
+        isPaused = false
+    }
+
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         bluetoothRepository.registerReceiver()
@@ -145,5 +157,5 @@ class MainViewModel(
         bluetoothRepository.unregisterReceiver()
     }
 
-    //fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

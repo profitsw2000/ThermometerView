@@ -1,5 +1,7 @@
 package ru.profitsw2000.navigator
 
-interface Navigator {
+import android.os.Bundle
 
+interface Navigator {
+    fun navigateToSensorInfoBottomSheet(bundle: Bundle)
 }

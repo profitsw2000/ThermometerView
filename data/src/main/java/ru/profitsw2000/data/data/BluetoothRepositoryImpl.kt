@@ -35,7 +35,9 @@ class BluetoothRepositoryImpl(
     private lateinit var bluetoothDevice: BluetoothDevice
     private lateinit var bluetoothSocket: BluetoothSocket
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private var isDeviceConnected = false
+    private var _isDeviceConnected = false
+    override val isDeviceConnected
+        get() = _isDeviceConnected
 
     private val bluetoothManager: BluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
@@ -84,7 +86,7 @@ class BluetoothRepositoryImpl(
                 bluetoothSocket.let {
                     bluetoothSocket.connect()
                 }
-                isDeviceConnected = true
+                _isDeviceConnected = true
                 readByteArray()
                 BluetoothConnectionStatus.Connected
             } catch (ioException: IOException) {
@@ -97,7 +99,7 @@ class BluetoothRepositoryImpl(
     override suspend fun disconnectDevice(): BluetoothConnectionStatus {
         val deferred: Deferred<BluetoothConnectionStatus> = coroutineScope.async {
             try {
-                isDeviceConnected = false
+                _isDeviceConnected = false
                 bluetoothSocket.let {
                     bluetoothSocket.close()
                 }
@@ -167,5 +169,5 @@ class BluetoothRepositoryImpl(
         return mutableList
     }
 
-    //private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
+    private fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 }

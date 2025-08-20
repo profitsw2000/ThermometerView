@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,8 +20,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.profitsw2000.core.utils.constants.SENSOR_INDEX_BUNDLE
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_DISMISS
+import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.listeners.OnSensorItemClickListener
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.data.model.status.BluetoothConnectionStatus
@@ -29,16 +36,27 @@ import ru.profitsw2000.mainfragment.R
 import ru.profitsw2000.mainfragment.databinding.FragmentMainBinding
 import ru.profitsw2000.mainfragment.presentation.view.adapter.SensorsTemperatureListAdapter
 import ru.profitsw2000.mainfragment.presentation.viewmodel.MainViewModel
+import ru.profitsw2000.navigator.Navigator
 
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel: MainViewModel by viewModel()
+    private val navigator: Navigator by inject()
     private var bluetoothIsEnabled = false
     private val requestCodeForEnable = 1
     private val adapter: SensorsTemperatureListAdapter by lazy {
-        SensorsTemperatureListAdapter()
+        SensorsTemperatureListAdapter(object : OnSensorItemClickListener{
+            override fun onClick(sensorIndex: Int) {
+                val bundle = Bundle().apply {
+                    putInt(SENSOR_INDEX_BUNDLE, sensorIndex)
+                }
+                this@MainFragment.arguments = bundle
+                mainViewModel.pauseDataExchange()
+                navigator.navigateToSensorInfoBottomSheet(bundle)
+            }
+        })
     }
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -78,6 +96,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         observeData()
+        observeSensorInfoBottomSheetDismiss()
     }
 
     private fun initViews() = with(binding) {
@@ -122,6 +141,15 @@ class MainFragment : Fragment() {
         observeDateTimeData()
         observeStartDataExchangeSignal()
         observeBluetoothExchangeData()
+    }
+
+    private fun observeSensorInfoBottomSheetDismiss() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(SENSOR_INFO_DISMISS)
+            ?.observe(viewLifecycleOwner) {dismissed ->
+                if (dismissed) {
+                    mainViewModel.resumeDataExchange()
+                }
+            }
     }
 
     private fun observeBluetoothStateData() {
@@ -179,6 +207,7 @@ class MainFragment : Fragment() {
             is BluetoothRequestResultStatus.DateTimeInfo -> updateDateTimeInfo(bluetoothRequestResultStatus.dateTimeString)
             is BluetoothRequestResultStatus.SensorsCurrentInfo -> updateSensorInfoList(bluetoothRequestResultStatus.sensorModelList)
             BluetoothRequestResultStatus.Error -> setErrorBluetoothDataExchange()
+            is BluetoothRequestResultStatus.SensorInfo -> {}
         }
     }
 
@@ -311,5 +340,4 @@ class MainFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 }

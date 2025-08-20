@@ -13,6 +13,8 @@ import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
 import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_PACKET_ID
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -27,7 +29,6 @@ class BluetoothPacketManagerImpl(
     private val bluetoothRepository: BluetoothRepository
 ) : BluetoothPacketManager {
 
-    //private val TAG = "VVV"
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -42,8 +43,7 @@ class BluetoothPacketManagerImpl(
     override var packetSize = 0
     private val _bluetoothRequestResult =
         MutableStateFlow<BluetoothRequestResultStatus>(BluetoothRequestResultStatus.Error)
-    override val bluetoothRequestResult: StateFlow<BluetoothRequestResultStatus> =
-        _bluetoothRequestResult
+    override val bluetoothRequestResult: StateFlow<BluetoothRequestResultStatus> by this::_bluetoothRequestResult
 
     init {
         observeBluetoothBytesFlow()
@@ -63,14 +63,13 @@ class BluetoothPacketManagerImpl(
             ringBuffer.add(bufferTail, item)
             bufferTail++
             bufferTail %= RING_BUFFER_SIZE
-            byteCount++
         }
     }
 
     override fun parseBuffer() {
         coroutineScope.launch {
             while (isActive) {
-                if (byteCount > 0) {
+               if (bufferTail != bufferHead) {
                     val symbol = getNextBufferByte()
                     when (packetState) {
                         0 -> checkStartByte(symbol = symbol)
@@ -89,6 +88,7 @@ class BluetoothPacketManagerImpl(
             DATE_TIME_PACKET_ID -> emitDateTimeData(bytesList, packetSize)
             CURRENT_MEMORY_PACKET_ID -> emitMemoryInfo(bytesList, packetSize)
             SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
+            SENSOR_INFO_PACKET_ID -> emitSensorInfo(bytesList, packetSize)
             else -> {}
         }
     }
@@ -98,7 +98,6 @@ class BluetoothPacketManagerImpl(
         val symbol: Byte = ringBuffer[bufferHead]
         bufferHead++
         bufferHead %= RING_BUFFER_SIZE
-        byteCount--
 
         return symbol
     }
@@ -185,6 +184,7 @@ class BluetoothPacketManagerImpl(
                     sensorModelList.add(
                         SensorModel(
                             sensorIdList.toULongBigEndian(),
+                            index,
                             getLetterFromCode(sensorLetterCodeList.toLetterCode()),
                             sensorTemperatureList.toTemperature()
                         )
@@ -195,6 +195,39 @@ class BluetoothPacketManagerImpl(
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
+    private fun emitSensorInfo(data: List<Byte>, listSize: Int) {
+        if (listSize >= 13) {
+            _bluetoothRequestResult.value =
+                BluetoothRequestResultStatus.SensorInfo(
+                    getSensorModelFromList(data)
+                )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun getSensorModelFromList(data: List<Byte>): SensorModel {
+        val sensorLocalId = data[0]
+        val sensorId = data.subList(1, 9)
+        val sensorLetterCode = data.subList(9, 11)
+        val sensorTemperature = data.subList(11, 13)
+
+        return SensorModel(
+            sensorId = sensorId.toULongBigEndian(),
+            sensorLocalId = sensorLocalId.toInteger(),
+            getLetterFromCode(sensorLetterCode.toLetterCode()),
+            sensorTemperature.toTemperature()
+        )
+
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun Byte.toHex(): String = this.toHexString(
+        HexFormat {
+            upperCase = true
+            number{ prefix = "0x" }
+        }
+    )
+
+    fun ByteArray.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 
     private fun List<Byte>.toHex(): String = joinToString(separator = " ") { eachByte -> "%02x".format(eachByte) }
 

@@ -8,6 +8,7 @@
         <item name="colorOnSecondaryContainer">@color/king_blue</item>
         <item name="colorSurfaceContainer">@color/blue_elis</item>
         <item name="colorSurfaceContainerLow">@color/blue_elis</item>
+        <item name="colorSurfaceContainerHighest">@color/red</item>
         <item name="colorPrimaryDark">@color/blue_elis</item>
         <item name="colorOutline">@color/white_aluminium</item>
         <item name="colorOutlineVariant">@color/king_blue</item>

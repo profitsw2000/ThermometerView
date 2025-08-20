@@ -11,6 +11,9 @@
         android:label="@string/bottom_nav_home_tab_text"
         tools:layout="@layout/fragment_main">
 
+        <action
+            android:id="@+id/action_main_to_sensor_info"
+            app:destination="@+id/sensor_info_bottom_sheet"/>
     </fragment>
 
     <fragment
@@ -26,5 +29,12 @@
         android:label="@string/bottom_nav_graph_tab_text"
         tools:layout="@layout/fragment_graph">
     </fragment>
+
+    <dialog
+        android:id="@+id/sensor_info_bottom_sheet"
+        android:name="ru.profitsw2000.mainfragment.presentation.view.SensorInfoFragment"
+        android:label="@string/sensor_info_bottom_sheet_title_text_view"
+        tools:layout="@layout/fragment_sensor_info">
+    </dialog>
 
 </navigation>
