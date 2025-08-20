@@ -58,7 +58,7 @@ class SensorInfoViewModel(
     private suspend fun sendSensorInfoRequest(index: Int) {
         if (bluetoothRepository.isDeviceConnected) {
             setState(SensorInfoState.Loading)
-            //Log.d(TAG, "sendSensorInfoRequest: Start load data.")
+            Log.d(TAG, "sendSensorInfoRequest: Start load data.")
             writeBufferIsBusy = true
             val writeSuccess = bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
             if (!writeSuccess) setState(SensorInfoState.Error)

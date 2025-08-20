@@ -197,7 +197,6 @@ class BluetoothPacketManagerImpl(
 
     private fun emitSensorInfo(data: List<Byte>, listSize: Int) {
         if (listSize >= 13) {
-            Log.d(TAG, "emitSensorInfo: Sensor Info got successfully")
             _bluetoothRequestResult.value =
                 BluetoothRequestResultStatus.SensorInfo(
                     getSensorModelFromList(data)

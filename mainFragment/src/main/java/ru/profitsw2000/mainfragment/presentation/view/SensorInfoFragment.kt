@@ -109,11 +109,6 @@ class SensorInfoFragment : BottomSheetDialogFragment()  {
         val localIdString = getString(ru.profitsw2000.core.R.string.hex_string, sensorModel.sensorLocalId.toString(16).uppercase(Locale.getDefault()))
         val temperatureString = getString(ru.profitsw2000.core.R.string.sensor_temperature_text, sensorModel.sensorTemperature.toString())
 
-/*        Log.d(TAG, "romCodeString: $romCodeString")
-        Log.d(TAG, "localIdString: $localIdString")
-        Log.d(TAG, "temperatureString: $temperatureString")
-        Log.d(TAG, "letter: ${sensorModel.sensorLetter}")*/
-
         mainViewsGroup.visibility = View.VISIBLE
         sensorInfoLoadErrorTextView.visibility = View.GONE
         progressBar.visibility = View.GONE
