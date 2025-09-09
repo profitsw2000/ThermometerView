@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/screens_main_padding_size"
+    tools:context=".presentation.MemoryFragment">
+
+    <TextView
+        android:id="@+id/total_memory_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Всего:"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/total_memory_value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        android:text="1 048 576 байт"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/total_memory_title_text"
+        app:layout_constraintStart_toEndOf="@+id/total_memory_title_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/memory_usage_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Занято:"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_memory_title_text" />
+
+    <TextView
+        android:id="@+id/memory_usage_value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/free_memory_title_text"
+        app:layout_constraintStart_toEndOf="@+id/free_memory_title_text"
+        app:layout_constraintTop_toTopOf="@+id/free_memory_title_text"
+        tools:text="834 567 байт" />
+
+    <TextView
+        android:id="@+id/free_memory_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Свободно:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_usage_title_text" />
+
+    <TextView
+        android:id="@+id/free_memory_value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        android:textColor="@color/king_blue"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        app:layout_constraintBottom_toBottomOf="@+id/memory_usage_title_text"
+        app:layout_constraintStart_toEndOf="@+id/memory_usage_title_text"
+        app:layout_constraintTop_toTopOf="@+id/memory_usage_title_text"
+        tools:text="212 344 байт" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:indeterminate="false"
+        android:max="1048575"
+        android:min="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text" />
+
+    <TextView
+        android:id="@+id/memory_space_percentage_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="@id/progressBar"
+        android:text="@string/memory_percentage_value_default_text"
+        android:textStyle="bold"
+        android:textColor="@color/white_aluminium"/>
+
+    <TextView
+        android:id="@+id/data_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Данные"
+        android:textColor="@color/king_blue"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_space_percentage_text_view" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/clear_memory_button"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        app:strokeColor="@color/king_blue"
+        android:layout_marginTop="@dimen/screens_main_padding_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ОЧИСТИТЬ"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/data_title_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
