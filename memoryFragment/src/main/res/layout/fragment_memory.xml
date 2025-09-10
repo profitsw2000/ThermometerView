@@ -129,4 +129,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/data_title_text" />
 
+    <View
+        android:id="@+id/buttons_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/field_title_divider_height_size"
+        android:background="?android:attr/colorPrimary"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clear_memory_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/update_time_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="ИЗВЛЕЧЬ"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttons_divider" />
+
+    <CheckBox
+        android:id="@+id/confirm_data_deletion_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="очистить память после извлечения данных"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/update_time_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
