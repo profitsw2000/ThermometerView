@@ -22,4 +22,8 @@
     <dimen name="sensor_info_bottom_sheet_big_horizontal_margin_between_views">32dp</dimen>
     <dimen name="sensor_parameter_title_size">18sp</dimen>
     <dimen name="sensor_parameter_value_size">16sp</dimen>
+    <dimen name="memory_info_items_vertical_margin">16dp</dimen>
+    <dimen name="memory_usage_percentage_text_vertical_margin">8dp</dimen>
+    <dimen name="memory_data_operation_section_title_vertical_margin">24sp</dimen>
+    <dimen name="memory_data_operation_buttons_vertical_margin">16dp</dimen>
 </resources>

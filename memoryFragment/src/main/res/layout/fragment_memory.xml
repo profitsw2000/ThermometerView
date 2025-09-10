@@ -8,10 +8,10 @@
     tools:context=".presentation.MemoryFragment">
 
     <TextView
-        android:id="@+id/total_memory_title_text"
+        android:id="@+id/total_memory_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Всего:"
+        android:text="@string/total_memory_title_text"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:textSize="@dimen/sensor_parameter_title_size"
@@ -19,63 +19,63 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/total_memory_value_text"
+        android:id="@+id/total_memory_value_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/field_margin_between_elements_size"
-        android:text="1 048 576 байт"
+        android:text="@string/total_memory_value_text"
         android:textColor="@color/king_blue"
         android:textSize="@dimen/sensor_parameter_value_size"
-        app:layout_constraintBottom_toBottomOf="@+id/total_memory_title_text"
-        app:layout_constraintStart_toEndOf="@+id/total_memory_title_text"
+        app:layout_constraintBottom_toBottomOf="@+id/total_memory_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/total_memory_title_text_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/memory_usage_title_text"
+        android:id="@+id/memory_usage_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Занято:"
+        android:text="@string/memory_usage_title_text"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
         android:textColor="@color/black"
         android:textSize="@dimen/sensor_parameter_title_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/total_memory_title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/total_memory_title_text_view" />
 
     <TextView
-        android:id="@+id/memory_usage_value_text"
+        android:id="@+id/memory_usage_value_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/field_margin_between_elements_size"
         android:textColor="@color/king_blue"
         android:textSize="@dimen/sensor_parameter_value_size"
-        app:layout_constraintBottom_toBottomOf="@+id/free_memory_title_text"
-        app:layout_constraintStart_toEndOf="@+id/free_memory_title_text"
-        app:layout_constraintTop_toTopOf="@+id/free_memory_title_text"
+        app:layout_constraintBottom_toBottomOf="@+id/memory_usage_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/memory_usage_title_text_view"
+        app:layout_constraintTop_toTopOf="@+id/memory_usage_title_text_view"
         tools:text="834 567 байт" />
 
     <TextView
-        android:id="@+id/free_memory_title_text"
+        android:id="@+id/free_memory_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Свободно:"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:text="@string/free_memory_title_text"
         android:textColor="@color/black"
         android:textSize="@dimen/sensor_parameter_title_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memory_usage_title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/memory_usage_title_text_view" />
 
     <TextView
-        android:id="@+id/free_memory_value_text"
+        android:id="@+id/free_memory_value_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sensor_parameter_value_size"
-        android:textColor="@color/king_blue"
         android:layout_marginLeft="@dimen/field_margin_between_elements_size"
-        app:layout_constraintBottom_toBottomOf="@+id/memory_usage_title_text"
-        app:layout_constraintStart_toEndOf="@+id/memory_usage_title_text"
-        app:layout_constraintTop_toTopOf="@+id/memory_usage_title_text"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/free_memory_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/free_memory_title_text_view"
+        app:layout_constraintTop_toTopOf="@+id/free_memory_title_text_view"
         tools:text="212 344 байт" />
 
     <ProgressBar
@@ -89,13 +89,13 @@
         android:min="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text_view" />
 
     <TextView
         android:id="@+id/memory_space_percentage_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"
         app:layout_constraintTop_toBottomOf="@id/progressBar"
         app:layout_constraintStart_toStartOf="@id/progressBar"
         app:layout_constraintEnd_toEndOf="@id/progressBar"
@@ -104,13 +104,13 @@
         android:textColor="@color/white_aluminium"/>
 
     <TextView
-        android:id="@+id/data_title_text"
+        android:id="@+id/data_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Данные"
+        android:layout_marginTop="@dimen/memory_data_operation_section_title_vertical_margin"
+        android:text="@string/memory_data_operation_section_title_text"
         android:textColor="@color/king_blue"
-        android:textSize="24sp"
+        android:textSize="@dimen/memory_data_operation_section_title_text_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,18 +123,18 @@
         android:layout_marginTop="@dimen/screens_main_padding_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ОЧИСТИТЬ"
+        android:text="@string/clear_memory_button_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/data_title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/data_title_text_view" />
 
     <View
         android:id="@+id/buttons_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/field_title_divider_height_size"
         android:background="?android:attr/colorPrimary"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/memory_data_operation_buttons_vertical_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clear_memory_button" />
@@ -143,8 +143,8 @@
         android:id="@+id/update_time_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="ИЗВЛЕЧЬ"
+        android:layout_marginTop="@dimen/memory_data_operation_buttons_vertical_margin"
+        android:text="@string/retrive_data_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/buttons_divider" />
@@ -153,7 +153,7 @@
         android:id="@+id/confirm_data_deletion_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="очистить память после извлечения данных"
+        android:text="@string/clear_memory_checkbox_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/update_time_button" />
 

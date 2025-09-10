@@ -29,4 +29,11 @@
     <string name="hex_string">0x%1$s</string>
     <string name="show_edit_sensor_letter_form_text">Изменить</string>
     <string name="hide_edit_sensor_letter_form_text">Скрыть</string>
+    <string name="total_memory_title_text">Всего:</string>
+    <string name="memory_usage_title_text">Занято:</string>
+    <string name="free_memory_title_text">Свободно:</string>
+    <string name="memory_data_operation_section_title_text">Данные</string>
+    <string name="clear_memory_button_text">ОЧИСТИТЬ</string>
+    <string name="retrive_data_button_text">ИЗВЛЕЧЬ</string>
+    <string name="clear_memory_checkbox_text">очистить память после извлечения данных</string>
 </resources>
