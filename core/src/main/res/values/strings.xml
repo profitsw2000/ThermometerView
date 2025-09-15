@@ -2,7 +2,8 @@
     <string name="app_name">ThermometerView</string>
     <string name="bottom_nav_home_tab_text">Главная</string>
     <string name="bottom_nav_table_tab_text">Таблица</string>
-    <string name="bottom_nav_graph_tab_text">График</string><string name="ok_dialog_button_text">OK</string>
+    <string name="bottom_nav_graph_tab_text">График</string>
+    <string name="ok_dialog_button_text">OK</string>
     <string name="bluetooth_permission_rationale_dialog_title">Разрешение Bluetooth</string>
     <string name="bluetooth_permission_rationale_dialog_text">При подключении к термометру используется Bluetooth. Для получения данных с термометра необходимо предоставить приложению разрешение на использование Bluetooth.</string>
     <string name="bluetooth_on_warning_dialog_title">Включение Bluetooth</string>
@@ -36,4 +37,5 @@
     <string name="clear_memory_button_text">ОЧИСТИТЬ</string>
     <string name="retrive_data_button_text">ИЗВЛЕЧЬ</string>
     <string name="clear_memory_checkbox_text">очистить память после извлечения данных</string>
+    <string name="thermometer_memory_fragment_label_text">Память термометра</string>
 </resources>

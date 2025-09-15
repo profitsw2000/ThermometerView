@@ -14,6 +14,10 @@
         <action
             android:id="@+id/action_main_to_sensor_info"
             app:destination="@+id/sensor_info_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_main_to_memory_control_fragment"
+            app:destination="@+id/thermometer_memory_control_fragment"/>
     </fragment>
 
     <fragment
@@ -36,5 +40,12 @@
         android:label="@string/sensor_info_bottom_sheet_title_text_view"
         tools:layout="@layout/fragment_sensor_info">
     </dialog>
+
+    <fragment
+        android:id="@+id/thermometer_memory_control_fragment"
+        android:name="ru.profitsw2000.memoryfragment.presentation.MemoryFragment"
+        android:label="@string/thermometer_memory_fragment_label_text"
+        tools:layout="@layout/fragment_memory">
+    </fragment>
 
 </navigation>

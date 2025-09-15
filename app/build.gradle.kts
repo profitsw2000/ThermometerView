@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":data"))
     implementation(project(":mainFragment"))
+    implementation(project(":memoryFragment"))
     implementation(project(":tableTab"))
     implementation(project(":graphTab"))
     implementation(project(":navigator"))
