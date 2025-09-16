@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/main">
+
+    <fragment
+        android:id="@+id/main"
+        android:name="ru.profitsw2000.mainfragment.presentation.view.MainFragment"
+        android:label="@string/bottom_nav_home_tab_text"
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_main_to_sensor_info"
+            app:destination="@+id/sensor_info_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_main_to_memory_control_fragment"
+            app:destination="@+id/thermometer_memory_control_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/table"
+        android:name="ru.profitsw2000.tabletab.presentation.view.TableFragment"
+        android:label="@string/bottom_nav_table_tab_text"
+        tools:layout="@layout/fragment_table">
+    </fragment>
+
+    <fragment
+        android:id="@+id/graph"
+        android:name="ru.profitsw2000.graphtab.presentation.view.GraphFragment"
+        android:label="@string/bottom_nav_graph_tab_text"
+        tools:layout="@layout/fragment_graph">
+    </fragment>
+
+    <dialog
+        android:id="@+id/sensor_info_bottom_sheet"
+        android:name="ru.profitsw2000.mainfragment.presentation.view.SensorInfoFragment"
+        android:label="@string/sensor_info_bottom_sheet_title_text_view"
+        tools:layout="@layout/fragment_sensor_info">
+    </dialog>
+
+    <fragment
+        android:id="@+id/thermometer_memory_control_fragment"
+        android:name="ru.profitsw2000.memoryfragment.presentation.MemoryFragment"
+        android:label="@string/thermometer_memory_fragment_label_text"
+        tools:layout="@layout/fragment_memory">
+    </fragment>
+
+</navigation>
