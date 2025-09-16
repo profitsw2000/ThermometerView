@@ -4,4 +4,6 @@ import android.os.Bundle
 
 interface Navigator {
     fun navigateToSensorInfoBottomSheet(bundle: Bundle)
+
+    fun navigateToThermometerMemoryControlFragment()
 }

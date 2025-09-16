@@ -104,6 +104,9 @@ class MainFragment : Fragment() {
         updateTimeButton.setOnClickListener {
             mainViewModel.updateThermometerTime()
         }
+        changeMemoryButton.setOnClickListener {
+            navigator.navigateToThermometerMemoryControlFragment()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

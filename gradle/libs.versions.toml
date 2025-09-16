@@ -15,6 +15,7 @@ viewmodel = "2.9.0"
 koin = "4.0.2"
 coroutines = "1.10.1"
 recyclerview = "1.4.0"
+room_version = "2.7.2"
 
 applicationId = "ru.profitsw2000.thermometerview"
 compileSdk = "35"
@@ -39,6 +40,9 @@ androidx-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin"}
 coroutines-core = { group  = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines"}
 coroutines-android = { group  = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines"}
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 
 android-gradlePlugin = {group = "com.android.tools.build", name = "gradle", version.ref = "app"}
 kotlin-gradlePlugin = {group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin"}

@@ -1,6 +1,7 @@
 package ru.profitsw2000.thermometerview.presentation.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -42,5 +43,20 @@ class MainActivity : AppCompatActivity() {
 
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(false)
+
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            if (destination.id == R.id.main ||
+                destination.id == R.id.graph ||
+                destination.id == R.id.table){
+                binding.bottomNavigationView.visibility = View.VISIBLE
+            } else {
+                binding.bottomNavigationView.visibility = View.GONE
+                actionBar?.setDisplayHomeAsUpEnabled(true)
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp()
     }
 }

@@ -1,31 +1,33 @@
 plugins {
-    alias(libs.plugins.tv.main.app.gradle.plugin)
+    alias(libs.plugins.tv.main.lib.gradle.plugin)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = "ru.profitsw2000.thermometerview"
+    namespace = "ru.profitsw2000.memoryfragment"
 }
 
 dependencies {
-    //Modules
+
     implementation(project(":core"))
     implementation(project(":data"))
-    implementation(project(":mainFragment"))
-    implementation(project(":memoryFragment"))
-    implementation(project(":tableTab"))
-    implementation(project(":graphTab"))
     implementation(project(":navigator"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    //ViewModel
     implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.livedata)
+    implementation(libs.androidx.viewmodel)
     //Koin
     implementation(libs.koin)
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
