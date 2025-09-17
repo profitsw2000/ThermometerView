@@ -15,6 +15,7 @@ import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.SENSOR_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -158,7 +159,7 @@ class BluetoothPacketManagerImpl(
                     (data[2].toInteger() shl 8) or
                     (data[1].toInteger() shl 16) or
                     (data[0].toInteger() shl 24)
-            val percentage = ((address.toFloat() / 1048575) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
+            val percentage = ((address.toFloat() / TOTAL_MEMORY_BYTE_SIZE) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
 
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.CurrentMemorySpace(
                 MemoryInfoModel(address, percentage)

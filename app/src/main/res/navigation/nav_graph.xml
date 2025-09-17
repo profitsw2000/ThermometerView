@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/thermometer_memory_control_fragment"
-        android:name="ru.profitsw2000.memoryfragment.presentation.MemoryFragment"
+        android:name="ru.profitsw2000.memoryfragment.presentation.view.MemoryFragment"
         android:label="@string/thermometer_memory_fragment_label_text"
         tools:layout="@layout/fragment_memory">
     </fragment>

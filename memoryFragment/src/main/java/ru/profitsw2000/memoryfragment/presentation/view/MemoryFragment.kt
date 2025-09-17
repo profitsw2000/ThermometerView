@@ -1,4 +1,4 @@
-package ru.profitsw2000.memoryfragment.presentation
+package ru.profitsw2000.memoryfragment.presentation.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
