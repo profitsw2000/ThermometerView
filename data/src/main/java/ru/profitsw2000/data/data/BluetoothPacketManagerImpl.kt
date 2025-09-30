@@ -208,9 +208,9 @@ class BluetoothPacketManagerImpl(
     }
 
     private fun emitMemoryClearResult(data: List<Byte>) {
-        if (data.size == 1 && data[0].toInteger() == 0xFF) {
+        if (data.size == 1) {
             _bluetoothRequestResult.value =
-                BluetoothRequestResultStatus.MemoryClearResult(true)
+                BluetoothRequestResultStatus.MemoryClearResult(data[0].toInteger() == 0xFF)
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
