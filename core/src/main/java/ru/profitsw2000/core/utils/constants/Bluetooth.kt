@@ -2,6 +2,7 @@ package ru.profitsw2000.core.utils.constants
 
 const val DATE_TIME_PACKET_ID = 0x01
 const val CURRENT_MEMORY_PACKET_ID = 0x05
+const val CLEAR_MEMORY_PACKET_ID = 0x05
 const val SENSORS_INFO_PACKET_ID = 0x09
 const val SENSOR_INFO_PACKET_ID = 0x0C
 
@@ -11,6 +12,8 @@ val dateTimeRequestPacket = byteArrayOf(0x53, 0x0A, 0x01, 0x00, 0x00, 0x00, 0x00
 val updateTimeRequestPacketHead = byteArrayOf(0x53, 0x0A, 0x02)
 //пакет для запроса текущего адреса микросхемы памяти термометра
 val currentMemoryAddressRequestPacket = byteArrayOf(0x53, 0x03, 0x05, 0x08)
+//пакет для удаления всех данных из микросхемы памяти термометра и обнуления текущего адреса
+val clearMemoryRequestPacket = byteArrayOf(0x53, 0x03, 0x0D, 0x10)
 //пакет для запроса основной информации датчиков - температура, идентификационный номер и код символа. ассоциированного с ним
 val sensorInfoPacket = byteArrayOf(0x53, 0x05, 0x09, 0x00, 0x00, 0x0E)
 //часть пакета, посылаемого на термометр для получения информации о датчике с конкретным индексом

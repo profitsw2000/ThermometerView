@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.CLEAR_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
 import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
@@ -90,6 +91,7 @@ class BluetoothPacketManagerImpl(
             CURRENT_MEMORY_PACKET_ID -> emitMemoryInfo(bytesList, packetSize)
             SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
             SENSOR_INFO_PACKET_ID -> emitSensorInfo(bytesList, packetSize)
+            CLEAR_MEMORY_PACKET_ID -> emitMemoryClearResult(bytesList)
             else -> {}
         }
     }
@@ -202,6 +204,13 @@ class BluetoothPacketManagerImpl(
                 BluetoothRequestResultStatus.SensorInfo(
                     getSensorModelFromList(data)
                 )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun emitMemoryClearResult(data: List<Byte>) {
+        if (data.size == 1 && data[0].toInteger() == 0xFF) {
+            _bluetoothRequestResult.value =
+                BluetoothRequestResultStatus.MemoryClearResult(true)
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
