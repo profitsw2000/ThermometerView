@@ -35,7 +35,7 @@ class MemoryViewModel(
     private val memoryInfoRequestLiveData by this::_memoryInfoRequestLiveData
     private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
     private val memoryInfoResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
-
+        getBluetoothReceivedDataRequestStatus(status)
     }
 
     init {
@@ -47,6 +47,8 @@ class MemoryViewModel(
             is BluetoothRequestResultStatus.MemoryServiceDataReceived -> renderMemoryServiceData(
                 memoryServiceDataModel = bluetoothRequestResultStatus.memoryServiceDataModel)
             is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
+            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryClearData(
+                isCleared = bluetoothRequestResultStatus.isCleared)
             else -> MemoryScreenState.Error("Неверные данные")
         }
     }
@@ -67,6 +69,11 @@ class MemoryViewModel(
 
     private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
         TODO()
+    }
+
+    private fun renderMemoryClearData(isCleared: Boolean): MemoryScreenState {
+        return if (isCleared) MemoryScreenState.MemoryClearSuccess
+        else MemoryScreenState.Error("Ошибка! Не удалось очистить память.")
     }
     
     fun clearMemory() {
