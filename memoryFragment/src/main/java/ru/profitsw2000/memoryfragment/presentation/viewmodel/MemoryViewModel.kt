@@ -39,7 +39,13 @@ class MemoryViewModel(
     }
 
     init {
-        Log.d(TAG, "MemoryViewModel init block!!!")
+        memoryInfoLiveData.addSource(memoryInfoRequestLiveData) { value ->
+            memoryInfoLiveData.value = value
+        }
+
+        memoryInfoLiveData.addSource(memoryInfoResultLiveData) { value ->
+            memoryInfoLiveData.value = value
+        }
     }
 
     private fun getBluetoothReceivedDataRequestStatus(bluetoothRequestResultStatus: BluetoothRequestResultStatus): MemoryScreenState {
