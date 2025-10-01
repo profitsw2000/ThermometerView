@@ -18,6 +18,7 @@ import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
 import ru.profitsw2000.core.utils.constants.SENSOR_INFO_REQUEST_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
+import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
 import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -110,11 +111,27 @@ class MemoryViewModel(
         }
     }
 
+    fun getMemoryInfo(coroutineScope: CoroutineScope) {
+        lifecycleScope = coroutineScope
+        timeIntervalJob.start()
+        lifecycleScope.launch {
+            sendMemoryInfoRequest()
+        }
+    }
+
     private suspend fun sendClearMemoryRequest() {
         if (bluetoothRepository.isDeviceConnected) {
             _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryClearExecution
             val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
-            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на стирание памяти")
+            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на стирание памяти термометра")
+        } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
+    }
+
+    private suspend fun sendMemoryInfoRequest() {
+        if (bluetoothRepository.isDeviceConnected) {
+            _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryInfoLoad
+            val writeSuccess = bluetoothRepository.writeByteArray(currentMemoryAddressRequestPacket)
+            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на получение информации о памяти термометра")
         } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
     }
 
