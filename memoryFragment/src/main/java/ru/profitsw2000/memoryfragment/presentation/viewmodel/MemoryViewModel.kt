@@ -12,9 +12,12 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_REQUEST_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
 import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
@@ -30,6 +33,7 @@ class MemoryViewModel(
 ) : ViewModel() {
     //coroutine
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private lateinit var lifecycleScope: CoroutineScope
     private val timeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
         delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
         _memoryInfoRequestLiveData.value = MemoryScreenState.TimeoutError
@@ -97,14 +101,20 @@ class MemoryViewModel(
         else MemoryScreenState.Error("Ошибка! Не удалось очистить память.")
     }
     
-    fun clearMemory() {
+    fun clearMemory(coroutineScope: CoroutineScope) {
         Log.d(TAG, "clearMemory: ")
         timeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendClearMemoryRequest()
+        }
     }
+
     private suspend fun sendClearMemoryRequest() {
         if (bluetoothRepository.isDeviceConnected) {
             _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryClearExecution
-            val writeSuccess = bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
+            val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
+            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на стирание памяти")
         } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
     }
 
