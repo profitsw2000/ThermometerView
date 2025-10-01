@@ -7,7 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.MemoryServiceDataModel
@@ -20,14 +28,20 @@ class MemoryViewModel(
     private val bluetoothRepository: BluetoothRepository,
     private val bluetoothPacketManager: BluetoothPacketManager
 ) : ViewModel() {
+    //coroutine
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val timeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+        delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
+        _memoryInfoRequestLiveData.value = MemoryScreenState.TimeoutError
+    }
 
+    //memory parameters
     private var currentMemoryAddress: Int = 0
     private var sensorsNum: Int = 0
     private var localIds: List<Int> = arrayListOf()
     private var sensorsLetterCodes: List<Int> = arrayListOf()
     private var sensorIds: List<ULong> = arrayListOf()
     private var sensorHistoryDataModelList: MutableList<SensorHistoryDataModel> = mutableListOf()
-
     private var memoryAddressCounter = 0
 
     var memoryInfoLiveData = MediatorLiveData<MemoryScreenState>()
@@ -78,12 +92,20 @@ class MemoryViewModel(
     }
 
     private fun renderMemoryClearData(isCleared: Boolean): MemoryScreenState {
+        timeIntervalJob.cancel()
         return if (isCleared) MemoryScreenState.MemoryClearSuccess
         else MemoryScreenState.Error("Ошибка! Не удалось очистить память.")
     }
     
     fun clearMemory() {
         Log.d(TAG, "clearMemory: ")
+        timeIntervalJob.start()
+    }
+    private suspend fun sendClearMemoryRequest() {
+        if (bluetoothRepository.isDeviceConnected) {
+            _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryClearExecution
+            val writeSuccess = bluetoothRepository.writeByteArray(getSensorInfoPacket(index))
+        } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
     }
 
 }

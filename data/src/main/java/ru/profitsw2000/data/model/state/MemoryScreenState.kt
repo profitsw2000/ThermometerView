@@ -13,5 +13,6 @@ sealed class MemoryScreenState {
     data class MemoryDataRequest(val message: String, val percentProgress: Int): MemoryScreenState()
     data class MemoryDataAnswer(val message: String, val percentProgress: Int): MemoryScreenState()
     data object MemoryDataSuccess: MemoryScreenState()
+    data object TimeoutError: MemoryScreenState()
     data class Error(val message: String): MemoryScreenState()
 }
