@@ -22,6 +22,7 @@ import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
 import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.MemoryScreenState
@@ -69,6 +70,8 @@ class MemoryViewModel(
 
     private fun getBluetoothReceivedDataRequestStatus(bluetoothRequestResultStatus: BluetoothRequestResultStatus): MemoryScreenState {
         return when(bluetoothRequestResultStatus) {
+            is BluetoothRequestResultStatus.CurrentMemorySpace -> renderMemorySpaceInfo(
+                memoryInfoModel = bluetoothRequestResultStatus.memoryInfoModel)
             is BluetoothRequestResultStatus.MemoryServiceDataReceived -> renderMemoryServiceData(
                 memoryServiceDataModel = bluetoothRequestResultStatus.memoryServiceDataModel)
             is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
@@ -90,6 +93,10 @@ class MemoryViewModel(
         sensorHistoryDataModelList.clear()
         return MemoryScreenState.ServiceDataAnswer("Загрузка данных: датчиков - ${memoryServiceDataModel.sensorsNumber}, " +
                 "объём принимаемых данных - ${memoryServiceDataModel.currentAddress}...")
+    }
+
+    private fun renderMemorySpaceInfo(memoryInfoModel: MemoryInfoModel): MemoryScreenState {
+        return MemoryScreenState.MemoryInfoSuccess(memoryInfoModel)
     }
 
     private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
