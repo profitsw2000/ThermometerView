@@ -138,8 +138,8 @@ class MemoryViewModel(
         if (bluetoothRepository.isDeviceConnected) {
             _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryInfoLoad
             val writeSuccess = bluetoothRepository.writeByteArray(currentMemoryAddressRequestPacket)
-            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на получение информации о памяти термометра")
-        } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
+            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.SendingPacketError
+        } else _memoryInfoRequestLiveData.value = MemoryScreenState.BluetoothConnectionError
     }
 
 }
