@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="memory_data_operation_section_title_text_size">24sp</dimen>
+    <dimen name="memory_data_load_status_text_size">16sp</dimen>
 </resources>
