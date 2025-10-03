@@ -27,7 +27,11 @@ import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.MemoryScreenState
 import ru.profitsw2000.data.model.state.SensorInfoState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryDataLoadState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
 import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
+import kotlin.getValue
 
 class MemoryViewModel(
     private val bluetoothRepository: BluetoothRepository,
@@ -36,9 +40,9 @@ class MemoryViewModel(
     //coroutine
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var lifecycleScope: CoroutineScope
-    private val timeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+    private val memoryInfoRequestTimeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
         delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
-        _memoryInfoRequestLiveData.value = MemoryScreenState.TimeoutError
+        _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoTimeoutError
     }
 
     //memory parameters
@@ -50,35 +54,96 @@ class MemoryViewModel(
     private var sensorHistoryDataModelList: MutableList<SensorHistoryDataModel> = mutableListOf()
     private var memoryAddressCounter = 0
 
-    var memoryInfoLiveData = MediatorLiveData<MemoryScreenState>()
-    private var _memoryInfoRequestLiveData: MutableLiveData<MemoryScreenState> = MutableLiveData(MemoryScreenState.Blank)
-    private val memoryInfoRequestLiveData by this::_memoryInfoRequestLiveData
     private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
+    //информация о памяти термометра
+    var memoryInfoLiveData = MediatorLiveData<MemoryInfoState>()
+    private var _memoryInfoRequestLiveData: MutableLiveData<MemoryInfoState> = MutableLiveData(
+        MemoryInfoState.MemoryInfoInitialState)
+    private val memoryInfoRequestLiveData by this::_memoryInfoRequestLiveData
     private val memoryInfoResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
-        getBluetoothReceivedDataRequestStatus(status)
+        getMemoryInfoReceivedByBluetooth(status)
     }
+    //очистка памяти термометра
+    var memoryClearLiveData = MediatorLiveData<MemoryClearState>()
+    private var _memoryClearRequestLiveData: MutableLiveData<MemoryClearState> = MutableLiveData(
+        MemoryClearState.MemoryClearInitialState)
+    private val memoryClearRequestLiveData by this::_memoryClearRequestLiveData
+    private val memoryClearResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
+        getMemoryClearResultReceivedByBluetooth(status)
+    }
+    //загрузка данных из памяти термометра
+    var memoryLoadLiveData = MediatorLiveData<MemoryDataLoadState>()
+    private var _memoryLoadRequestLiveData: MutableLiveData<MemoryDataLoadState> = MutableLiveData(
+        MemoryDataLoadState.MemoryDataLoadInitialState)
+    private val memoryLoadRequestLiveData by this::_memoryLoadRequestLiveData
+    private val memoryLoadResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
+        getMemoryLoadDataReceivedByBluetooth(status)
+    }
+
 
     init {
         memoryInfoLiveData.addSource(memoryInfoRequestLiveData) { value ->
             memoryInfoLiveData.value = value
         }
-
         memoryInfoLiveData.addSource(memoryInfoResultLiveData) { value ->
             memoryInfoLiveData.value = value
         }
+
+        memoryClearLiveData.addSource(memoryClearRequestLiveData) { value ->
+            memoryClearLiveData.value = value
+        }
+        memoryClearLiveData.addSource(memoryClearResultLiveData) { value ->
+            memoryClearLiveData.value = value
+        }
+
+        memoryLoadLiveData.addSource(memoryLoadRequestLiveData) { value ->
+            memoryLoadLiveData.value = value
+        }
+        memoryLoadLiveData.addSource(memoryLoadResultLiveData) { value ->
+            memoryLoadLiveData.value = value
+        }
     }
 
-    private fun getBluetoothReceivedDataRequestStatus(bluetoothRequestResultStatus: BluetoothRequestResultStatus): MemoryScreenState {
+    private fun getMemoryInfoReceivedByBluetooth(
+        bluetoothRequestResultStatus: BluetoothRequestResultStatus
+    ): MemoryInfoState {
         return when(bluetoothRequestResultStatus) {
             is BluetoothRequestResultStatus.CurrentMemorySpace -> renderMemorySpaceInfo(
                 memoryInfoModel = bluetoothRequestResultStatus.memoryInfoModel)
-            is BluetoothRequestResultStatus.MemoryServiceDataReceived -> renderMemoryServiceData(
-                memoryServiceDataModel = bluetoothRequestResultStatus.memoryServiceDataModel)
-            is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
-            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryClearData(
-                isCleared = bluetoothRequestResultStatus.isCleared)
-            else -> MemoryScreenState.Error("Неверные данные")
+            else -> memoryInfoLiveData.value!!
         }
+    }
+
+    private fun getMemoryClearResultReceivedByBluetooth(
+        bluetoothRequestResultStatus: BluetoothRequestResultStatus
+    ): MemoryClearState {
+        return when(bluetoothRequestResultStatus) {
+            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryClearData(
+                isCleared = bluetoothRequestResultStatus.isCleared
+            )
+            else -> memoryClearLiveData.value!!
+        }
+    }
+
+    private fun getMemoryLoadDataReceivedByBluetooth(
+        bluetoothRequestResultStatus: BluetoothRequestResultStatus
+    ): MemoryDataLoadState {
+        return when(bluetoothRequestResultStatus) {
+            is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
+            is BluetoothRequestResultStatus.MemoryServiceDataReceived -> TODO()
+            else -> memoryLoadLiveData.value!!
+        }
+    }
+
+    private fun renderMemorySpaceInfo(memoryInfoModel: MemoryInfoModel): MemoryInfoState {
+        memoryInfoRequestTimeIntervalJob.cancel()
+        return MemoryInfoState.MemoryInfoSuccess(memoryInfoModel)
+    }
+
+    private fun renderMemoryClearData(isCleared: Boolean): MemoryClearState {
+        memoryInfoRequestTimeIntervalJob.cancel()
+        return if (isCleared) MemoryClearState.MemoryClearSuccess
+        else MemoryClearState.MemoryClearError
     }
 
     private fun renderMemoryServiceData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
@@ -95,51 +160,41 @@ class MemoryViewModel(
                 "объём принимаемых данных - ${memoryServiceDataModel.currentAddress}...")
     }
 
-    private fun renderMemorySpaceInfo(memoryInfoModel: MemoryInfoModel): MemoryScreenState {
-        return MemoryScreenState.MemoryInfoSuccess(memoryInfoModel)
-    }
-
     private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
         TODO()
     }
 
-    private fun renderMemoryClearData(isCleared: Boolean): MemoryScreenState {
-        timeIntervalJob.cancel()
-        return if (isCleared) MemoryScreenState.MemoryClearSuccess
-        else MemoryScreenState.Error("Ошибка! Не удалось очистить память.")
+    fun getMemoryInfo(coroutineScope: CoroutineScope) {
+        lifecycleScope = coroutineScope
+        memoryInfoRequestTimeIntervalJob.start()
+        lifecycleScope.launch {
+            sendMemoryInfoRequest()
+        }
     }
-    
+
+    private suspend fun sendMemoryInfoRequest() {
+        if (bluetoothRepository.isDeviceConnected) {
+            _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoLoad
+            val writeSuccess = bluetoothRepository.writeByteArray(currentMemoryAddressRequestPacket)
+            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoSendRequestError
+        } else _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoDeviceConnectionError
+    }
+
     fun clearMemory(coroutineScope: CoroutineScope) {
         Log.d(TAG, "clearMemory: ")
-        timeIntervalJob.start()
+        memoryInfoRequestTimeIntervalJob.start()
         lifecycleScope = coroutineScope
         lifecycleScope.launch {
             sendClearMemoryRequest()
         }
     }
 
-    fun getMemoryInfo(coroutineScope: CoroutineScope) {
-        lifecycleScope = coroutineScope
-        timeIntervalJob.start()
-        lifecycleScope.launch {
-            sendMemoryInfoRequest()
-        }
-    }
-
     private suspend fun sendClearMemoryRequest() {
         if (bluetoothRepository.isDeviceConnected) {
-            _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryClearExecution
+            _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearExecution
             val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
-            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Не удалось отправить команду на стирание памяти термометра")
-        } else _memoryInfoRequestLiveData.value = MemoryScreenState.Error("Нет связи с термометром")
-    }
-
-    private suspend fun sendMemoryInfoRequest() {
-        if (bluetoothRepository.isDeviceConnected) {
-            _memoryInfoRequestLiveData.value = MemoryScreenState.MemoryInfoLoad
-            val writeSuccess = bluetoothRepository.writeByteArray(currentMemoryAddressRequestPacket)
-            if (!writeSuccess) _memoryInfoRequestLiveData.value = MemoryScreenState.SendingPacketError
-        } else _memoryInfoRequestLiveData.value = MemoryScreenState.BluetoothConnectionError
+            if (!writeSuccess) _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearSendRequestError
+        } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
     }
 
 }
