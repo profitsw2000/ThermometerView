@@ -7,8 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.data.model.state.MemoryScreenState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryDataLoadState
+import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
 import ru.profitsw2000.memoryfragment.R
 import ru.profitsw2000.memoryfragment.databinding.FragmentMemoryBinding
 import ru.profitsw2000.memoryfragment.presentation.viewmodel.MemoryViewModel
@@ -46,28 +51,102 @@ class MemoryFragment : Fragment() {
     }
 
     private fun observeData() {
-        val observer = Observer<MemoryScreenState> { renderData(it) }
+        observeMemoryInfoData()
+        observeMemoryClearData()
+        observeMemoryLoadData()
+    }
+
+    private fun observeMemoryInfoData() {
+        val observer = Observer<MemoryInfoState> { renderMemoryInfo(it) }
         memoryViewModel.memoryInfoLiveData.observe(viewLifecycleOwner, observer)
     }
 
-    private fun renderData(memoryScreenState: MemoryScreenState) {
-        when(memoryScreenState) {
-            MemoryScreenState.Blank -> memoryViewModel.getMemoryInfo(viewLifecycleOwner.lifecycleScope)
-            is MemoryScreenState.Error -> TODO()
-            MemoryScreenState.MemoryClearExecution -> TODO()
-            MemoryScreenState.MemoryClearSuccess -> TODO()
-            is MemoryScreenState.MemoryDataAnswer -> TODO()
-            is MemoryScreenState.MemoryDataRequest -> TODO()
-            MemoryScreenState.MemoryDataSuccess -> TODO()
-            MemoryScreenState.MemoryInfoLoad -> TODO()
-            is MemoryScreenState.MemoryInfoSuccess -> TODO()
-            is MemoryScreenState.ServiceDataAnswer -> TODO()
-            is MemoryScreenState.ServiceDataRequest -> TODO()
-            MemoryScreenState.TimeoutError -> TODO()
-            MemoryScreenState.BluetoothConnectionError -> TODO()
-            MemoryScreenState.SendingPacketError -> TODO()
+    private fun observeMemoryClearData() {
+        val observer = Observer<MemoryClearState> { renderMemoryClearData(it) }
+        memoryViewModel.memoryClearLiveData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun observeMemoryLoadData() {
+        val observer = Observer<MemoryDataLoadState> { renderMemoryLoadData(it) }
+        memoryViewModel.memoryLoadLiveData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderMemoryInfo(memoryInfoState: MemoryInfoState) {
+        when(memoryInfoState) {
+            MemoryInfoState.MemoryInfoInitialState -> {}
+            MemoryInfoState.MemoryInfoDeviceConnectionError -> memoryInfoError(getString(ru.profitsw2000.core.R.string.device_connection_error_message_text))
+            MemoryInfoState.MemoryInfoLoad -> setRoundProgressBarState(true)
+            MemoryInfoState.MemoryInfoSendRequestError -> memoryInfoError(getString(ru.profitsw2000.core.R.string.request_sending_error_message_text))
+            is MemoryInfoState.MemoryInfoSuccess -> populateMemoryInfoViews(
+                memoryInfoState.memoryInfoModel.currentMemoryAddress,
+                memoryInfoState.memoryInfoModel.memoryPercentUsage
+            )
+            MemoryInfoState.MemoryInfoTimeoutError -> memoryInfoError(getString(ru.profitsw2000.core.R.string.timeout_error_message_text))
         }
     }
 
+    private fun renderMemoryClearData(memoryClearState: MemoryClearState) {
+        when(memoryClearState) {
+            MemoryClearState.MemoryClearDeviceConnectionError -> TODO()
+            MemoryClearState.MemoryClearError -> TODO()
+            MemoryClearState.MemoryClearExecution -> TODO()
+            MemoryClearState.MemoryClearInitialState -> {}
+            MemoryClearState.MemoryClearSendRequestError -> TODO()
+            MemoryClearState.MemoryClearSuccess -> TODO()
+            MemoryClearState.MemoryClearTimeoutError -> TODO()
+        }
+    }
 
+    private fun renderMemoryLoadData(memoryDataLoadState: MemoryDataLoadState) {
+        when(memoryDataLoadState) {
+            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadInitialState -> {}
+            MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadStopReceived -> TODO()
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
+            MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
+            is MemoryDataLoadState.MemoryDataReceived -> TODO()
+            is MemoryDataLoadState.MemoryDataRequest -> TODO()
+            is MemoryDataLoadState.ServiceDataReceived -> TODO()
+            MemoryDataLoadState.ServiceDataRequest -> TODO()
+        }
+    }
+
+    private fun setRoundProgressBarState(isVisible: Boolean) = with(binding) {
+        updateTimeButton.isEnabled = !isVisible
+        updateTimeButton.isEnabled = !isVisible
+        if (isVisible) roundProgressBar.visibility = View.VISIBLE
+        else roundProgressBar.visibility = View.GONE
+    }
+
+    private fun memoryInfoError(message: String) {
+        setRoundProgressBarState(false)
+        showErrorMessage(messageText = message)
+        memoryViewModel.setMemoryInfoToInitialState()
+    }
+
+    private fun showErrorMessage(messageText: String) {
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(ru.profitsw2000.core.R.string.error_message_title)
+            .setMessage(messageText)
+            .setNeutralButton(ru.profitsw2000.core.R.string.ok_dialog_button_text) { dialog, _ -> dialog.dismiss()}
+            .create()
+            .show()
+    }
+
+    private fun populateMemoryInfoViews(
+        currentAddress: Int,
+        memoryPercentUsage: Float) = with(binding) {
+        setRoundProgressBarState(false)
+        memoryUsageValueTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, currentAddress)
+        freeMemoryTitleTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, (TOTAL_MEMORY_BYTE_SIZE - currentAddress))
+        memorySpaceIndicatorProgressBar.progress = currentAddress
+        memorySpacePercentageTextView.text = "$memoryPercentUsage %"
+        memoryViewModel.setMemoryInfoToInitialState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

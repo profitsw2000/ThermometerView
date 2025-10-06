@@ -1,6 +1,4 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="total_memory_value_text">131 072 байт</string>
-    <string name="no_data_text">Нет данных</string>
 </resources>

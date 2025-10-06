@@ -146,7 +146,7 @@ class MemoryViewModel(
         else MemoryClearState.MemoryClearError
     }
 
-    private fun renderMemoryServiceData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
+    private fun renderMemoryServiceData(memoryServiceDataModel: MemoryServiceDataModel): MemoryDataLoadState {
         with(memoryServiceDataModel) {
             currentMemoryAddress = currentAddress
             sensorsNum = sensorsNumber
@@ -156,11 +156,10 @@ class MemoryViewModel(
         }
         memoryAddressCounter = 0
         sensorHistoryDataModelList.clear()
-        return MemoryScreenState.ServiceDataAnswer("Загрузка данных: датчиков - ${memoryServiceDataModel.sensorsNumber}, " +
-                "объём принимаемых данных - ${memoryServiceDataModel.currentAddress}...")
+        return MemoryDataLoadState.ServiceDataReceived(memoryServiceDataModel.sensorsNumber, memoryServiceDataModel.currentAddress)
     }
 
-    private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryScreenState {
+    private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryDataLoadState {
         TODO()
     }
 
@@ -195,6 +194,10 @@ class MemoryViewModel(
             val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
             if (!writeSuccess) _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearSendRequestError
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
+    }
+
+    fun setMemoryInfoToInitialState() {
+        memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
     }
 
 }
