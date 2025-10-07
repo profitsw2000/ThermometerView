@@ -87,13 +87,13 @@ class MemoryFragment : Fragment() {
 
     private fun renderMemoryClearData(memoryClearState: MemoryClearState) {
         when(memoryClearState) {
-            MemoryClearState.MemoryClearDeviceConnectionError -> TODO()
-            MemoryClearState.MemoryClearError -> TODO()
-            MemoryClearState.MemoryClearExecution -> TODO()
             MemoryClearState.MemoryClearInitialState -> {}
-            MemoryClearState.MemoryClearSendRequestError -> TODO()
-            MemoryClearState.MemoryClearSuccess -> TODO()
-            MemoryClearState.MemoryClearTimeoutError -> TODO()
+            MemoryClearState.MemoryClearExecution -> setRoundProgressBarState(true)
+            MemoryClearState.MemoryClearSuccess -> memoryClearSuccess()
+            MemoryClearState.MemoryClearDeviceConnectionError -> memoryClearError(getString(ru.profitsw2000.core.R.string.device_connection_error_message_text))
+            MemoryClearState.MemoryClearError -> memoryClearError(getString(ru.profitsw2000.core.R.string.memory_clear_error_message_text))
+            MemoryClearState.MemoryClearSendRequestError -> memoryClearError(getString(ru.profitsw2000.core.R.string.request_sending_error_message_text))
+            MemoryClearState.MemoryClearTimeoutError -> memoryInfoError(getString(ru.profitsw2000.core.R.string.timeout_error_message_text))
         }
     }
 
@@ -121,13 +121,26 @@ class MemoryFragment : Fragment() {
 
     private fun memoryInfoError(message: String) {
         setRoundProgressBarState(false)
-        showErrorMessage(messageText = message)
+        showSimpleMessage(
+            messageTitle = getString(ru.profitsw2000.core.R.string.error_message_title),
+            messageText = message)
         memoryViewModel.setMemoryInfoToInitialState()
     }
 
-    private fun showErrorMessage(messageText: String) {
+    private fun memoryClearError(message: String) {
+        setRoundProgressBarState(false)
+        showSimpleMessage(
+            messageTitle = getString(ru.profitsw2000.core.R.string.error_message_title),
+            messageText = message)
+        memoryViewModel.setMemoryClearToInitialState()
+    }
+
+    private fun showSimpleMessage(
+        messageTitle: String,
+        messageText: String
+        ) {
         MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(ru.profitsw2000.core.R.string.error_message_title)
+            .setTitle(messageTitle)
             .setMessage(messageText)
             .setNeutralButton(ru.profitsw2000.core.R.string.ok_dialog_button_text) { dialog, _ -> dialog.dismiss()}
             .create()
@@ -143,6 +156,14 @@ class MemoryFragment : Fragment() {
         memorySpaceIndicatorProgressBar.progress = currentAddress
         memorySpacePercentageTextView.text = "$memoryPercentUsage %"
         memoryViewModel.setMemoryInfoToInitialState()
+    }
+
+    private fun memoryClearSuccess() {
+        setRoundProgressBarState(false)
+        showSimpleMessage(
+            messageTitle = getString(ru.profitsw2000.core.R.string.operation_completed_message_title),
+            messageText = getString(ru.profitsw2000.core.R.string.clear_memory_completed_successfully))
+        memoryViewModel.setMemoryClearToInitialState()
     }
 
     override fun onDestroy() {

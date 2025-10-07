@@ -44,6 +44,10 @@ class MemoryViewModel(
         delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
         _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoTimeoutError
     }
+    private val memoryClearRequestTimeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+        delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
+        _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearTimeoutError
+    }
 
     //memory parameters
     private var currentMemoryAddress: Int = 0
@@ -141,7 +145,7 @@ class MemoryViewModel(
     }
 
     private fun renderMemoryClearData(isCleared: Boolean): MemoryClearState {
-        memoryInfoRequestTimeIntervalJob.cancel()
+        memoryClearRequestTimeIntervalJob.cancel()
         return if (isCleared) MemoryClearState.MemoryClearSuccess
         else MemoryClearState.MemoryClearError
     }
@@ -181,7 +185,7 @@ class MemoryViewModel(
 
     fun clearMemory(coroutineScope: CoroutineScope) {
         Log.d(TAG, "clearMemory: ")
-        memoryInfoRequestTimeIntervalJob.start()
+        memoryClearRequestTimeIntervalJob.start()
         lifecycleScope = coroutineScope
         lifecycleScope.launch {
             sendClearMemoryRequest()
@@ -198,6 +202,14 @@ class MemoryViewModel(
 
     fun setMemoryInfoToInitialState() {
         memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
+    }
+
+    fun setMemoryClearToInitialState() {
+        memoryClearLiveData.value = MemoryClearState.MemoryClearInitialState
+    }
+
+    fun setMemoryDataLoadToInitialState() {
+        memoryLoadLiveData.value = MemoryDataLoadState.MemoryDataLoadInitialState
     }
 
 }

@@ -41,8 +41,11 @@
     <string name="total_memory_value_text">131 072 байт</string>
     <string name="no_data_text">Нет данных</string>
     <string name="error_message_title">Ошибка</string>
+    <string name="operation_completed_message_title">Операция завершена</string>
+    <string name="clear_memory_completed_successfully">Очистка памяти термометра завершена успешно</string>
     <string name="device_connection_error_message_text">Нет соединения с термометром</string>
     <string name="request_sending_error_message_text">Не удалось отправить запрос на термометр</string>
+    <string name="memory_clear_error_message_text">Не удалось очистить память термометра</string>
     <string name="timeout_error_message_text">Истекло время ожидания ответа от термометра</string>
     <string name="memory_volume_text">%1$d байт</string>
 </resources>
