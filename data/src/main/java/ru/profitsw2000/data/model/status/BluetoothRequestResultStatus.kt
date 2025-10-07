@@ -12,6 +12,7 @@ sealed class BluetoothRequestResultStatus {
     data class SensorInfo(val sensorModel: SensorModel) : BluetoothRequestResultStatus()
     data class MemoryServiceDataReceived(val memoryServiceDataModel: MemoryServiceDataModel) : BluetoothRequestResultStatus()
     data class MemoryDataReceived(val memoryDataModel: MemoryDataModel): BluetoothRequestResultStatus()
+    data object MemoryStopDataTransfer: BluetoothRequestResultStatus()
     data class MemoryClearResult(val isCleared: Boolean): BluetoothRequestResultStatus()
     data object Error : BluetoothRequestResultStatus()
 }

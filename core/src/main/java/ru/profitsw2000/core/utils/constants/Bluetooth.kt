@@ -2,9 +2,13 @@ package ru.profitsw2000.core.utils.constants
 
 const val DATE_TIME_PACKET_ID = 0x01
 const val CURRENT_MEMORY_PACKET_ID = 0x05
-const val CLEAR_MEMORY_PACKET_ID = 0x05
+const val CLEAR_MEMORY_PACKET_ID = 0x0D
 const val SENSORS_INFO_PACKET_ID = 0x09
 const val SENSOR_INFO_PACKET_ID = 0x0C
+const val LOAD_MEMORY_DATA_PACKET_ID = 0x0B
+const val LOAD_MEMORY_SERVICE_DATA_PACKET_TYPE = 0x01
+const val LOAD_MEMORY_DATA_PACKET_TYPE = 0x02
+const val LOAD_MEMORY_STOP_DATA_TRANSFER_PACKET_TYPE = 0x03
 
 //пакет для запроса времени термометра
 val dateTimeRequestPacket = byteArrayOf(0x53, 0x0A, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0B)

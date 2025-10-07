@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.CLEAR_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
+import ru.profitsw2000.core.utils.constants.LOAD_MEMORY_DATA_PACKET_ID
 import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.SENSOR_INFO_PACKET_ID
@@ -21,6 +22,7 @@ import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.MemoryInfoModel
+import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
 import java.math.RoundingMode
@@ -92,6 +94,7 @@ class BluetoothPacketManagerImpl(
             SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
             SENSOR_INFO_PACKET_ID -> emitSensorInfo(bytesList, packetSize)
             CLEAR_MEMORY_PACKET_ID -> emitMemoryClearResult(bytesList)
+            LOAD_MEMORY_DATA_PACKET_ID -> defineMemoryLoadPacketType(bytesList, packetSize)
             else -> {}
         }
     }
@@ -214,6 +217,48 @@ class BluetoothPacketManagerImpl(
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
+    private fun defineMemoryLoadPacketType(data: List<Byte>, listSize: Int) {
+        when(data[0].toInteger()) {
+            0x01 -> emitMemoryServiceData(data.drop(1), (listSize - 1))
+            0x02 -> emitMemoryData(data.drop(1), (listSize - 1))
+            0x03 -> TODO()
+            else -> {}
+        }
+    }
+
+    private fun emitMemoryServiceData(data: List<Byte>, listSize: Int) {
+        val sensorsNumber = data[4].toInteger()
+        if (data.size == listSize && data.size == (sensorsNumber*11 + 5)) {
+            val address = fourBytesToIntBigEndian(data.take(4))
+            val localIdList: MutableList<Int> = mutableListOf()
+            val sensorLetterCodeList: MutableList<Int> = mutableListOf()
+            val sensorIdList: MutableList<ULong> = mutableListOf()
+
+            for (i in 0..<sensorsNumber) {
+                localIdList.add((data[5 + i*11]).toInteger())
+                sensorLetterCodeList.add((data.subList(6 + i*11, 7 + i*11)).toLetterCode())
+                sensorIdList.add((data.subList(8 + i*11, 16 + i*11)).toULongBigEndian())
+            }
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryServiceDataReceived(
+                memoryServiceDataModel = MemoryServiceDataModel(
+                    currentAddress = address,
+                    sensorsNumber = sensorsNumber,
+                    localIdList = localIdList,
+                    sensorsLetterCodeList = sensorLetterCodeList,
+                    sensorIdsList = sensorIdList
+                )
+            )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun emitMemoryData(data: List<Byte>, listSize: Int) {
+        TODO()
+    }
+
+    private fun emitStopMemoryDataTransfer() {
+        TODO()
+    }
+
     private fun getSensorModelFromList(data: List<Byte>): SensorModel {
         val sensorLocalId = data[0]
         val sensorId = data.subList(1, 9)
@@ -285,5 +330,16 @@ class BluetoothPacketManagerImpl(
             val wholePart = (this[0].toInt() shl 4) or (this[1].toInteger() shr 4)
             (wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
         }
+    }
+
+    private fun fourBytesToIntBigEndian(bytes: List<Byte>): Int {
+        require(bytes.size == 4) { "Input ByteArray must contain exactly 4 bytes." }
+
+        var result = 0
+        result = result or (bytes[0].toInt() and 0xFF shl 24)
+        result = result or (bytes[1].toInt() and 0xFF shl 16)
+        result = result or (bytes[2].toInt() and 0xFF shl 8)
+        result = result or (bytes[3].toInt() and 0xFF)
+        return result
     }
 }

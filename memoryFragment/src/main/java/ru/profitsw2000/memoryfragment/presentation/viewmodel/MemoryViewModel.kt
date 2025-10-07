@@ -20,6 +20,7 @@ import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
 import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
 import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
+import ru.profitsw2000.core.utils.constants.memoryLoadServicePacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.MemoryInfoModel
@@ -196,16 +197,33 @@ class MemoryViewModel(
         }
     }
 
-    fun loadMemoryData(coroutineScope: CoroutineScope) {
-
-    }
-
     private suspend fun sendClearMemoryRequest() {
         if (bluetoothRepository.isDeviceConnected) {
             _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearExecution
             val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
             if (!writeSuccess) _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearSendRequestError
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
+    }
+
+    fun loadMemoryData(coroutineScope: CoroutineScope) {
+        if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState) {
+            memoryDataLoadRequestTimeIntervalJob.start()
+            lifecycleScope = coroutineScope
+            lifecycleScope.launch {
+                sendLoadMemoryDataRequest(memoryLoadServicePacket, MemoryDataLoadState.ServiceDataRequest)
+            }
+        }
+    }
+
+    private suspend fun sendLoadMemoryDataRequest(
+        byteArray: ByteArray,
+        memoryDataLoadState: MemoryDataLoadState
+    ) {
+        if (bluetoothRepository.isDeviceConnected) {
+            _memoryLoadRequestLiveData.value = memoryDataLoadState
+            val writeSuccess = bluetoothRepository.writeByteArray(byteArray)
+            if (!writeSuccess) _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadRequestError
+        } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDeviceConnectionError
     }
 
     fun setMemoryInfoToInitialState() {
