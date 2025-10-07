@@ -20,6 +20,15 @@ val sensorInfoPacket = byteArrayOf(0x53, 0x05, 0x09, 0x00, 0x00, 0x0E)
 val sensorInfoRequestPacketHead = byteArrayOf(0x53, 0x04, 0x0C)
 //часть пакета, посылаемого на термометр для отправки кода буквы, ассоциированного с датчиком с конкретным индексом
 val sensorLetterCodePacketHead = byteArrayOf(0x53, 0x06, 0x08)
+//ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ ТЕРМОМЕТРА
+//начать отправку данных пакетом с сервисными данными и обнулить счетчик переданных байтов
+val memoryLoadServicePacket = byteArrayOf(0x53, 0x04, 0x0B, 0x01, 0x10)
+//отправить первые 8 байт данных не изменяя счетчик переданных данных
+val memoryLoadFirstDataPacket = byteArrayOf(0x53, 0x04, 0x0B, 0x02, 0x11)
+//отправить следующие 8 байт данных не изменяя счетчик переданных данных
+val memoryLoadDataPacket = byteArrayOf(0x53, 0x04, 0x0B, 0x03, 0x12)
+//отправить первые 8 байт данных не изменяя счетчик переданных данных
+val memoryLoadStopDataTransferPacket = byteArrayOf(0x53, 0x04, 0x0B, 0x04, 0x13)
 val mainDataBluetoothRequestsList: List<ByteArray> = listOf(dateTimeRequestPacket, currentMemoryAddressRequestPacket, sensorInfoPacket)
 
 fun getDateTimePacket(dateTimeArray: Array<Int>): ByteArray {

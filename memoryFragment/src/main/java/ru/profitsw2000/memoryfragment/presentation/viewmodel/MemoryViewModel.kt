@@ -48,6 +48,10 @@ class MemoryViewModel(
         delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
         _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearTimeoutError
     }
+    private val memoryDataLoadRequestTimeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+        delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
+        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadTimeoutError
+    }
 
     //memory parameters
     private var currentMemoryAddress: Int = 0
@@ -190,6 +194,10 @@ class MemoryViewModel(
         lifecycleScope.launch {
             sendClearMemoryRequest()
         }
+    }
+
+    fun loadMemoryData(coroutineScope: CoroutineScope) {
+
     }
 
     private suspend fun sendClearMemoryRequest() {
