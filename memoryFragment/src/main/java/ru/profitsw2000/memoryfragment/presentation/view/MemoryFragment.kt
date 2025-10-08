@@ -168,6 +168,21 @@ class MemoryFragment : Fragment() {
         memoryViewModel.setMemoryClearToInitialState()
     }
 
+    private fun setMemoryLoadProgressState(isVisible: Boolean) = with(binding) {
+        if (isVisible) {
+            mainViewsGroup.visibility = View.GONE
+            memoryDataLoadGroup.visibility = View.VISIBLE
+        } else {
+            mainViewsGroup.visibility = View.VISIBLE
+            memoryDataLoadGroup.visibility = View.GONE
+        }
+    }
+
+    private fun setProgressIndicator(percentageProgress: Int, statusText: String) = with(binding) {
+        memoryDataLoadProgressBar.progress = percentageProgress
+        memoryDataLoadStatusTextView.text = statusText
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
