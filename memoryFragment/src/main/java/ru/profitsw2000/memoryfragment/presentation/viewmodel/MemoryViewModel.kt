@@ -134,9 +134,13 @@ class MemoryViewModel(
         bluetoothRequestResultStatus: BluetoothRequestResultStatus
     ): MemoryDataLoadState {
         return when(bluetoothRequestResultStatus) {
-            is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
-            is BluetoothRequestResultStatus.MemoryServiceDataReceived -> TODO()
-            is BluetoothRequestResultStatus.MemoryStopDataTransfer -> TODO()
+            is BluetoothRequestResultStatus.MemoryDataReceived -> renderMemoryData(
+                bluetoothRequestResultStatus.memoryDataModel
+            )
+            is BluetoothRequestResultStatus.MemoryServiceDataReceived -> renderMemoryServiceData(
+                bluetoothRequestResultStatus.memoryServiceDataModel
+            )
+            is BluetoothRequestResultStatus.MemoryStopDataTransfer -> getFinalState()
             else -> memoryLoadLiveData.value!!
         }
     }
@@ -191,6 +195,14 @@ class MemoryViewModel(
                 percentProgress = memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
             )
         } else MemoryDataLoadState.InvalidMemoryDataError
+    }
+
+    private fun getFinalState(): MemoryDataLoadState {
+        return if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadStopRequest) {
+            MemoryDataLoadState.MemoryDataLoadStopReceived
+        } else {
+            MemoryDataLoadState.MemoryDataLoadInitialState
+        }
     }
 
     fun getMemoryInfo(coroutineScope: CoroutineScope) {

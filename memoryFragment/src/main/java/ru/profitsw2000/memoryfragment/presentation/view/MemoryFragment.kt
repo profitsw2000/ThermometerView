@@ -99,16 +99,18 @@ class MemoryFragment : Fragment() {
 
     private fun renderMemoryLoadData(memoryDataLoadState: MemoryDataLoadState) {
         when(memoryDataLoadState) {
-            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
             MemoryDataLoadState.MemoryDataLoadInitialState -> {}
-            MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
-            MemoryDataLoadState.MemoryDataLoadStopReceived -> TODO()
-            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
-            MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
-            is MemoryDataLoadState.MemoryDataReceived -> TODO()
-            is MemoryDataLoadState.MemoryDataRequest -> TODO()
-            is MemoryDataLoadState.ServiceDataReceived -> TODO()
             MemoryDataLoadState.ServiceDataRequest -> TODO()
+            is MemoryDataLoadState.ServiceDataReceived -> TODO()
+            MemoryDataLoadState.InvalidMemoryServiceDataError -> TODO()
+            is MemoryDataLoadState.MemoryDataRequest -> TODO()
+            is MemoryDataLoadState.MemoryDataReceived -> TODO()
+            MemoryDataLoadState.InvalidMemoryDataError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
+            MemoryDataLoadState.MemoryDataLoadStopReceived -> TODO()
+            MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
         }
     }
 
