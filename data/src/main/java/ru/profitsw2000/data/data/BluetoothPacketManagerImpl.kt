@@ -21,11 +21,14 @@ import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.model.MemoryDataModel
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
 import java.math.RoundingMode
+import java.util.Calendar
+import java.util.Date
 import kotlin.experimental.and
 import kotlin.experimental.inv
 
@@ -221,7 +224,7 @@ class BluetoothPacketManagerImpl(
         when(data[0].toInteger()) {
             0x01 -> emitMemoryServiceData(data.drop(1), (listSize - 1))
             0x02 -> emitMemoryData(data.drop(1), (listSize - 1))
-            0x03 -> TODO()
+            0x03 -> emitStopMemoryDataTransfer()
             else -> {}
         }
     }
@@ -252,11 +255,25 @@ class BluetoothPacketManagerImpl(
     }
 
     private fun emitMemoryData(data: List<Byte>, listSize: Int) {
-        TODO()
+        if (data.size == listSize && listSize > 8) {
+            val year = data[1].fromBCDtoInt()
+            val month = data[2].fromBCDtoInt()
+            val day = data[3].fromBCDtoInt()
+            val hour = data[4].fromBCDtoInt()
+            val minutes = data[5].fromBCDtoInt()
+
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryDataReceived(
+                MemoryDataModel(
+                    localId = data[0].toInteger(),
+                    dateTime = Date(year, month, day, hour, minutes),
+                    temperature = data.takeLast(2).toTemperature()
+                )
+            )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
     }
 
     private fun emitStopMemoryDataTransfer() {
-        TODO()
+        _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryStopDataTransfer
     }
 
     private fun getSensorModelFromList(data: List<Byte>): SensorModel {
