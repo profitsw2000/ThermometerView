@@ -12,22 +12,18 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
-import ru.profitsw2000.core.utils.constants.SENSOR_INFO_REQUEST_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
 import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
-import ru.profitsw2000.core.utils.constants.getSensorInfoPacket
 import ru.profitsw2000.core.utils.constants.memoryLoadServicePacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.model.MemoryDataModel
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorHistoryDataModel
-import ru.profitsw2000.data.model.state.MemoryScreenState
-import ru.profitsw2000.data.model.state.SensorInfoState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryDataLoadState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
@@ -140,6 +136,7 @@ class MemoryViewModel(
         return when(bluetoothRequestResultStatus) {
             is BluetoothRequestResultStatus.MemoryDataReceived -> TODO()
             is BluetoothRequestResultStatus.MemoryServiceDataReceived -> TODO()
+            is BluetoothRequestResultStatus.MemoryStopDataTransfer -> TODO()
             else -> memoryLoadLiveData.value!!
         }
     }
@@ -165,11 +162,35 @@ class MemoryViewModel(
         }
         memoryAddressCounter = 0
         sensorHistoryDataModelList.clear()
-        return MemoryDataLoadState.ServiceDataReceived(memoryServiceDataModel.sensorsNumber, memoryServiceDataModel.currentAddress)
+        return if (localIds.size == sensorsLetterCodes.size
+            && sensorsLetterCodes.size == sensorIds.size){
+            MemoryDataLoadState.ServiceDataReceived(memoryServiceDataModel.sensorsNumber, memoryServiceDataModel.currentAddress)
+        } else MemoryDataLoadState.InvalidMemoryServiceDataError
+
     }
 
-    private fun renderMemoryData(memoryServiceDataModel: MemoryServiceDataModel): MemoryDataLoadState {
-        TODO()
+    private fun renderMemoryData(memoryDataModel: MemoryDataModel): MemoryDataLoadState {
+        val localId = memoryDataModel.localId
+        return if (localIds.contains(localId)) {
+            val sensorId = sensorIds[localId - 1]
+            val letterCode = sensorsLetterCodes[localId - 1]
+            val dateTime = memoryDataModel.dateTime
+            val temperature = memoryDataModel.temperature
+
+            sensorHistoryDataModelList.add(
+                SensorHistoryDataModel(
+                    localId = localId,
+                    sensorId = sensorId,
+                    letterCode = letterCode,
+                    date = dateTime,
+                    temperature = temperature
+                )
+            )
+            memoryAddressCounter += 8
+            MemoryDataLoadState.MemoryDataReceived(
+                percentProgress = memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
+            )
+        } else MemoryDataLoadState.InvalidMemoryDataError
     }
 
     fun getMemoryInfo(coroutineScope: CoroutineScope) {
