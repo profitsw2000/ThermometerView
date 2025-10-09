@@ -100,11 +100,23 @@ class MemoryFragment : Fragment() {
     private fun renderMemoryLoadData(memoryDataLoadState: MemoryDataLoadState) {
         when(memoryDataLoadState) {
             MemoryDataLoadState.MemoryDataLoadInitialState -> {}
-            MemoryDataLoadState.ServiceDataRequest -> TODO()
-            is MemoryDataLoadState.ServiceDataReceived -> TODO()
+            MemoryDataLoadState.ServiceDataRequest -> setProgressIndicator(
+                0,
+                getString(ru.profitsw2000.core.R.string.service_data_request_status_text)
+            )
+            is MemoryDataLoadState.ServiceDataReceived -> setProgressIndicator(
+                0,
+                getString(ru.profitsw2000.core.R.string.service_data_receive_status_text)
+            )
             MemoryDataLoadState.InvalidMemoryServiceDataError -> TODO()
-            is MemoryDataLoadState.MemoryDataRequest -> TODO()
-            is MemoryDataLoadState.MemoryDataReceived -> TODO()
+            is MemoryDataLoadState.MemoryDataRequest -> setProgressIndicator(
+                memoryDataLoadState.percentProgress.toInt(),
+                getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
+            )
+            is MemoryDataLoadState.MemoryDataReceived -> setProgressIndicator(
+                memoryDataLoadState.percentProgress.toInt(),
+                getString(ru.profitsw2000.core.R.string.memory_data_received_status, memoryDataLoadState.percentProgress)
+            )
             MemoryDataLoadState.InvalidMemoryDataError -> TODO()
             MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
             MemoryDataLoadState.MemoryDataLoadStopReceived -> TODO()
@@ -183,7 +195,9 @@ class MemoryFragment : Fragment() {
         memoryDataLoadStatusTextView.text = statusText
     }
 
+    private fun serviceDataRequested() {
 
+    }
 
     override fun onDestroy() {
         super.onDestroy()
