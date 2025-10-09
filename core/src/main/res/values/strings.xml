@@ -48,4 +48,11 @@
     <string name="memory_clear_error_message_text">Не удалось очистить память термометра</string>
     <string name="timeout_error_message_text">Истекло время ожидания ответа от термометра</string>
     <string name="memory_volume_text">%1$d байт</string>
+    <string name="service_data_request_status_text">Загрузка сервисных данных термометра...</string>
+    <string name="service_data_receive_status_text">Загрузка сервисных данных завершена успешно:\nДатчиков - %1$d, объём загружаемых данных - %2$d</string>
+    <string name="invalid_service_data_received_error_text">От термометра принята недостоверная информация. Попытаться еще раз загрузить данные?</string>
+    <string name="memory_data_request_status">Запрос на получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>
+    <string name="memory_data_received_status">Успешное получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>
+    <string name="memory_data_load_stop_request">Отправка команды на завершение загрузки данных из памяти термометра...</string>
+    <string name="memory_data_load_stop_received">Загрузка данных из памяти термометра завершена...</string>
 </resources>

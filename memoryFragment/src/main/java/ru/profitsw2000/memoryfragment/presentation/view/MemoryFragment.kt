@@ -183,6 +183,8 @@ class MemoryFragment : Fragment() {
         memoryDataLoadStatusTextView.text = statusText
     }
 
+
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
