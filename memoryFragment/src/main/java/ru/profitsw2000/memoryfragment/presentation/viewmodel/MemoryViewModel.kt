@@ -17,7 +17,10 @@ import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
 import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
+import ru.profitsw2000.core.utils.constants.memoryLoadDataPacket
+import ru.profitsw2000.core.utils.constants.memoryLoadFirstDataPacket
 import ru.profitsw2000.core.utils.constants.memoryLoadServicePacket
+import ru.profitsw2000.core.utils.constants.memoryLoadStopDataTransferPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.model.MemoryDataModel
@@ -238,13 +241,49 @@ class MemoryViewModel(
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
     }
 
-    fun loadMemoryData(coroutineScope: CoroutineScope) {
+    fun loadMemoryServiceData(coroutineScope: CoroutineScope) {
         if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState) {
             memoryDataLoadRequestTimeIntervalJob.start()
             lifecycleScope = coroutineScope
             lifecycleScope.launch {
                 sendLoadMemoryDataRequest(memoryLoadServicePacket, MemoryDataLoadState.ServiceDataRequest)
             }
+        }
+    }
+
+    fun loadFirstMemoryDataPacket(coroutineScope: CoroutineScope) {
+        val loadPercentage = if (currentMemoryAddress != 0) memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
+        else 0f
+
+        memoryDataLoadRequestTimeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendLoadMemoryDataRequest(
+                memoryLoadFirstDataPacket,
+                MemoryDataLoadState.MemoryDataRequest(loadPercentage)
+            )
+        }
+    }
+
+    fun loadNextMemoryDataPacket() {
+        val loadPercentage = if (currentMemoryAddress != 0) memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
+        else 0f
+
+        memoryDataLoadRequestTimeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendLoadMemoryDataRequest(
+                memoryLoadDataPacket,
+                MemoryDataLoadState.MemoryDataRequest(loadPercentage)
+            )
+        }
+    }
+
+    fun stopMemoryLoadPacket() {
+        memoryDataLoadRequestTimeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendLoadMemoryDataRequest(memoryLoadStopDataTransferPacket, MemoryDataLoadState.MemoryDataLoadStopRequest)
         }
     }
 
