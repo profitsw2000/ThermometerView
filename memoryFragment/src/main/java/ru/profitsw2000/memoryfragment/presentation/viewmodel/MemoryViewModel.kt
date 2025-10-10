@@ -202,9 +202,9 @@ class MemoryViewModel(
 
     private fun getFinalState(): MemoryDataLoadState {
         return if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadStopRequest) {
-            MemoryDataLoadState.MemoryDataLoadStopReceived
+            MemoryDataLoadState.MemoryDataLoadInterrupted
         } else {
-            MemoryDataLoadState.MemoryDataLoadInitialState
+            MemoryDataLoadState.MemoryDataLoadCompleted
         }
     }
 
@@ -265,7 +265,7 @@ class MemoryViewModel(
         }
     }
 
-    fun loadNextMemoryDataPacket() {
+    fun loadNextMemoryDataPacket(coroutineScope: CoroutineScope) {
         val loadPercentage = if (currentMemoryAddress != 0) memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
         else 0f
 
@@ -279,7 +279,7 @@ class MemoryViewModel(
         }
     }
 
-    fun stopMemoryLoadPacket() {
+    fun stopMemoryLoadPacket(coroutineScope: CoroutineScope) {
         memoryDataLoadRequestTimeIntervalJob.start()
         lifecycleScope = coroutineScope
         lifecycleScope.launch {
