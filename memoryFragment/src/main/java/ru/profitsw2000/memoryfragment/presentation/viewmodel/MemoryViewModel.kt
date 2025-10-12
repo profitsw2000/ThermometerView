@@ -241,6 +241,15 @@ class MemoryViewModel(
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
     }
 
+    fun continueMemoryDataLoad(coroutineScope: CoroutineScope) {
+        when(memoryLoadLiveData.value) {
+            MemoryDataLoadState.InvalidMemoryServiceDataError -> loadMemoryServiceData(coroutineScope)
+            MemoryDataLoadState.InvalidMemoryDataError -> loadFirstMemoryDataPacket(coroutineScope)
+            MemoryDataLoadState.MemoryDataLoadTimeoutError -> loadNextMemoryDataPacket(coroutineScope)
+            else -> setMemoryDataLoadToInitialState()
+        }
+    }
+
     fun loadMemoryServiceData(coroutineScope: CoroutineScope) {
         if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState) {
             memoryDataLoadRequestTimeIntervalJob.start()

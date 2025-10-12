@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
-import ru.profitsw2000.data.model.state.MemoryScreenState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryDataLoadState
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
@@ -48,6 +46,10 @@ class MemoryFragment : Fragment() {
     private fun initViews() {
         binding.clearMemoryButton.setOnClickListener {
             memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
+        }
+        binding.loadMemoryDataButton.setOnClickListener {
+            memoryViewModel.loadMemoryServiceData(viewLifecycleOwner.lifecycleScope)
+            setMemoryLoadProgressState(true)
         }
     }
 
@@ -109,27 +111,43 @@ class MemoryFragment : Fragment() {
             MemoryDataLoadState.InvalidMemoryServiceDataError -> showContinueOrSkipMessage(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
                 getString(ru.profitsw2000.core.R.string.invalid_service_data_received_error_text),
-                getString(ru.profitsw2000.core.R.string.error_message_title),
-                getString(ru.profitsw2000.core.R.string.error_message_title),
+                getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
+                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
             )
             is MemoryDataLoadState.MemoryDataRequest -> setProgressIndicator(
                 memoryDataLoadState.percentProgress.toInt(),
                 getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
-            MemoryDataLoadState.InvalidMemoryDataError -> TODO()
-            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
-            MemoryDataLoadState.MemoryDataLoadCompleted -> TODO()
-            MemoryDataLoadState.MemoryDataLoadInterrupted -> TODO()
+            MemoryDataLoadState.InvalidMemoryDataError -> showContinueOrSkipMessage(
+                getString(ru.profitsw2000.core.R.string.error_message_title),
+                getString(ru.profitsw2000.core.R.string.invalid_service_data_received_error_text),
+                getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
+                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
+            )
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> binding.memoryDataLoadStatusTextView.text = getString(ru.profitsw2000.core.R.string.memory_data_load_stop_request)
+            MemoryDataLoadState.MemoryDataLoadCompleted -> showSimpleMessage(
+                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
+                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_text)
+            )
+            MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
+                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
+                getString(ru.profitsw2000.core.R.string.memory_data_load_interrupted_message_text)
+            )
             MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
-            MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadTimeoutError -> showContinueOrSkipMessage(
+                getString(ru.profitsw2000.core.R.string.error_message_title),
+                getString(ru.profitsw2000.core.R.string.memory_data_timeout_error_message_text),
+                getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
+                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
+            )
             MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
         }
     }
 
     private fun setRoundProgressBarState(isVisible: Boolean) = with(binding) {
-        updateTimeButton.isEnabled = !isVisible
-        updateTimeButton.isEnabled = !isVisible
+        loadMemoryDataButton.isEnabled = !isVisible
+        loadMemoryDataButton.isEnabled = !isVisible
         if (isVisible) roundProgressBar.visibility = View.VISIBLE
         else roundProgressBar.visibility = View.GONE
     }
@@ -148,6 +166,14 @@ class MemoryFragment : Fragment() {
             messageTitle = getString(ru.profitsw2000.core.R.string.error_message_title),
             messageText = message)
         memoryViewModel.setMemoryClearToInitialState()
+    }
+
+    private fun memoryLoadError(message: String) {
+        setMemoryLoadProgressState(false)
+        showSimpleMessage(
+            messageTitle = getString(ru.profitsw2000.core.R.string.error_message_title),
+            messageText = message)
+        memoryViewModel.setMemoryDataLoadToInitialState()
     }
 
     private fun showSimpleMessage(
@@ -201,7 +227,7 @@ class MemoryFragment : Fragment() {
             0,
             getString(ru.profitsw2000.core.R.string.service_data_receive_status_text)
         )
-        memoryViewModel.loadFirstMemoryDataPacket(lifecycleScope)
+        memoryViewModel.loadFirstMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun requestNextMemoryDataPacket(percentProgress: Int) {
@@ -209,7 +235,7 @@ class MemoryFragment : Fragment() {
             percentProgress,
             getString(ru.profitsw2000.core.R.string.memory_data_received_status, percentProgress)
         )
-        memoryViewModel.loadNextMemoryDataPacket(lifecycleScope)
+        memoryViewModel.loadNextMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun showContinueOrSkipMessage(
@@ -222,13 +248,10 @@ class MemoryFragment : Fragment() {
             .setTitle(messageTitle)
             .setMessage(messageText)
             .setPositiveButton(positiveButtonText) { _, _ ->
-
+                memoryViewModel.continueMemoryDataLoad(viewLifecycleOwner.lifecycleScope)
             }
             .setNegativeButton(negativeButtonText) {dialog, _ ->
-                showSimpleMessage(
-                    getString(ru.profitsw2000.core.R.string.error_message_title),
-                    getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)
-                )
+                memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
                 dialog.dismiss()
             }
             .create()
