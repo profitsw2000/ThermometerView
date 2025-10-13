@@ -50,7 +50,7 @@ class MemoryViewModel(
     }
     private val memoryDataLoadRequestTimeIntervalJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
         delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
-        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadTimeoutError
+        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadTimeoutError(memoryLoadLiveData.value!!)
     }
 
     //memory parameters
@@ -61,6 +61,7 @@ class MemoryViewModel(
     private var sensorIds: List<ULong> = arrayListOf()
     private var sensorHistoryDataModelList: MutableList<SensorHistoryDataModel> = mutableListOf()
     private var memoryAddressCounter = 0
+    private var needToClearMemory = false
 
     private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
     //информация о памяти термометра
@@ -172,8 +173,7 @@ class MemoryViewModel(
         return if (localIds.size == sensorsLetterCodes.size
             && sensorsLetterCodes.size == sensorIds.size){
             MemoryDataLoadState.ServiceDataReceived(memoryServiceDataModel.sensorsNumber, memoryServiceDataModel.currentAddress)
-        } else MemoryDataLoadState.InvalidMemoryServiceDataError
-
+        } else MemoryDataLoadState.InvalidMemoryData(memoryLoadLiveData.value!!)
     }
 
     private fun renderMemoryData(memoryDataModel: MemoryDataModel): MemoryDataLoadState {
@@ -197,7 +197,7 @@ class MemoryViewModel(
             MemoryDataLoadState.MemoryDataReceived(
                 percentProgress = memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat()
             )
-        } else MemoryDataLoadState.InvalidMemoryDataError
+        } else MemoryDataLoadState.InvalidMemoryData(memoryLoadLiveData.value!!)
     }
 
     private fun getFinalState(): MemoryDataLoadState {
@@ -241,16 +241,36 @@ class MemoryViewModel(
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
     }
 
-    fun continueMemoryDataLoad(coroutineScope: CoroutineScope) {
-        when(memoryLoadLiveData.value) {
-            MemoryDataLoadState.InvalidMemoryServiceDataError -> loadMemoryServiceData(coroutineScope)
-            MemoryDataLoadState.InvalidMemoryDataError -> loadFirstMemoryDataPacket(coroutineScope)
-            MemoryDataLoadState.MemoryDataLoadTimeoutError -> loadNextMemoryDataPacket(coroutineScope)
-            else -> setMemoryDataLoadToInitialState()
+    fun startMemoryDataLoad(
+        coroutineScope: CoroutineScope,
+        clearMemory: Boolean
+    ) {
+        needToClearMemory = clearMemory
+        loadMemoryServiceDataPacket(coroutineScope)
+    }
+
+    fun continueMemoryDataLoad(
+        coroutineScope: CoroutineScope,
+        memoryDataLoadState: MemoryDataLoadState
+    ) {
+        when(memoryDataLoadState) {
+            is MemoryDataLoadState.InvalidMemoryData -> selectMemoryDataPacket(memoryDataLoadState)
+            MemoryDataLoadState.MemoryDataLoadCompleted -> TODO()
+            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadInitialState -> TODO()
+            MemoryDataLoadState.MemoryDataLoadInterrupted -> TODO()
+            is MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
+            is MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
+            is MemoryDataLoadState.MemoryDataReceived -> TODO()
+            is MemoryDataLoadState.MemoryDataRequest -> TODO()
+            is MemoryDataLoadState.ServiceDataReceived -> TODO()
+            MemoryDataLoadState.ServiceDataRequest -> TODO()
+            null -> TODO()
         }
     }
 
-    fun loadMemoryServiceData(coroutineScope: CoroutineScope) {
+    fun loadMemoryServiceDataPacket(coroutineScope: CoroutineScope) {
         if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState) {
             memoryDataLoadRequestTimeIntervalJob.start()
             lifecycleScope = coroutineScope
@@ -303,7 +323,7 @@ class MemoryViewModel(
         if (bluetoothRepository.isDeviceConnected) {
             _memoryLoadRequestLiveData.value = memoryDataLoadState
             val writeSuccess = bluetoothRepository.writeByteArray(byteArray)
-            if (!writeSuccess) _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadRequestError
+            if (!writeSuccess) _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadRequestError(memoryDataLoadState)
         } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDeviceConnectionError
     }
 
