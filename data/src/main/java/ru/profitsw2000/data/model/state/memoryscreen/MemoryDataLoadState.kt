@@ -9,6 +9,7 @@ sealed class MemoryDataLoadState {
     data class MemoryDataRequest(val percentProgress: Float): MemoryDataLoadState()
     data class MemoryDataReceived(val percentProgress: Float): MemoryDataLoadState()
     //data object InvalidMemoryDataError: MemoryDataLoadState()
+    //data class MemoryDataLoadStopRequest(val prevMemoryDataLoadState: MemoryDataLoadState): MemoryDataLoadState()
     data object MemoryDataLoadStopRequest: MemoryDataLoadState()
     data object MemoryDataLoadInterrupted: MemoryDataLoadState()
     data object MemoryDataLoadCompleted: MemoryDataLoadState()

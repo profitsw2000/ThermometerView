@@ -54,7 +54,7 @@ class MemoryFragment : Fragment() {
             else getString(ru.profitsw2000.core.R.string.start_memory_data_load_message_text)
 
             val positiveButtonText = if (binding.confirmDataDeletionCheckbox.isChecked) getString(ru.profitsw2000.core.R.string.confirm_start_memory_data_load_message_button_text)
-            else getString(ru.profitsw2000.core.R.string.message_cancel_button_text)
+            else getString(ru.profitsw2000.core.R.string.error_message_continue_button_text)
 
             showStartMemoryLoadMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
@@ -123,7 +123,7 @@ class MemoryFragment : Fragment() {
             is MemoryDataLoadState.ServiceDataReceived -> requestFirstMemoryDataPacket()
             is MemoryDataLoadState.InvalidMemoryData -> showContinueOrSkipMessage(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
-                getString(ru.profitsw2000.core.R.string.invalid_service_data_received_error_text),
+                getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
                 getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
                 memoryDataLoadState.prevMemoryDataLoadState
@@ -133,7 +133,13 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
-            MemoryDataLoadState.MemoryDataLoadStopRequest -> binding.memoryDataLoadStatusTextView.text = getString(ru.profitsw2000.core.R.string.memory_data_load_stop_request)
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> showContinueOrSkipMessage(
+                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
+                getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
+                getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
+                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
+                memoryDataLoadState.prevMemoryDataLoadState
+            )
             MemoryDataLoadState.MemoryDataLoadCompleted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_text)
@@ -156,7 +162,10 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
                 memoryDataLoadState.prevMemoryDataLoadState
             )
-            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> memoryLoadError(getString(ru.profitsw2000.core.R.string.device_connection_error_message_text))
+            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> memoryLoadError(
+                "${getString(ru.profitsw2000.core.R.string.device_connection_error_message_text)}" +
+                        "${getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)}"
+            )
         }
     }
 
@@ -264,7 +273,7 @@ class MemoryFragment : Fragment() {
             .setTitle(messageTitle)
             .setMessage(messageText)
             .setPositiveButton(positiveButtonText) { _, _ ->
-                memoryViewModel.continueMemoryDataLoad(viewLifecycleOwner.lifecycleScope)
+                memoryViewModel.continueMemoryDataLoad(viewLifecycleOwner.lifecycleScope, prevState)
             }
             .setNegativeButton(negativeButtonText) {dialog, _ ->
                 memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))

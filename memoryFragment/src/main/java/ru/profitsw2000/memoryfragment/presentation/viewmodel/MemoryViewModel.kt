@@ -161,6 +161,7 @@ class MemoryViewModel(
     }
 
     private fun renderMemoryServiceData(memoryServiceDataModel: MemoryServiceDataModel): MemoryDataLoadState {
+        memoryDataLoadRequestTimeIntervalJob.cancel()
         with(memoryServiceDataModel) {
             currentMemoryAddress = currentAddress
             sensorsNum = sensorsNumber
@@ -178,6 +179,7 @@ class MemoryViewModel(
 
     private fun renderMemoryData(memoryDataModel: MemoryDataModel): MemoryDataLoadState {
         val localId = memoryDataModel.localId
+        memoryDataLoadRequestTimeIntervalJob.cancel()
         return if (localIds.contains(localId)) {
             val sensorId = sensorIds[localId - 1]
             val letterCode = sensorsLetterCodes[localId - 1]
@@ -201,6 +203,7 @@ class MemoryViewModel(
     }
 
     private fun getFinalState(): MemoryDataLoadState {
+        memoryDataLoadRequestTimeIntervalJob.cancel()
         return if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadStopRequest) {
             MemoryDataLoadState.MemoryDataLoadInterrupted
         } else {
@@ -263,9 +266,10 @@ class MemoryViewModel(
             MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
             is MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
             is MemoryDataLoadState.MemoryDataReceived -> TODO()
-            is MemoryDataLoadState.MemoryDataRequest -> TODO()
+            is MemoryDataLoadState.MemoryDataRequest -> if (memoryAddressCounter == 0) loadFirstMemoryDataPacket(coroutineScope)
+            else loadNextMemoryDataPacket(coroutineScope)
             is MemoryDataLoadState.ServiceDataReceived -> TODO()
-            MemoryDataLoadState.ServiceDataRequest -> TODO()
+            MemoryDataLoadState.ServiceDataRequest -> loadMemoryServiceDataPacket(coroutineScope)
             null -> TODO()
         }
     }
@@ -306,6 +310,11 @@ class MemoryViewModel(
                 MemoryDataLoadState.MemoryDataRequest(loadPercentage)
             )
         }
+    }
+
+    fun stopMemoryLoad() {
+        if (memoryLoadLiveData.value != MemoryDataLoadState.MemoryDataLoadInitialState)
+            _memoryLoadRequestLiveData == MemoryDataLoadState.MemoryDataLoadStopRequest
     }
 
     fun stopMemoryLoadPacket(coroutineScope: CoroutineScope) {

@@ -60,6 +60,7 @@
     <string name="memory_data_load_stop_received">Загрузка данных из памяти термометра завершена...</string>
     <string name="memory_data_load_completed_message_title">Загрузка данных</string>
     <string name="start_memory_data_load_message_text">Произвести загрузку данных из памяти термометра?</string>
+    <string name="interrupt_memory_data_load_message_text">Загрузка данных из памяти термометра ещё не завершена. Вы действительно хотите прервать и выйти?</string>
     <string name="start_memory_data_load_and_clear_message_text">Выбрано стирание данных из памяти термометра после их загрузки на это устройство. Продолжить?</string>
     <string name="memory_data_load_completed_message_text">Загрузка данных из памяти термометра завершена.</string>
     <string name="memory_data_load_interrupted_message_text">Загрузка данных из памяти термометра прервана.</string>
