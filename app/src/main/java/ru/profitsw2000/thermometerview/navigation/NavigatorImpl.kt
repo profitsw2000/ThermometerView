@@ -13,4 +13,8 @@ class NavigatorImpl(private val navController: NavController) : Navigator {
     override fun navigateToThermometerMemoryControlFragment() {
         navController.navigate(ru.profitsw2000.thermometerview.R.id.action_main_to_memory_control_fragment)
     }
+
+    override fun navigateUp() {
+        navController.navigateUp()
+    }
 }

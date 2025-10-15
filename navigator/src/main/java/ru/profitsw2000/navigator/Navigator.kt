@@ -6,4 +6,6 @@ interface Navigator {
     fun navigateToSensorInfoBottomSheet(bundle: Bundle)
 
     fun navigateToThermometerMemoryControlFragment()
+
+    fun navigateUp()
 }

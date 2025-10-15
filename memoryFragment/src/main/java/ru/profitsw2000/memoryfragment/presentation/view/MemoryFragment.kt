@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
@@ -16,16 +18,20 @@ import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
 import ru.profitsw2000.memoryfragment.R
 import ru.profitsw2000.memoryfragment.databinding.FragmentMemoryBinding
 import ru.profitsw2000.memoryfragment.presentation.viewmodel.MemoryViewModel
+import ru.profitsw2000.navigator.Navigator
+import kotlin.getValue
 
 class MemoryFragment : Fragment() {
 
     private var _binding: FragmentMemoryBinding? = null
     private val binding get() = _binding!!
     private val memoryViewModel: MemoryViewModel by viewModel()
+    private val navigator: Navigator by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) memoryViewModel.getMemoryInfo(viewLifecycleOwner.lifecycleScope)
+        handleQuitButtonPress()
     }
 
     override fun onCreateView(
@@ -41,6 +47,21 @@ class MemoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         observeData()
+    }
+
+    private fun handleQuitButtonPress() {
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (memoryViewModel.isDataExchange()) navigator.navigateUp()
+                else showQuitMessage(
+                    getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
+                    getString(ru.profitsw2000.core.R.string.memory_data_exchange_quit_message_text),
+                    getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
+                    getString(ru.profitsw2000.core.R.string.message_cancel_button_text)
+                )
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun initViews() {
@@ -133,13 +154,7 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
-            MemoryDataLoadState.MemoryDataLoadStopRequest -> showContinueOrSkipMessage(
-                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
-                getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
-                getString(ru.profitsw2000.core.R.string.error_message_continue_button_text),
-                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
-                memoryDataLoadState.prevMemoryDataLoadState
-            )
+            MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
             MemoryDataLoadState.MemoryDataLoadCompleted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_text)
@@ -299,6 +314,25 @@ class MemoryFragment : Fragment() {
             }
             .setNegativeButton(negativeButtonText) {dialog, _ ->
                 memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun showQuitMessage(
+        messageTitle: String,
+        messageText: String,
+        positiveButtonText: String,
+        negativeButtonText: String
+    ) {
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(messageTitle)
+            .setMessage(messageText)
+            .setPositiveButton(positiveButtonText) { _, _ ->
+                memoryViewModel.checkMemoryLoadAndStop(viewLifecycleOwner.lifecycleScope)
+            }
+            .setNegativeButton(negativeButtonText) {dialog, _ ->
                 dialog.dismiss()
             }
             .create()

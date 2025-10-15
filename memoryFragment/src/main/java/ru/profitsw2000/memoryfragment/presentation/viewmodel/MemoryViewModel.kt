@@ -257,20 +257,10 @@ class MemoryViewModel(
         memoryDataLoadState: MemoryDataLoadState
     ) {
         when(memoryDataLoadState) {
-            is MemoryDataLoadState.InvalidMemoryData -> selectMemoryDataPacket(memoryDataLoadState)
-            MemoryDataLoadState.MemoryDataLoadCompleted -> TODO()
-            MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> TODO()
-            MemoryDataLoadState.MemoryDataLoadInitialState -> TODO()
-            MemoryDataLoadState.MemoryDataLoadInterrupted -> TODO()
-            is MemoryDataLoadState.MemoryDataLoadRequestError -> TODO()
-            MemoryDataLoadState.MemoryDataLoadStopRequest -> TODO()
-            is MemoryDataLoadState.MemoryDataLoadTimeoutError -> TODO()
-            is MemoryDataLoadState.MemoryDataReceived -> TODO()
             is MemoryDataLoadState.MemoryDataRequest -> if (memoryAddressCounter == 0) loadFirstMemoryDataPacket(coroutineScope)
             else loadNextMemoryDataPacket(coroutineScope)
-            is MemoryDataLoadState.ServiceDataReceived -> TODO()
             MemoryDataLoadState.ServiceDataRequest -> loadMemoryServiceDataPacket(coroutineScope)
-            null -> TODO()
+            else -> loadMemoryServiceDataPacket(coroutineScope)
         }
     }
 
@@ -312,9 +302,14 @@ class MemoryViewModel(
         }
     }
 
-    fun stopMemoryLoad() {
-        if (memoryLoadLiveData.value != MemoryDataLoadState.MemoryDataLoadInitialState)
-            _memoryLoadRequestLiveData == MemoryDataLoadState.MemoryDataLoadStopRequest
+    fun checkMemoryLoadAndStop(coroutineScope: CoroutineScope) {
+        if (memoryLoadLiveData.value != MemoryDataLoadState.MemoryDataLoadInitialState) {
+            lifecycleScope = coroutineScope
+            lifecycleScope.launch {
+                val writeSuccess = bluetoothRepository.writeByteArray(memoryLoadStopDataTransferPacket)
+            }
+            _memoryLoadRequestLiveData == MemoryDataLoadState.MemoryDataLoadInitialState
+        }
     }
 
     fun stopMemoryLoadPacket(coroutineScope: CoroutineScope) {
@@ -343,15 +338,15 @@ class MemoryViewModel(
     }
 
     fun setMemoryInfoToInitialState() {
-        memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
+        _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
     }
 
     fun setMemoryClearToInitialState() {
-        memoryClearLiveData.value = MemoryClearState.MemoryClearInitialState
+        _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearInitialState
     }
 
     fun setMemoryDataLoadToInitialState() {
-        memoryLoadLiveData.value = MemoryDataLoadState.MemoryDataLoadInitialState
+        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadInitialState
     }
 
 }
