@@ -336,6 +336,12 @@ class MemoryViewModel(
         } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDeviceConnectionError
     }
 
+    fun isDataExchange(): Boolean {
+        return !(memoryInfoRequestLiveData.value == MemoryInfoState.MemoryInfoInitialState &&
+                memoryClearLiveData.value == MemoryClearState.MemoryClearInitialState &&
+                memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState)
+    }
+
     fun setMemoryInfoToInitialState() {
         memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
     }
