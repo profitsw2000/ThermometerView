@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
@@ -308,15 +309,6 @@ class MemoryViewModel(
             lifecycleScope.launch {
                 val writeSuccess = bluetoothRepository.writeByteArray(memoryLoadStopDataTransferPacket)
             }
-            _memoryLoadRequestLiveData == MemoryDataLoadState.MemoryDataLoadInitialState
-        }
-    }
-
-    fun stopMemoryLoadPacket(coroutineScope: CoroutineScope) {
-        memoryDataLoadRequestTimeIntervalJob.start()
-        lifecycleScope = coroutineScope
-        lifecycleScope.launch {
-            sendLoadMemoryDataRequest(memoryLoadStopDataTransferPacket, MemoryDataLoadState.MemoryDataLoadStopRequest)
         }
     }
 
@@ -347,6 +339,14 @@ class MemoryViewModel(
 
     fun setMemoryDataLoadToInitialState() {
         _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadInitialState
+    }
+
+    fun setInitialState() {
+        coroutineScope.cancel()
+        lifecycleScope.cancel()
+        setMemoryInfoToInitialState()
+        setMemoryClearToInitialState()
+        setMemoryDataLoadToInitialState()
     }
 
 }

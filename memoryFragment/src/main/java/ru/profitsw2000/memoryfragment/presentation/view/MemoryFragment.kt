@@ -178,8 +178,8 @@ class MemoryFragment : Fragment() {
                 memoryDataLoadState.prevMemoryDataLoadState
             )
             MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> memoryLoadError(
-                "${getString(ru.profitsw2000.core.R.string.device_connection_error_message_text)}" +
-                        "${getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)}"
+                getString(ru.profitsw2000.core.R.string.device_connection_error_message_text) +
+                        getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)
             )
         }
     }
@@ -234,7 +234,7 @@ class MemoryFragment : Fragment() {
         memoryUsageValueTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, currentAddress)
         freeMemoryTitleTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, (TOTAL_MEMORY_BYTE_SIZE - currentAddress))
         memorySpaceIndicatorProgressBar.progress = currentAddress
-        memorySpacePercentageTextView.text = "$memoryPercentUsage %"
+        memorySpacePercentageTextView.text = getString(ru.profitsw2000.core.R.string.memory_percent_usage_status_text, memoryPercentUsage)
         memoryViewModel.setMemoryInfoToInitialState()
     }
 
@@ -331,12 +331,18 @@ class MemoryFragment : Fragment() {
             .setMessage(messageText)
             .setPositiveButton(positiveButtonText) { _, _ ->
                 memoryViewModel.checkMemoryLoadAndStop(viewLifecycleOwner.lifecycleScope)
+                navigator.navigateUp()
             }
             .setNegativeButton(negativeButtonText) {dialog, _ ->
                 dialog.dismiss()
             }
             .create()
             .show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        memoryViewModel.setInitialState()
     }
 
     override fun onDestroy() {

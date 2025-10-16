@@ -40,6 +40,7 @@
     <string name="thermometer_memory_fragment_label_text">Память термометра</string>
     <string name="total_memory_value_text">131 072 байт</string>
     <string name="no_data_text">Нет данных</string>
+    <string name="memory_percent_usage_status_text">%1$d %%</string>
     <string name="error_message_title">Ошибка</string>
     <string name="operation_completed_message_title">Операция завершена</string>
     <string name="clear_memory_completed_successfully">Очистка памяти термометра завершена успешно</string>
