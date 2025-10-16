@@ -36,12 +36,16 @@
     <string name="memory_data_operation_section_title_text">Данные</string>
     <string name="clear_memory_button_text">ОЧИСТИТЬ</string>
     <string name="retrive_data_button_text">ИЗВЛЕЧЬ</string>
-    <string name="clear_memory_checkbox_text">очистить память после извлечения данных</string>
+    <string name="clear_memory_checkbox_text">Очистить память после извлечения данных</string>
     <string name="thermometer_memory_fragment_label_text">Память термометра</string>
     <string name="total_memory_value_text">131 072 байт</string>
     <string name="no_data_text">Нет данных</string>
     <string name="memory_percent_usage_status_text">%1$d %%</string>
     <string name="error_message_title">Ошибка</string>
+    <string name="clear_memory_warning_message_title">Предупреждение</string>
+    <string name="clear_memory_warning_message_text">Все данные в памяти термометра будут удалены. Вы действительно хотите продолжить и очистить память термометра?</string>
+    <string name="clear_memory_confirm_message_title">Подтверждение действия</string>
+    <string name="clear_memory_confirm_message_text">Подтверждаете удаление всех данных термометра?</string>
     <string name="operation_completed_message_title">Операция завершена</string>
     <string name="clear_memory_completed_successfully">Очистка памяти термометра завершена успешно</string>
     <string name="device_connection_error_message_text">Нет соединения с термометром</string>
@@ -68,7 +72,8 @@
     <string name="memory_load_error_message_text">Не удалось произвести загрузку данных из памяти термометра</string>
     <string name="memory_data_exchange_quit_message_text">В данный момент происходит обмен данными с термометром. Прервать обмен и выйти?</string>
     <string name="message_cancel_button_text">Отмена</string>
+    <string name="message_confirm_button_text">Подвердить</string>
     <string name="confirm_start_memory_data_load_message_button_text">Загрузить</string>
-    <string name="error_message_continue_button_text">Продолжить</string>
+    <string name="message_continue_button_text">Продолжить</string>
     <string name="error_message_skip_button_text">Прервать</string>
 </resources>
