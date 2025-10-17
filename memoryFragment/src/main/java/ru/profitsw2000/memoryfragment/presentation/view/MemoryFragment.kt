@@ -79,8 +79,8 @@ class MemoryFragment : Fragment() {
             val messageText = if (binding.confirmDataDeletionCheckbox.isChecked) getString(ru.profitsw2000.core.R.string.start_memory_data_load_and_clear_message_text)
             else getString(ru.profitsw2000.core.R.string.start_memory_data_load_message_text)
 
-            val positiveButtonText = if (binding.confirmDataDeletionCheckbox.isChecked) getString(ru.profitsw2000.core.R.string.confirm_start_memory_data_load_message_button_text)
-            else getString(ru.profitsw2000.core.R.string.message_continue_button_text)
+            val positiveButtonText = if (binding.confirmDataDeletionCheckbox.isChecked) getString(ru.profitsw2000.core.R.string.message_continue_button_text)
+            else getString(ru.profitsw2000.core.R.string.confirm_start_memory_data_load_message_button_text)
 
             showStartMemoryLoadMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
@@ -146,7 +146,10 @@ class MemoryFragment : Fragment() {
                 0,
                 getString(ru.profitsw2000.core.R.string.service_data_request_status_text)
             )
-            is MemoryDataLoadState.ServiceDataReceived -> requestFirstMemoryDataPacket()
+            is MemoryDataLoadState.ServiceDataReceived -> requestFirstMemoryDataPacket(
+                memoryDataLoadState.sensorsNumber,
+                memoryDataLoadState.currentAddress
+            )
             is MemoryDataLoadState.InvalidMemoryData -> showContinueOrSkipMessage(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
                 getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
@@ -267,10 +270,14 @@ class MemoryFragment : Fragment() {
         memoryDataLoadStatusTextView.text = statusText
     }
 
-    private fun requestFirstMemoryDataPacket() {
+    private fun requestFirstMemoryDataPacket(sensorsNumber: Int, memorySize: Int) {
         setProgressIndicator(
             0,
-            getString(ru.profitsw2000.core.R.string.service_data_receive_status_text)
+            getString(
+                ru.profitsw2000.core.R.string.service_data_receive_status_text,
+                sensorsNumber,
+                memorySize
+            )
         )
         memoryViewModel.loadFirstMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
     }
@@ -319,7 +326,6 @@ class MemoryFragment : Fragment() {
                 memoryViewModel.startMemoryDataLoad(viewLifecycleOwner.lifecycleScope, clearMemory)
             }
             .setNegativeButton(negativeButtonText) {dialog, _ ->
-                memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
                 dialog.dismiss()
             }
             .create()

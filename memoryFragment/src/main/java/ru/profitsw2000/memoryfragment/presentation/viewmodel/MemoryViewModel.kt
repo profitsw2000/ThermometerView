@@ -69,7 +69,7 @@ class MemoryViewModel(
     var memoryInfoLiveData = MediatorLiveData<MemoryInfoState>()
     private var _memoryInfoRequestLiveData: MutableLiveData<MemoryInfoState> = MutableLiveData(
         MemoryInfoState.MemoryInfoInitialState)
-    private val memoryInfoRequestLiveData by this::_memoryInfoRequestLiveData
+    private val memoryInfoRequestLiveData: LiveData<MemoryInfoState> by this::_memoryInfoRequestLiveData
     private val memoryInfoResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
         getMemoryInfoReceivedByBluetooth(status)
     }
@@ -77,7 +77,7 @@ class MemoryViewModel(
     var memoryClearLiveData = MediatorLiveData<MemoryClearState>()
     private var _memoryClearRequestLiveData: MutableLiveData<MemoryClearState> = MutableLiveData(
         MemoryClearState.MemoryClearInitialState)
-    private val memoryClearRequestLiveData by this::_memoryClearRequestLiveData
+    private val memoryClearRequestLiveData: LiveData<MemoryClearState> by this::_memoryClearRequestLiveData
     private val memoryClearResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
         getMemoryClearResultReceivedByBluetooth(status)
     }
@@ -85,7 +85,7 @@ class MemoryViewModel(
     var memoryLoadLiveData = MediatorLiveData<MemoryDataLoadState>()
     private var _memoryLoadRequestLiveData: MutableLiveData<MemoryDataLoadState> = MutableLiveData(
         MemoryDataLoadState.MemoryDataLoadInitialState)
-    private val memoryLoadRequestLiveData by this::_memoryLoadRequestLiveData
+    private val memoryLoadRequestLiveData: LiveData<MemoryDataLoadState> by this::_memoryLoadRequestLiveData
     private val memoryLoadResultLiveData = bluetoothRequestResult.map { status: BluetoothRequestResultStatus ->
         getMemoryLoadDataReceivedByBluetooth(status)
     }
@@ -266,12 +266,10 @@ class MemoryViewModel(
     }
 
     fun loadMemoryServiceDataPacket(coroutineScope: CoroutineScope) {
-        if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState) {
-            memoryDataLoadRequestTimeIntervalJob.start()
-            lifecycleScope = coroutineScope
-            lifecycleScope.launch {
-                sendLoadMemoryDataRequest(memoryLoadServicePacket, MemoryDataLoadState.ServiceDataRequest)
-            }
+        memoryDataLoadRequestTimeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendLoadMemoryDataRequest(memoryLoadServicePacket, MemoryDataLoadState.ServiceDataRequest)
         }
     }
 
