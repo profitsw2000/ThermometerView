@@ -30,7 +30,6 @@ class MemoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) memoryViewModel.getMemoryInfo(viewLifecycleOwner.lifecycleScope)
         handleQuitButtonPress()
     }
 
@@ -39,6 +38,7 @@ class MemoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+        if (savedInstanceState == null) memoryViewModel.getMemoryInfo(viewLifecycleOwner.lifecycleScope)
         _binding = FragmentMemoryBinding.bind(inflater.inflate(R.layout.fragment_memory, container, false))
         return binding.root
     }
@@ -52,7 +52,7 @@ class MemoryFragment : Fragment() {
     private fun handleQuitButtonPress() {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (memoryViewModel.isDataExchange()) navigator.navigateUp()
+                if (!memoryViewModel.isDataExchange()) navigator.navigateUp()
                 else showQuitMessage(
                     getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                     getString(ru.profitsw2000.core.R.string.memory_data_exchange_quit_message_text),
@@ -163,10 +163,7 @@ class MemoryFragment : Fragment() {
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
             MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
-            MemoryDataLoadState.MemoryDataLoadCompleted -> showSimpleMessage(
-                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
-                getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_text)
-            )
+            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryLoadSuccess()
             MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_interrupted_message_text)
@@ -241,7 +238,7 @@ class MemoryFragment : Fragment() {
     ) = with(binding) {
         setRoundProgressBarState(false)
         memoryUsageValueTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, currentAddress)
-        freeMemoryTitleTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, (TOTAL_MEMORY_BYTE_SIZE - currentAddress))
+        freeMemoryValueTextView.text = getString(ru.profitsw2000.core.R.string.memory_volume_text, (TOTAL_MEMORY_BYTE_SIZE - currentAddress))
         memorySpaceIndicatorProgressBar.progress = currentAddress
         memorySpacePercentageTextView.text = getString(ru.profitsw2000.core.R.string.memory_percent_usage_status_text, memoryPercentUsage)
         memoryViewModel.setMemoryInfoToInitialState()
@@ -253,6 +250,15 @@ class MemoryFragment : Fragment() {
             messageTitle = getString(ru.profitsw2000.core.R.string.operation_completed_message_title),
             messageText = getString(ru.profitsw2000.core.R.string.clear_memory_completed_successfully))
         memoryViewModel.setMemoryClearToInitialState()
+    }
+
+    private fun memoryLoadSuccess() {
+        setMemoryLoadProgressState(false)
+        showSimpleMessage(
+            getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
+            getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_text)
+        )
+        memoryViewModel.setMemoryDataLoadToInitialState()
     }
 
     private fun setMemoryLoadProgressState(isVisible: Boolean) = with(binding) {

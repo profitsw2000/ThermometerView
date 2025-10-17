@@ -40,7 +40,7 @@
     <string name="thermometer_memory_fragment_label_text">Память термометра</string>
     <string name="total_memory_value_text">131 072 байт</string>
     <string name="no_data_text">Нет данных</string>
-    <string name="memory_percent_usage_status_text">%1$d %%</string>
+    <string name="memory_percent_usage_status_text">%1$.2f %%</string>
     <string name="error_message_title">Ошибка</string>
     <string name="clear_memory_warning_message_title">Предупреждение</string>
     <string name="clear_memory_warning_message_text">Все данные в памяти термометра будут удалены. Вы действительно хотите продолжить и очистить память термометра?</string>
@@ -56,7 +56,7 @@
     <string name="memory_data_timeout_error_message_text">Истекло время ожидания ответа от термометра. Попытаться еще раз загрузить данные?</string>
     <string name="memory_volume_text">%1$d байт</string>
     <string name="service_data_request_status_text">Загрузка сервисных данных термометра...</string>
-    <string name="service_data_receive_status_text">Загрузка сервисных данных завершена успешно:\nДатчиков - %1$d, объём загружаемых данных - %2$d</string>
+    <string name="service_data_receive_status_text">Загрузка сервисных данных завершена успешно:\nДатчиков - %1$d, объём загружаемых данных - %2$d байт</string>
     <string name="invalid_service_data_received_error_text">От термометра приняты ошибочные сервисные данные. Попытаться еще раз загрузить данные?</string>
     <string name="invalid_memory_data_received_error_text">От термометра принят ошибочный пакет с данными из памяти. Попытаться еще раз загрузить данные?</string>
     <string name="memory_data_request_status">Запрос на получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>

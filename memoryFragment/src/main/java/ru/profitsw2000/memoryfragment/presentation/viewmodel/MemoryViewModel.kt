@@ -120,7 +120,7 @@ class MemoryViewModel(
         return when(bluetoothRequestResultStatus) {
             is BluetoothRequestResultStatus.CurrentMemorySpace -> renderMemorySpaceInfo(
                 memoryInfoModel = bluetoothRequestResultStatus.memoryInfoModel)
-            else -> memoryInfoLiveData.value!!
+            else -> MemoryInfoState.MemoryInfoInitialState
         }
     }
 
@@ -131,7 +131,7 @@ class MemoryViewModel(
             is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryClearData(
                 isCleared = bluetoothRequestResultStatus.isCleared
             )
-            else -> memoryClearLiveData.value!!
+            else -> MemoryClearState.MemoryClearInitialState
         }
     }
 
@@ -146,7 +146,7 @@ class MemoryViewModel(
                 bluetoothRequestResultStatus.memoryServiceDataModel
             )
             is BluetoothRequestResultStatus.MemoryStopDataTransfer -> getFinalState()
-            else -> memoryLoadLiveData.value!!
+            else -> MemoryDataLoadState.MemoryDataLoadInitialState
         }
     }
 

@@ -174,7 +174,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:indeterminate="false"
                 android:min="0"
-                android:max="1048575"
+                android:max="131072"
                 android:layout_marginTop="@dimen/field_margin_between_elements_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
