@@ -146,6 +146,7 @@ class MemoryViewModel(
                 bluetoothRequestResultStatus.memoryServiceDataModel
             )
             is BluetoothRequestResultStatus.MemoryStopDataTransfer -> getFinalState()
+            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryDataLoadClear(bluetoothRequestResultStatus.isCleared)
             else -> MemoryDataLoadState.MemoryDataLoadInitialState
         }
     }
@@ -210,6 +211,11 @@ class MemoryViewModel(
         } else {
             MemoryDataLoadState.MemoryDataLoadCompleted
         }
+    }
+
+    private fun renderMemoryDataLoadClear(isCleared: Boolean): MemoryDataLoadState {
+        return if(isCleared) MemoryDataLoadState.MemoryDataLoadClearSuccess
+        else MemoryDataLoadState.InvalidMemoryData(MemoryDataLoadState.MemoryDataLoadClearRequest)
     }
 
     fun getMemoryInfo(coroutineScope: CoroutineScope) {

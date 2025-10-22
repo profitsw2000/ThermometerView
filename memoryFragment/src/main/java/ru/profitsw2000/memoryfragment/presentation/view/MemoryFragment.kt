@@ -18,6 +18,7 @@ import ru.profitsw2000.data.model.state.memoryscreen.MemoryInfoState
 import ru.profitsw2000.memoryfragment.R
 import ru.profitsw2000.memoryfragment.databinding.FragmentMemoryBinding
 import ru.profitsw2000.memoryfragment.presentation.utils.MemoryDataLoadAction
+import ru.profitsw2000.memoryfragment.presentation.utils.MemoryDataLoadAction.*
 import ru.profitsw2000.memoryfragment.presentation.viewmodel.MemoryViewModel
 import ru.profitsw2000.navigator.Navigator
 import kotlin.getValue
@@ -158,7 +159,7 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
                 getString(ru.profitsw2000.core.R.string.message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
-                MemoryDataLoadAction.ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
+                ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
             )
             is MemoryDataLoadState.MemoryDataRequest -> setProgressIndicator(
                 memoryDataLoadState.percentProgress.toInt(),
@@ -176,19 +177,22 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.request_sending_error_continue_message_text),
                 getString(ru.profitsw2000.core.R.string.message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
-                MemoryDataLoadAction.ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
+                ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
             )
             is MemoryDataLoadState.MemoryDataLoadTimeoutError -> showTwoButtonDialog(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_timeout_error_message_text),
                 getString(ru.profitsw2000.core.R.string.message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
-                MemoryDataLoadAction.ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
+                ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
             )
             MemoryDataLoadState.MemoryDataLoadDeviceConnectionError -> memoryLoadError(
                 getString(ru.profitsw2000.core.R.string.device_connection_error_message_text) +
                         getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)
             )
+
+            MemoryDataLoadState.MemoryDataLoadClearRequest -> TODO()
+            MemoryDataLoadState.MemoryDataLoadClearSuccess -> TODO()
         }
     }
 
