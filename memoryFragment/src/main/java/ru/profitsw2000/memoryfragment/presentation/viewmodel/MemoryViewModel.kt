@@ -128,9 +128,10 @@ class MemoryViewModel(
         bluetoothRequestResultStatus: BluetoothRequestResultStatus
     ): MemoryClearState {
         return when(bluetoothRequestResultStatus) {
-            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryClearData(
-                isCleared = bluetoothRequestResultStatus.isCleared
-            )
+            is BluetoothRequestResultStatus.MemoryClearResult -> if (memoryClearLiveData.value == MemoryClearState.MemoryClearExecution)
+                renderMemoryClearData(
+                    isCleared = bluetoothRequestResultStatus.isCleared
+                ) else MemoryClearState.MemoryClearInitialState
             else -> MemoryClearState.MemoryClearInitialState
         }
     }
@@ -146,7 +147,10 @@ class MemoryViewModel(
                 bluetoothRequestResultStatus.memoryServiceDataModel
             )
             is BluetoothRequestResultStatus.MemoryStopDataTransfer -> getFinalState()
-            is BluetoothRequestResultStatus.MemoryClearResult -> renderMemoryDataLoadClear(bluetoothRequestResultStatus.isCleared)
+            is BluetoothRequestResultStatus.MemoryClearResult -> if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadClearRequest)
+                renderMemoryDataLoadClear(
+                    bluetoothRequestResultStatus.isCleared
+                ) else MemoryDataLoadState.MemoryDataLoadInitialState
             else -> MemoryDataLoadState.MemoryDataLoadInitialState
         }
     }
@@ -209,7 +213,8 @@ class MemoryViewModel(
         return if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadStopRequest) {
             MemoryDataLoadState.MemoryDataLoadInterrupted
         } else {
-            MemoryDataLoadState.MemoryDataLoadCompleted
+            if (needToClearMemory) MemoryDataLoadState.MemoryDataLoadCompleted
+            else MemoryDataLoadState.MemoryDataLoadSuccess
         }
     }
 
@@ -267,7 +272,16 @@ class MemoryViewModel(
             is MemoryDataLoadState.MemoryDataRequest -> if (memoryAddressCounter == 0) loadFirstMemoryDataPacket(coroutineScope)
             else loadNextMemoryDataPacket(coroutineScope)
             MemoryDataLoadState.ServiceDataRequest -> loadMemoryServiceDataPacket(coroutineScope)
+            MemoryDataLoadState.MemoryDataLoadClearRequest -> memoryDataLoadClear(coroutineScope)
             else -> loadMemoryServiceDataPacket(coroutineScope)
+        }
+    }
+
+    fun memoryDataLoadClear(coroutineScope: CoroutineScope) {
+        memoryDataLoadRequestTimeIntervalJob.start()
+        lifecycleScope = coroutineScope
+        lifecycleScope.launch {
+            sendLoadMemoryDataRequest(clearMemoryRequestPacket, MemoryDataLoadState.MemoryDataLoadClearRequest)
         }
     }
 
@@ -314,6 +328,10 @@ class MemoryViewModel(
                 val writeSuccess = bluetoothRepository.writeByteArray(memoryLoadStopDataTransferPacket)
             }
         }
+    }
+
+    fun writeToDatabase() {
+        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
     }
 
     private suspend fun sendLoadMemoryDataRequest(

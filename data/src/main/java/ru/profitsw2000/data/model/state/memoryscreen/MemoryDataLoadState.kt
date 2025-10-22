@@ -15,4 +15,5 @@ sealed class MemoryDataLoadState {
     data class MemoryDataLoadRequestError(val prevMemoryDataLoadState: MemoryDataLoadState): MemoryDataLoadState()
     data object MemoryDataLoadDeviceConnectionError: MemoryDataLoadState()
     data class MemoryDataLoadTimeoutError(val prevMemoryDataLoadState: MemoryDataLoadState): MemoryDataLoadState()
+    data object MemoryDataLoadSuccess: MemoryDataLoadState()
 }

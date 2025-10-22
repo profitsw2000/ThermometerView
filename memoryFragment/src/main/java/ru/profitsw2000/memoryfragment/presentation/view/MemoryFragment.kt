@@ -156,7 +156,9 @@ class MemoryFragment : Fragment() {
             )
             is MemoryDataLoadState.InvalidMemoryData -> showTwoButtonDialog(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
-                getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
+                if (memoryDataLoadState.prevMemoryDataLoadState == MemoryDataLoadState.MemoryDataLoadClearRequest)
+                    getString(ru.profitsw2000.core.R.string.invalid_memory_data_clear_received_error_text)
+                else getString(ru.profitsw2000.core.R.string.invalid_memory_data_received_error_text),
                 getString(ru.profitsw2000.core.R.string.message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
                 ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
@@ -167,7 +169,7 @@ class MemoryFragment : Fragment() {
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
             MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
-            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryLoadSuccess()
+            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.memoryDataLoadClear(viewLifecycleOwner.lifecycleScope)
             MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_interrupted_message_text)
@@ -191,8 +193,12 @@ class MemoryFragment : Fragment() {
                         getString(ru.profitsw2000.core.R.string.memory_load_error_message_text)
             )
 
-            MemoryDataLoadState.MemoryDataLoadClearRequest -> TODO()
-            MemoryDataLoadState.MemoryDataLoadClearSuccess -> TODO()
+            MemoryDataLoadState.MemoryDataLoadClearRequest -> setProgressIndicator(
+                0,
+                getString(ru.profitsw2000.core.R.string.memory_data_load_clear_request_status_text)
+            )
+            MemoryDataLoadState.MemoryDataLoadClearSuccess -> memoryViewModel.writeToDatabase()
+            MemoryDataLoadState.MemoryDataLoadSuccess -> memoryLoadSuccess()
         }
     }
 
@@ -431,23 +437,23 @@ class MemoryFragment : Fragment() {
 
     private fun positiveButtonClick(action: MemoryDataLoadAction) {
         when(action) {
-            MemoryDataLoadAction.ClearMemory -> showTwoButtonDialog(
+            ClearMemory -> showTwoButtonDialog(
                 getString(ru.profitsw2000.core.R.string.clear_memory_confirm_message_title),
                 getString(ru.profitsw2000.core.R.string.clear_memory_confirm_message_text),
                 getString(ru.profitsw2000.core.R.string.message_confirm_button_text),
                 getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
                 MemoryDataLoadAction.ConfirmClearMemory
             )
-            MemoryDataLoadAction.ConfirmClearMemory -> memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
-            is MemoryDataLoadAction.ContinueMemoryLoad -> memoryViewModel.continueMemoryDataLoad(
+            ConfirmClearMemory -> memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
+            is ContinueMemoryLoad -> memoryViewModel.continueMemoryDataLoad(
                 viewLifecycleOwner.lifecycleScope,
                 action.memoryDataLoadState
             )
-            MemoryDataLoadAction.QuitMemoryLoad -> {
+            QuitMemoryLoad -> {
                 memoryViewModel.checkMemoryLoadAndStop(viewLifecycleOwner.lifecycleScope)
                 navigator.navigateUp()
             }
-            is MemoryDataLoadAction.StartMemoryLoad -> {
+            is StartMemoryLoad -> {
                 setMemoryLoadProgressState(true)
                 memoryViewModel.startMemoryDataLoad(
                     viewLifecycleOwner.lifecycleScope,
