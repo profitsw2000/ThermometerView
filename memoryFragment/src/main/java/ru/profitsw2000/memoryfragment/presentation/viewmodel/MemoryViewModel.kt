@@ -186,7 +186,7 @@ class MemoryViewModel(
         return if (localIds.size == sensorsLetterCodes.size
             && sensorsLetterCodes.size == sensorIds.size){
             MemoryDataLoadState.ServiceDataReceived(memoryServiceDataModel.sensorsNumber, memoryServiceDataModel.currentAddress)
-        } else MemoryDataLoadState.InvalidMemoryData(memoryLoadLiveData.value!!)
+        } else MemoryDataLoadState.InvalidMemoryData(MemoryDataLoadState.ServiceDataRequest)
     }
 
     private fun renderMemoryData(memoryDataModel: MemoryDataModel): MemoryDataLoadState {
