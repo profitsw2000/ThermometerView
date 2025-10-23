@@ -9,8 +9,10 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ import ru.profitsw2000.core.utils.constants.memoryLoadServicePacket
 import ru.profitsw2000.core.utils.constants.memoryLoadStopDataTransferPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.model.MemoryDataModel
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.MemoryServiceDataModel
@@ -36,7 +39,8 @@ import kotlin.getValue
 
 class MemoryViewModel(
     private val bluetoothRepository: BluetoothRepository,
-    private val bluetoothPacketManager: BluetoothPacketManager
+    private val bluetoothPacketManager: BluetoothPacketManager,
+    private val sensorHistoryInteractor: SensorHistoryInteractor
 ) : ViewModel() {
     //coroutine
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -330,9 +334,15 @@ class MemoryViewModel(
         }
     }
 
-    fun writeToDatabase(sensorHistoryDataModelList: List<SensorHistoryDataModel>) {
+    fun writeLoadedMemoryToDatabase() {
         _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
-
+        val deferred: Deferred<MemoryDataLoadState> = coroutineScope.async {
+            TODO()
+/*            try {
+                sensorHistoryInteractor.writeHistoryItem(sensorHistoryDataEntity = sensorHistoryDataModelList.map())
+                MemoryDataLoadState.
+            } catch ()*/
+        }
     }
 
     private suspend fun sendLoadMemoryDataRequest(
