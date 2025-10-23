@@ -17,4 +17,12 @@ class SensorHistoryInteractor(
         else sensorHistoryRepositoryLocal.writeHistoryItem(sensorHistoryDataEntity = sensorHistoryDataEntity)
     }
 
+    suspend fun writeHistoryItemList(
+        sensorHistoryDataEntityList: List<SensorHistoryDataEntity>,
+        isRemote: Boolean
+    ) {
+        if (isRemote) sensorHistoryRepositoryRemote.writeHistoryItemList(sensorHistoryDataEntityList = sensorHistoryDataEntityList)
+        else sensorHistoryRepositoryLocal.writeHistoryItemList(sensorHistoryDataEntityList = sensorHistoryDataEntityList)
+    }
+
 }

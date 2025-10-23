@@ -91,7 +91,7 @@ class MemoryFragment : Fragment() {
                 messageText,
                 positiveButtonText,
                 getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
-                MemoryDataLoadAction.StartMemoryLoad(binding.confirmDataDeletionCheckbox.isChecked)
+                StartMemoryLoad(binding.confirmDataDeletionCheckbox.isChecked)
             )
         }
     }
@@ -129,6 +129,7 @@ class MemoryFragment : Fragment() {
             )
             MemoryInfoState.MemoryInfoTimeoutError -> memoryInfoError(getString(ru.profitsw2000.core.R.string.timeout_error_message_text))
         }
+
     }
 
     private fun renderMemoryClearData(memoryClearState: MemoryClearState) {
@@ -169,7 +170,7 @@ class MemoryFragment : Fragment() {
             )
             is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
             MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
-            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.memoryDataLoadClear(viewLifecycleOwner.lifecycleScope)
+            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.writeLoadedMemoryToDatabase(viewLifecycleOwner.lifecycleScope)
             MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_interrupted_message_text)
@@ -197,8 +198,26 @@ class MemoryFragment : Fragment() {
                 0,
                 getString(ru.profitsw2000.core.R.string.memory_data_load_clear_request_status_text)
             )
-            MemoryDataLoadState.MemoryDataLoadClearSuccess -> memoryViewModel.writeToDatabase()
+            MemoryDataLoadState.MemoryDataLoadClearSuccess -> memoryLoadSuccess()
             MemoryDataLoadState.MemoryDataLoadSuccess -> memoryLoadSuccess()
+            MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution -> setProgressIndicator(
+                100,
+                getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_status_text)
+            )
+            is MemoryDataLoadState.MemoryDataLoadDatabaseWriteError -> showTwoButtonDialog(
+                getString(ru.profitsw2000.core.R.string.error_message_title),
+                getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_error_status_text),
+                getString(ru.profitsw2000.core.R.string.message_continue_button_text),
+                getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
+                ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
+            )
+            MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess -> {
+                setProgressIndicator(
+                    100,
+                    getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_success_status_text)
+                )
+                memoryViewModel.memoryDataLoadClear(viewLifecycleOwner.lifecycleScope)
+            }
         }
     }
 
@@ -465,7 +484,7 @@ class MemoryFragment : Fragment() {
 
     private fun negativeButtonClick(action: MemoryDataLoadAction) {
         when (action) {
-            is MemoryDataLoadAction.ContinueMemoryLoad -> memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
+            is ContinueMemoryLoad -> memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
             else -> {}
         }
     }

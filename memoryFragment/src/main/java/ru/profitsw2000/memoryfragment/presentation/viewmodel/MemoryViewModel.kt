@@ -27,6 +27,7 @@ import ru.profitsw2000.core.utils.constants.memoryLoadStopDataTransferPacket
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
+import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.MemoryDataModel
 import ru.profitsw2000.data.model.MemoryInfoModel
 import ru.profitsw2000.data.model.MemoryServiceDataModel
@@ -40,7 +41,8 @@ import kotlin.getValue
 class MemoryViewModel(
     private val bluetoothRepository: BluetoothRepository,
     private val bluetoothPacketManager: BluetoothPacketManager,
-    private val sensorHistoryInteractor: SensorHistoryInteractor
+    private val sensorHistoryInteractor: SensorHistoryInteractor,
+    private val sensorHistoryMapper: SensorHistoryMapper
 ) : ViewModel() {
     //coroutine
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -217,8 +219,7 @@ class MemoryViewModel(
         return if (memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadStopRequest) {
             MemoryDataLoadState.MemoryDataLoadInterrupted
         } else {
-            if (needToClearMemory) MemoryDataLoadState.MemoryDataLoadCompleted
-            else MemoryDataLoadState.MemoryDataLoadSuccess
+            MemoryDataLoadState.MemoryDataLoadCompleted
         }
     }
 
@@ -277,16 +278,19 @@ class MemoryViewModel(
             else loadNextMemoryDataPacket(coroutineScope)
             MemoryDataLoadState.ServiceDataRequest -> loadMemoryServiceDataPacket(coroutineScope)
             MemoryDataLoadState.MemoryDataLoadClearRequest -> memoryDataLoadClear(coroutineScope)
+            MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution -> writeLoadedMemoryToDatabase(coroutineScope)
             else -> loadMemoryServiceDataPacket(coroutineScope)
         }
     }
 
     fun memoryDataLoadClear(coroutineScope: CoroutineScope) {
-        memoryDataLoadRequestTimeIntervalJob.start()
-        lifecycleScope = coroutineScope
-        lifecycleScope.launch {
-            sendLoadMemoryDataRequest(clearMemoryRequestPacket, MemoryDataLoadState.MemoryDataLoadClearRequest)
-        }
+        if (needToClearMemory) {
+            memoryDataLoadRequestTimeIntervalJob.start()
+            lifecycleScope = coroutineScope
+            lifecycleScope.launch {
+                sendLoadMemoryDataRequest(clearMemoryRequestPacket, MemoryDataLoadState.MemoryDataLoadClearRequest)
+            }
+        } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
     }
 
     fun loadMemoryServiceDataPacket(coroutineScope: CoroutineScope) {
@@ -334,15 +338,27 @@ class MemoryViewModel(
         }
     }
 
-    fun writeLoadedMemoryToDatabase() {
-        _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
+    fun writeLoadedMemoryToDatabase(coroutineScope: CoroutineScope) {
+        if (sensorHistoryDataModelList.isNotEmpty()) {
+            _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution
+            lifecycleScope = coroutineScope
+            lifecycleScope.launch {
+                _memoryLoadRequestLiveData.value = insertHistoryDataList()
+            }
+        } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
+    }
+
+    private suspend fun insertHistoryDataList(): MemoryDataLoadState {
         val deferred: Deferred<MemoryDataLoadState> = coroutineScope.async {
-            TODO()
-/*            try {
-                sensorHistoryInteractor.writeHistoryItem(sensorHistoryDataEntity = sensorHistoryDataModelList.map())
-                MemoryDataLoadState.
-            } catch ()*/
+            try {
+                sensorHistoryInteractor.writeHistoryItemList(sensorHistoryMapper.map(sensorHistoryDataModelList) , false)
+                MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess
+            } catch (exception: Exception) {
+                Log.d(TAG, "insertHistoryDataList: ${exception.message}")
+                MemoryDataLoadState.MemoryDataLoadDatabaseWriteError(MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution)
+            }
         }
+        return deferred.await()
     }
 
     private suspend fun sendLoadMemoryDataRequest(
