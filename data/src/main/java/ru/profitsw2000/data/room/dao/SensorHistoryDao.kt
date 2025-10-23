@@ -14,5 +14,8 @@ interface SensorHistoryDao {
     suspend fun getSensorHistoryList(limit: Int, offset: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>)
+    suspend fun insert(sensorHistoryDataEntity: SensorHistoryDataEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertList(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>)
 }

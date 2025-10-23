@@ -1,10 +1,11 @@
 package ru.profitsw2000.data.room.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity
+@Entity(indices = [Index(value = ["date"], unique = true)])
 data class SensorHistoryDataEntity(
     @PrimaryKey
     val id: ULong,
