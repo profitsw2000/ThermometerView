@@ -330,8 +330,9 @@ class MemoryViewModel(
         }
     }
 
-    fun writeToDatabase() {
+    fun writeToDatabase(sensorHistoryDataModelList: List<SensorHistoryDataModel>) {
         _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
+
     }
 
     private suspend fun sendLoadMemoryDataRequest(

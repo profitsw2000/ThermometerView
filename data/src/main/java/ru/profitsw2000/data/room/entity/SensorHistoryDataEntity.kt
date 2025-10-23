@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(indices = [Index(value = ["date"], unique = true)])
+@Entity(indices = [Index(value = ["date", "sensorId"], unique = true)])
 data class SensorHistoryDataEntity(
     @PrimaryKey
     val id: ULong,
