@@ -7,7 +7,7 @@ class SensorHistoryMapper {
 
     fun map(sensorHistoryDataModel: SensorHistoryDataModel): SensorHistoryDataEntity {
         return SensorHistoryDataEntity(
-            id = 0UL,
+            id = 0,
             localId = sensorHistoryDataModel.localId,
             sensorId = sensorHistoryDataModel.sensorId,
             letterCode = sensorHistoryDataModel.localId,
@@ -26,10 +26,14 @@ class SensorHistoryMapper {
         )
     }
 
+    @Suppress("INAPPLICABLE_JVM_NAME")
+    @JvmName("mapEntityList")
     fun map(sensorHistoryDataModelList: List<SensorHistoryDataModel>): List<SensorHistoryDataEntity> {
         return sensorHistoryDataModelList.map { map(it) }
     }
 
+    @Suppress("INAPPLICABLE_JVM_NAME")
+    @JvmName("mapModelList")
     fun map(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>): List<SensorHistoryDataModel> {
         return sensorHistoryDataEntityList.map { map(it) }
     }

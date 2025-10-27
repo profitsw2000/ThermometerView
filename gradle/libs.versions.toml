@@ -16,6 +16,7 @@ koin = "4.0.2"
 coroutines = "1.10.1"
 recyclerview = "1.4.0"
 room_version = "2.7.2"
+ksp = "2.3.0"
 
 applicationId = "ru.profitsw2000.thermometerview"
 compileSdk = "35"
@@ -57,4 +58,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 tv-main-app-gradle-plugin = { id = "tv.main.app.gradle.plugin", version = "unspecified"}
 tv-main-lib-gradle-plugin = { id = "tv.main.lib.gradle.plugin", version = "unspecified"}
 android-library = { id = "com.android.library", version.ref = "agp" }
+ksp = { id = "com.google.devrel.ksp", version.ref = "ksp" }
 

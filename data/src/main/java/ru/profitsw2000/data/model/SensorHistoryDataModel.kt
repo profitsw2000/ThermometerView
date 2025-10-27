@@ -4,7 +4,7 @@ import java.util.Date
 
 data class SensorHistoryDataModel(
     val localId: Int,
-    val sensorId: ULong,
+    val sensorId: Long,
     val letterCode: Int,
     val date: Date,
     val temperature: Double

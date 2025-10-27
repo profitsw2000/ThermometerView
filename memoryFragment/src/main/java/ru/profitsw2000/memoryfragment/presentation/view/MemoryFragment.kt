@@ -461,7 +461,7 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.clear_memory_confirm_message_text),
                 getString(ru.profitsw2000.core.R.string.message_confirm_button_text),
                 getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
-                MemoryDataLoadAction.ConfirmClearMemory
+                ConfirmClearMemory
             )
             ConfirmClearMemory -> memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
             is ContinueMemoryLoad -> memoryViewModel.continueMemoryDataLoad(

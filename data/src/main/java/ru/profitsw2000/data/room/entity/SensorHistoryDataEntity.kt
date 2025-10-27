@@ -7,10 +7,10 @@ import java.util.Date
 
 @Entity(indices = [Index(value = ["date", "sensorId"], unique = true)])
 data class SensorHistoryDataEntity(
-    @PrimaryKey
-    val id: ULong,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     val localId: Int,
-    val sensorId: ULong,
+    val sensorId: Long,
     val letterCode: Int,
     val date: Date,
     val temperature: Double

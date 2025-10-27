@@ -20,6 +20,7 @@ import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
 import ru.profitsw2000.core.utils.constants.currentMemoryAddressRequestPacket
+import ru.profitsw2000.core.utils.constants.invalidRequestPacket
 import ru.profitsw2000.core.utils.constants.memoryLoadDataPacket
 import ru.profitsw2000.core.utils.constants.memoryLoadFirstDataPacket
 import ru.profitsw2000.core.utils.constants.memoryLoadServicePacket
@@ -193,7 +194,7 @@ class MemoryViewModel(
         val localId = memoryDataModel.localId
         memoryDataLoadRequestTimeIntervalJob.cancel()
         return if (localIds.contains(localId)) {
-            val sensorId = sensorIds[localId - 1]
+            val sensorId = sensorIds[localId - 1].toLong()
             val letterCode = sensorsLetterCodes[localId - 1]
             val dateTime = memoryDataModel.dateTime
             val temperature = memoryDataModel.temperature
@@ -256,7 +257,7 @@ class MemoryViewModel(
     private suspend fun sendClearMemoryRequest() {
         if (bluetoothRepository.isDeviceConnected) {
             _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearExecution
-            val writeSuccess = bluetoothRepository.writeByteArray(clearMemoryRequestPacket)
+            val writeSuccess = bluetoothRepository.writeByteArray(invalidRequestPacket)
             if (!writeSuccess) _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearSendRequestError
         } else _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearDeviceConnectionError
     }
