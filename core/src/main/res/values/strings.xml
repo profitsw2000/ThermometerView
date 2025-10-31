@@ -60,7 +60,7 @@
     <string name="invalid_service_data_received_error_text">От термометра приняты ошибочные сервисные данные. Попытаться еще раз загрузить данные?</string>
     <string name="invalid_memory_data_received_error_text">От термометра принят ошибочный пакет с данными из памяти. Попытаться еще раз загрузить данные?</string>
     <string name="invalid_memory_data_clear_received_error_text">Не удалось очистить память термометра. Попытаться еще раз?</string>
-    <string name="memory_data_request_status">Запрос на получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>
+    <string name="memory_data_request_status">Запрос на получение пакета данных из памяти термометра...\nЗагружено - %1$.2f</string>
     <string name="memory_data_received_status">Успешное получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>
     <string name="memory_data_load_stop_request">Отправка команды на завершение загрузки данных из памяти термометра...</string>
     <string name="memory_data_load_stop_received">Загрузка данных из памяти термометра завершена...</string>

@@ -239,7 +239,7 @@ class BluetoothPacketManagerImpl(
 
             for (i in 0..<sensorsNumber) {
                 localIdList.add((data[5 + i*11]).toInteger())
-                sensorLetterCodeList.add((data.subList(6 + i*11, 7 + i*11)).toLetterCode())
+                sensorLetterCodeList.add((data.subList(6 + i*11, 8 + i*11)).toLetterCode())
                 sensorIdList.add((data.subList(8 + i*11, 16 + i*11)).toULongBigEndian())
             }
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryServiceDataReceived(
@@ -255,8 +255,9 @@ class BluetoothPacketManagerImpl(
     }
 
     private fun emitMemoryData(data: List<Byte>, listSize: Int) {
-        if (data.size == listSize && listSize > 8) {
-            val year = data[1].fromBCDtoInt()
+        Log.d(TAG, "emitMemoryData: $data")
+        if (data.size == listSize && listSize >= 8) {
+            val year = data[1].fromBCDtoInt() + 2000
             val month = data[2].fromBCDtoInt()
             val day = data[3].fromBCDtoInt()
             val hour = data[4].fromBCDtoInt()

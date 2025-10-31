@@ -75,7 +75,7 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.clear_memory_warning_message_text),
                 getString(ru.profitsw2000.core.R.string.message_continue_button_text),
                 getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
-                MemoryDataLoadAction.ClearMemory
+                ClearMemory
             )
         }
 
@@ -222,7 +222,7 @@ class MemoryFragment : Fragment() {
     }
 
     private fun setRoundProgressBarState(isVisible: Boolean) = with(binding) {
-        loadMemoryDataButton.isEnabled = !isVisible
+        clearMemoryButton.isEnabled = !isVisible
         loadMemoryDataButton.isEnabled = !isVisible
         if (isVisible) roundProgressBar.visibility = View.VISIBLE
         else roundProgressBar.visibility = View.GONE
@@ -297,6 +297,7 @@ class MemoryFragment : Fragment() {
     }
 
     private fun requestFirstMemoryDataPacket(sensorsNumber: Int, memorySize: Int) {
+
         setProgressIndicator(
             0,
             getString(

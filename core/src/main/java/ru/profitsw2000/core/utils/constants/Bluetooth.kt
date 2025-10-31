@@ -19,7 +19,7 @@ val currentMemoryAddressRequestPacket = byteArrayOf(0x53, 0x03, 0x05, 0x08)
 //пакет для удаления всех данных из микросхемы памяти термометра и обнуления текущего адреса
 val clearMemoryRequestPacket = byteArrayOf(0x53, 0x03, 0x0D, 0x10)
 //пакет с несуществующей командой
-val invalidRequestPacket = byteArrayOf(0x53, 0x03, 0x0D, 0x10)
+val invalidRequestPacket = byteArrayOf(0x53, 0x03, 0x0E, 0x11)
 //пакет для запроса основной информации датчиков - температура, идентификационный номер и код символа. ассоциированного с ним
 val sensorInfoPacket = byteArrayOf(0x53, 0x05, 0x09, 0x00, 0x00, 0x0E)
 //часть пакета, посылаемого на термометр для получения информации о датчике с конкретным индексом
