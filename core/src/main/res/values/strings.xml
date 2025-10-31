@@ -81,4 +81,5 @@
     <string name="confirm_start_memory_data_load_message_button_text">Загрузить</string>
     <string name="message_continue_button_text">Продолжить</string>
     <string name="error_message_skip_button_text">Прервать</string>
+    <string name="memory_data_load_status_title">Загрузка данных из памяти термометра</string>
 </resources>

@@ -177,16 +177,39 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"/>
 
+    <TextView
+        android:id="@+id/memory_data_load_status_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/memory_data_load_status_title_bottom_margin"
+        android:textColor="@color/black"
+        android:textSize="@dimen/memory_data_load_status_text_size"
+        android:textStyle="bold"
+        android:text="@string/memory_data_load_status_title"
+        app:layout_constraintBottom_toTopOf="@+id/memory_data_load_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/memory_data_load_progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/memory_data_load_percentage_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="0 %"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_data_load_progress_bar" />
 
     <TextView
         android:id="@+id/memory_data_load_status_text_view"
@@ -197,13 +220,13 @@
         android:textSize="@dimen/memory_data_load_status_text_size"
         tools:text="Загрузка сервисных данных..."
         app:layout_constraintStart_toStartOf="@+id/memory_data_load_progress_bar"
-        app:layout_constraintTop_toBottomOf="@+id/memory_data_load_progress_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/memory_data_load_percentage_progress" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/memory_data_load_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="memory_data_load_progress_bar, memory_data_load_status_text_view"/>
+            app:constraint_referenced_ids="memory_data_load_status_title_text_view, memory_data_load_progress_bar, memory_data_load_percentage_progress, memory_data_load_status_text_view"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
