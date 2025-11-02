@@ -21,6 +21,8 @@ interface BluetoothPacketManager {
 
     fun parseBuffer()
 
+    fun parseIncomingFlow(bytesList: List<Byte>)
+
     fun decodePacket(bytesList: List<Byte>, command: Int, packetSize: Int)
 
     fun getNextBufferByte(): Byte

@@ -60,7 +60,7 @@ class MemoryFragment : Fragment() {
                     getString(ru.profitsw2000.core.R.string.memory_data_exchange_quit_message_text),
                     getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
                     getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
-                    MemoryDataLoadAction.QuitMemoryLoad
+                    QuitMemoryLoad
                 )
             }
         }
@@ -148,7 +148,7 @@ class MemoryFragment : Fragment() {
         when(memoryDataLoadState) {
             MemoryDataLoadState.MemoryDataLoadInitialState -> setMemoryLoadProgressState(false)
             MemoryDataLoadState.ServiceDataRequest -> setProgressIndicator(
-                0,
+                0f,
                 getString(ru.profitsw2000.core.R.string.service_data_request_status_text)
             )
             is MemoryDataLoadState.ServiceDataReceived -> requestFirstMemoryDataPacket(
@@ -165,10 +165,10 @@ class MemoryFragment : Fragment() {
                 ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
             )
             is MemoryDataLoadState.MemoryDataRequest -> setProgressIndicator(
-                memoryDataLoadState.percentProgress.toInt(),
+                memoryDataLoadState.percentProgress,
                 getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
             )
-            is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress.toInt())
+            is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress)
             MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
             MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.writeLoadedMemoryToDatabase(viewLifecycleOwner.lifecycleScope)
             MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
@@ -195,13 +195,13 @@ class MemoryFragment : Fragment() {
             )
 
             MemoryDataLoadState.MemoryDataLoadClearRequest -> setProgressIndicator(
-                0,
+                0f,
                 getString(ru.profitsw2000.core.R.string.memory_data_load_clear_request_status_text)
             )
             MemoryDataLoadState.MemoryDataLoadClearSuccess -> memoryLoadSuccess()
             MemoryDataLoadState.MemoryDataLoadSuccess -> memoryLoadSuccess()
             MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution -> setProgressIndicator(
-                100,
+                100f,
                 getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_status_text)
             )
             is MemoryDataLoadState.MemoryDataLoadDatabaseWriteError -> showTwoButtonDialog(
@@ -213,11 +213,19 @@ class MemoryFragment : Fragment() {
             )
             MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess -> {
                 setProgressIndicator(
-                    100,
+                    100f,
                     getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_success_status_text)
                 )
                 memoryViewModel.memoryDataLoadClear(viewLifecycleOwner.lifecycleScope)
             }
+            is MemoryDataLoadState.MemoryHistoryDataLoading -> setProgressIndicator(
+                memoryDataLoadState.percentProgress,
+                getString(ru.profitsw2000.core.R.string.memory_history_data_load_status, memoryDataLoadState.loadedMemory, memoryDataLoadState.memoryToLoad)
+            )
+            MemoryDataLoadState.MemoryServiceDataLoading -> setProgressIndicator(
+                0f,
+                getString(ru.profitsw2000.core.R.string.service_data_request_status_text)
+            )
         }
     }
 
@@ -291,15 +299,16 @@ class MemoryFragment : Fragment() {
         }
     }
 
-    private fun setProgressIndicator(percentageProgress: Int, statusText: String) = with(binding) {
-        memoryDataLoadProgressBar.progress = percentageProgress
+    private fun setProgressIndicator(percentProgress: Float, statusText: String) = with(binding) {
+        memoryDataLoadProgressBar.progress = percentProgress.toInt()
+        memoryDataLoadPercentageProgress.text = getString(ru.profitsw2000.core.R.string.memory_percent_usage_status_text, percentProgress)
         memoryDataLoadStatusTextView.text = statusText
     }
 
     private fun requestFirstMemoryDataPacket(sensorsNumber: Int, memorySize: Int) {
 
         setProgressIndicator(
-            0,
+            0f,
             getString(
                 ru.profitsw2000.core.R.string.service_data_receive_status_text,
                 sensorsNumber,
@@ -309,7 +318,7 @@ class MemoryFragment : Fragment() {
         memoryViewModel.loadFirstMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun requestNextMemoryDataPacket(percentProgress: Int) {
+    private fun requestNextMemoryDataPacket(percentProgress: Float) {
         setProgressIndicator(
             percentProgress,
             getString(ru.profitsw2000.core.R.string.memory_data_received_status, percentProgress)

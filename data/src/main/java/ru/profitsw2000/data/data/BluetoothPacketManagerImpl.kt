@@ -39,11 +39,11 @@ class BluetoothPacketManagerImpl(
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    override val ringBuffer: MutableList<Byte> = mutableListOf()
+    @Volatile override var ringBuffer: MutableList<Byte> = mutableListOf()
     override val packetBuffer: MutableList<Byte> = mutableListOf()
     @Volatile override var byteCount = 0
-    override var bufferTail = 0
-    override var bufferHead = 0
+    @Volatile override var bufferTail = 0
+    @Volatile override var bufferHead = 0
     override var packetState = 0
     override var checkSum = 0
     override var packetId = 0
@@ -54,13 +54,27 @@ class BluetoothPacketManagerImpl(
 
     init {
         observeBluetoothBytesFlow()
-        parseBuffer()
+        //parseBuffer()
     }
 
     private fun observeBluetoothBytesFlow() {
         coroutineScope.launch {
             bluetoothRepository.bluetoothReadByteList.collect { value ->
-                insertBytesToRingBuffer(value)
+                //insertBytesToRingBuffer(value)
+                Log.d(TAG, "observeBluetoothBytesFlow: $value")
+                //parseBuffer()
+                parseIncomingFlow(value)
+            }
+        }
+    }
+
+    override fun parseIncomingFlow(bytesList: List<Byte>) {
+        bytesList.forEach { symbol ->
+            when (packetState) {
+                0 -> checkStartByte(symbol = symbol)
+                1 -> checkPacketSize(symbol = symbol)
+                2 -> checkPacketId(symbol = symbol)
+                else -> getPacketData(symbol = symbol)
             }
         }
     }
@@ -70,11 +84,13 @@ class BluetoothPacketManagerImpl(
             ringBuffer.add(bufferTail, item)
             bufferTail++
             bufferTail %= RING_BUFFER_SIZE
+
+            Log.d(TAG, "insertBytesToRingBuffer: symbol - ${item.toHex()}, bufferTail - $bufferTail")
         }
     }
 
     override fun parseBuffer() {
-        coroutineScope.launch {
+/*        coroutineScope.launch {
             while (isActive) {
                if (bufferTail != bufferHead) {
                     val symbol = getNextBufferByte()
@@ -86,6 +102,16 @@ class BluetoothPacketManagerImpl(
                     }
                 }
                 delay(RING_BUFFER_BYTE_PARSING_PERIOD)
+            }
+        }*/
+        while (bufferTail != bufferHead) {
+            val symbol = getNextBufferByte()
+            Log.d(TAG, "parseBuffer: symbol - ${symbol.toHex()}, bufferHead - $bufferHead")
+            when (packetState) {
+                0 -> checkStartByte(symbol = symbol)
+                1 -> checkPacketSize(symbol = symbol)
+                2 -> checkPacketId(symbol = symbol)
+                else -> getPacketData(symbol = symbol)
             }
         }
     }
@@ -255,9 +281,9 @@ class BluetoothPacketManagerImpl(
     }
 
     private fun emitMemoryData(data: List<Byte>, listSize: Int) {
-        Log.d(TAG, "emitMemoryData: $data")
+        //Log.d(TAG, "emitMemoryData: $data")
         if (data.size == listSize && listSize >= 8) {
-            val year = data[1].fromBCDtoInt() + 2000
+            val year = data[1].fromBCDtoInt() + 100
             val month = data[2].fromBCDtoInt()
             val day = data[3].fromBCDtoInt()
             val hour = data[4].fromBCDtoInt()

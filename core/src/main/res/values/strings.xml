@@ -55,11 +55,12 @@
     <string name="timeout_error_message_text">Истекло время ожидания ответа от термометра</string>
     <string name="memory_data_timeout_error_message_text">Истекло время ожидания ответа от термометра. Попытаться еще раз загрузить данные?</string>
     <string name="memory_volume_text">%1$d байт</string>
-    <string name="service_data_request_status_text">Загрузка сервисных данных термометра...</string>
+    <string name="service_data_request_status_text">Загрузка сервисных данных...</string>
     <string name="service_data_receive_status_text">Загрузка сервисных данных завершена успешно:\nДатчиков - %1$d, объём загружаемых данных - %2$d байт</string>
     <string name="invalid_service_data_received_error_text">От термометра приняты ошибочные сервисные данные. Попытаться еще раз загрузить данные?</string>
     <string name="invalid_memory_data_received_error_text">От термометра принят ошибочный пакет с данными из памяти. Попытаться еще раз загрузить данные?</string>
     <string name="invalid_memory_data_clear_received_error_text">Не удалось очистить память термометра. Попытаться еще раз?</string>
+    <string name="memory_history_data_load_status">Загружено %1$d из %2$d байт</string>
     <string name="memory_data_request_status">Запрос на получение пакета данных из памяти термометра...\nЗагружено - %1$.2f</string>
     <string name="memory_data_received_status">Успешное получение пакета данных из памяти термометра...\nЗагружено - %1$d</string>
     <string name="memory_data_load_stop_request">Отправка команды на завершение загрузки данных из памяти термометра...</string>
