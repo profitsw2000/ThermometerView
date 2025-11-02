@@ -54,15 +54,11 @@ class BluetoothPacketManagerImpl(
 
     init {
         observeBluetoothBytesFlow()
-        //parseBuffer()
     }
 
     private fun observeBluetoothBytesFlow() {
         coroutineScope.launch {
             bluetoothRepository.bluetoothReadByteList.collect { value ->
-                //insertBytesToRingBuffer(value)
-                Log.d(TAG, "observeBluetoothBytesFlow: $value")
-                //parseBuffer()
                 parseIncomingFlow(value)
             }
         }
@@ -84,29 +80,12 @@ class BluetoothPacketManagerImpl(
             ringBuffer.add(bufferTail, item)
             bufferTail++
             bufferTail %= RING_BUFFER_SIZE
-
-            Log.d(TAG, "insertBytesToRingBuffer: symbol - ${item.toHex()}, bufferTail - $bufferTail")
         }
     }
 
     override fun parseBuffer() {
-/*        coroutineScope.launch {
-            while (isActive) {
-               if (bufferTail != bufferHead) {
-                    val symbol = getNextBufferByte()
-                    when (packetState) {
-                        0 -> checkStartByte(symbol = symbol)
-                        1 -> checkPacketSize(symbol = symbol)
-                        2 -> checkPacketId(symbol = symbol)
-                        else -> getPacketData(symbol = symbol)
-                    }
-                }
-                delay(RING_BUFFER_BYTE_PARSING_PERIOD)
-            }
-        }*/
         while (bufferTail != bufferHead) {
             val symbol = getNextBufferByte()
-            Log.d(TAG, "parseBuffer: symbol - ${symbol.toHex()}, bufferHead - $bufferHead")
             when (packetState) {
                 0 -> checkStartByte(symbol = symbol)
                 1 -> checkPacketSize(symbol = symbol)
@@ -129,7 +108,6 @@ class BluetoothPacketManagerImpl(
     }
 
     override fun getNextBufferByte(): Byte {
-
         val symbol: Byte = ringBuffer[bufferHead]
         bufferHead++
         bufferHead %= RING_BUFFER_SIZE
@@ -281,7 +259,6 @@ class BluetoothPacketManagerImpl(
     }
 
     private fun emitMemoryData(data: List<Byte>, listSize: Int) {
-        //Log.d(TAG, "emitMemoryData: $data")
         if (data.size == listSize && listSize >= 8) {
             val year = data[1].fromBCDtoInt() + 100
             val month = data[2].fromBCDtoInt()

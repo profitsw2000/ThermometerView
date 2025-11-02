@@ -40,7 +40,8 @@ class MemoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        if (savedInstanceState == null) memoryViewModel.getMemoryInfo(viewLifecycleOwner.lifecycleScope)
+        memoryViewModel.setCoroutineScope(viewLifecycleOwner.lifecycleScope)
+        if (savedInstanceState == null) memoryViewModel.getMemoryInfo()
         _binding = FragmentMemoryBinding.bind(inflater.inflate(R.layout.fragment_memory, container, false))
         return binding.root
     }
@@ -147,14 +148,6 @@ class MemoryFragment : Fragment() {
     private fun renderMemoryLoadData(memoryDataLoadState: MemoryDataLoadState) {
         when(memoryDataLoadState) {
             MemoryDataLoadState.MemoryDataLoadInitialState -> setMemoryLoadProgressState(false)
-            MemoryDataLoadState.ServiceDataRequest -> setProgressIndicator(
-                0f,
-                getString(ru.profitsw2000.core.R.string.service_data_request_status_text)
-            )
-            is MemoryDataLoadState.ServiceDataReceived -> requestFirstMemoryDataPacket(
-                memoryDataLoadState.sensorsNumber,
-                memoryDataLoadState.currentAddress
-            )
             is MemoryDataLoadState.InvalidMemoryData -> showTwoButtonDialog(
                 getString(ru.profitsw2000.core.R.string.error_message_title),
                 if (memoryDataLoadState.prevMemoryDataLoadState == MemoryDataLoadState.MemoryDataLoadClearRequest)
@@ -164,13 +157,8 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.error_message_skip_button_text),
                 ContinueMemoryLoad(memoryDataLoadState.prevMemoryDataLoadState)
             )
-            is MemoryDataLoadState.MemoryDataRequest -> setProgressIndicator(
-                memoryDataLoadState.percentProgress,
-                getString(ru.profitsw2000.core.R.string.memory_data_request_status, memoryDataLoadState.percentProgress)
-            )
-            is MemoryDataLoadState.MemoryDataReceived -> requestNextMemoryDataPacket(memoryDataLoadState.percentProgress)
             MemoryDataLoadState.MemoryDataLoadStopRequest -> {}
-            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.writeLoadedMemoryToDatabase(viewLifecycleOwner.lifecycleScope)
+            MemoryDataLoadState.MemoryDataLoadCompleted -> memoryViewModel.writeLoadedMemoryToDatabase()
             MemoryDataLoadState.MemoryDataLoadInterrupted -> showSimpleMessage(
                 getString(ru.profitsw2000.core.R.string.memory_data_load_completed_message_title),
                 getString(ru.profitsw2000.core.R.string.memory_data_load_interrupted_message_text)
@@ -216,7 +204,7 @@ class MemoryFragment : Fragment() {
                     100f,
                     getString(ru.profitsw2000.core.R.string.memory_data_load_write_to_db_success_status_text)
                 )
-                memoryViewModel.memoryDataLoadClear(viewLifecycleOwner.lifecycleScope)
+                memoryViewModel.memoryDataLoadClear()
             }
             is MemoryDataLoadState.MemoryHistoryDataLoading -> setProgressIndicator(
                 memoryDataLoadState.percentProgress,
@@ -305,132 +293,6 @@ class MemoryFragment : Fragment() {
         memoryDataLoadStatusTextView.text = statusText
     }
 
-    private fun requestFirstMemoryDataPacket(sensorsNumber: Int, memorySize: Int) {
-
-        setProgressIndicator(
-            0f,
-            getString(
-                ru.profitsw2000.core.R.string.service_data_receive_status_text,
-                sensorsNumber,
-                memorySize
-            )
-        )
-        memoryViewModel.loadFirstMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
-    }
-
-    private fun requestNextMemoryDataPacket(percentProgress: Float) {
-        setProgressIndicator(
-            percentProgress,
-            getString(ru.profitsw2000.core.R.string.memory_data_received_status, percentProgress)
-        )
-        memoryViewModel.loadNextMemoryDataPacket(viewLifecycleOwner.lifecycleScope)
-    }
-
-/*    private fun showContinueOrSkipMessage(
-        messageTitle: String,
-        messageText: String,
-        positiveButtonText: String,
-        negativeButtonText: String,
-        prevState: MemoryDataLoadState
-    ) {
-        MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(messageTitle)
-            .setMessage(messageText)
-            .setPositiveButton(positiveButtonText) { _, _ ->
-                memoryViewModel.continueMemoryDataLoad(viewLifecycleOwner.lifecycleScope, prevState)
-            }
-            .setNegativeButton(negativeButtonText) {dialog, _ ->
-                memoryLoadError(getString(ru.profitsw2000.core.R.string.memory_load_error_message_text))
-                dialog.dismiss()
-            }
-            .create()
-            .show()
-    }
-
-    private fun showStartMemoryLoadMessage(
-        messageTitle: String,
-        messageText: String,
-        positiveButtonText: String,
-        negativeButtonText: String,
-        clearMemory: Boolean
-    ) {
-        MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(messageTitle)
-            .setMessage(messageText)
-            .setPositiveButton(positiveButtonText) { _, _ ->
-                setMemoryLoadProgressState(true)
-                memoryViewModel.startMemoryDataLoad(viewLifecycleOwner.lifecycleScope, clearMemory)
-            }
-            .setNegativeButton(negativeButtonText) {dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
-    }
-
-    private fun showClearMemoryWarningMessage(
-        messageTitle: String,
-        messageText: String,
-        positiveButtonText: String,
-        negativeButtonText: String
-    ) {
-        MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(messageTitle)
-            .setMessage(messageText)
-            .setPositiveButton(positiveButtonText) { _, _ ->
-                confirmClearMemoryMessage(
-                    getString(ru.profitsw2000.core.R.string.clear_memory_confirm_message_title),
-                    getString(ru.profitsw2000.core.R.string.clear_memory_confirm_message_text),
-                    getString(ru.profitsw2000.core.R.string.message_confirm_button_text),
-                    getString(ru.profitsw2000.core.R.string.message_cancel_button_text)
-                )
-            }
-            .setNegativeButton(negativeButtonText) {dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
-    }
-
-    private fun confirmClearMemoryMessage(
-        messageTitle: String,
-        messageText: String,
-        positiveButtonText: String,
-        negativeButtonText: String
-    ) {
-        MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(messageTitle)
-            .setMessage(messageText)
-            .setPositiveButton(positiveButtonText) { _, _ ->
-                memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
-            }
-            .setNegativeButton(negativeButtonText) {dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
-    }
-
-    private fun showQuitMessage(
-        messageTitle: String,
-        messageText: String,
-        positiveButtonText: String,
-        negativeButtonText: String
-    ) {
-        MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(messageTitle)
-            .setMessage(messageText)
-            .setPositiveButton(positiveButtonText) { _, _ ->
-                memoryViewModel.checkMemoryLoadAndStop(viewLifecycleOwner.lifecycleScope)
-                navigator.navigateUp()
-            }
-            .setNegativeButton(negativeButtonText) {dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
-    }*/
-
     private fun showTwoButtonDialog(
         messageTitle: String,
         messageText: String,
@@ -473,21 +335,15 @@ class MemoryFragment : Fragment() {
                 getString(ru.profitsw2000.core.R.string.message_cancel_button_text),
                 ConfirmClearMemory
             )
-            ConfirmClearMemory -> memoryViewModel.clearMemory(viewLifecycleOwner.lifecycleScope)
-            is ContinueMemoryLoad -> memoryViewModel.continueMemoryDataLoad(
-                viewLifecycleOwner.lifecycleScope,
-                action.memoryDataLoadState
-            )
+            ConfirmClearMemory -> memoryViewModel.clearMemory()
+            is ContinueMemoryLoad -> memoryViewModel.continueMemoryDataLoad(action.memoryDataLoadState)
             QuitMemoryLoad -> {
-                memoryViewModel.checkMemoryLoadAndStop(viewLifecycleOwner.lifecycleScope)
+                memoryViewModel.checkMemoryLoadAndStop()
                 navigator.navigateUp()
             }
             is StartMemoryLoad -> {
                 setMemoryLoadProgressState(true)
-                memoryViewModel.startMemoryDataLoad(
-                    viewLifecycleOwner.lifecycleScope,
-                    action.memoryClear
-                )
+                memoryViewModel.startMemoryDataLoad(action.memoryClear)
             }
         }
     }
