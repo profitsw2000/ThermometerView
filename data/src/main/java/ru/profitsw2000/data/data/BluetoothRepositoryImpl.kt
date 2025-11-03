@@ -138,6 +138,7 @@ class BluetoothRepositoryImpl(
                     break
                 }
                 bluetoothReadByteMutableList.value = byteArrayToList(byteArray, bytesNumber)
+                //Log.d(TAG, "readByteArray: ${byteArray.take(bytesNumber)}")
                 delay(BLUETOOTH_INPUT_STREAM_READ_TIMEOUT)
             }
         }

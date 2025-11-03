@@ -26,4 +26,7 @@
     <dimen name="memory_usage_percentage_text_vertical_margin">8dp</dimen>
     <dimen name="memory_data_operation_section_title_vertical_margin">24sp</dimen>
     <dimen name="memory_data_operation_buttons_vertical_margin">16dp</dimen>
+    <dimen name="memory_data_operation_section_title_text_size">24sp</dimen>
+    <dimen name="memory_data_load_status_text_size">12sp</dimen>
+    <dimen name="main_progress_indicator_margin_top_size">24dp</dimen>
 </resources>

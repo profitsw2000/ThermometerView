@@ -9,19 +9,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.CLEAR_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.CURRENT_MEMORY_PACKET_ID
 import ru.profitsw2000.core.utils.constants.DATE_TIME_PACKET_ID
+import ru.profitsw2000.core.utils.constants.LOAD_MEMORY_DATA_PACKET_ID
 import ru.profitsw2000.core.utils.constants.RING_BUFFER_BYTE_PARSING_PERIOD
 import ru.profitsw2000.core.utils.constants.SENSORS_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.SENSOR_INFO_PACKET_ID
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.domain.BluetoothPacketManager
 import ru.profitsw2000.data.domain.BluetoothRepository
+import ru.profitsw2000.data.model.MemoryDataModel
 import ru.profitsw2000.data.model.MemoryInfoModel
+import ru.profitsw2000.data.model.MemoryServiceDataModel
 import ru.profitsw2000.data.model.SensorModel
 import ru.profitsw2000.data.model.status.BluetoothRequestResultStatus
 import java.math.RoundingMode
+import java.util.Calendar
+import java.util.Date
 import kotlin.experimental.and
 import kotlin.experimental.inv
 
@@ -32,11 +39,11 @@ class BluetoothPacketManagerImpl(
     private val RING_BUFFER_SIZE = 128
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    override val ringBuffer: MutableList<Byte> = mutableListOf()
+    @Volatile override var ringBuffer: MutableList<Byte> = mutableListOf()
     override val packetBuffer: MutableList<Byte> = mutableListOf()
     @Volatile override var byteCount = 0
-    override var bufferTail = 0
-    override var bufferHead = 0
+    @Volatile override var bufferTail = 0
+    @Volatile override var bufferHead = 0
     override var packetState = 0
     override var checkSum = 0
     override var packetId = 0
@@ -47,13 +54,23 @@ class BluetoothPacketManagerImpl(
 
     init {
         observeBluetoothBytesFlow()
-        parseBuffer()
     }
 
     private fun observeBluetoothBytesFlow() {
         coroutineScope.launch {
             bluetoothRepository.bluetoothReadByteList.collect { value ->
-                insertBytesToRingBuffer(value)
+                parseIncomingFlow(value)
+            }
+        }
+    }
+
+    override fun parseIncomingFlow(bytesList: List<Byte>) {
+        bytesList.forEach { symbol ->
+            when (packetState) {
+                0 -> checkStartByte(symbol = symbol)
+                1 -> checkPacketSize(symbol = symbol)
+                2 -> checkPacketId(symbol = symbol)
+                else -> getPacketData(symbol = symbol)
             }
         }
     }
@@ -67,18 +84,13 @@ class BluetoothPacketManagerImpl(
     }
 
     override fun parseBuffer() {
-        coroutineScope.launch {
-            while (isActive) {
-               if (bufferTail != bufferHead) {
-                    val symbol = getNextBufferByte()
-                    when (packetState) {
-                        0 -> checkStartByte(symbol = symbol)
-                        1 -> checkPacketSize(symbol = symbol)
-                        2 -> checkPacketId(symbol = symbol)
-                        else -> getPacketData(symbol = symbol)
-                    }
-                }
-                delay(RING_BUFFER_BYTE_PARSING_PERIOD)
+        while (bufferTail != bufferHead) {
+            val symbol = getNextBufferByte()
+            when (packetState) {
+                0 -> checkStartByte(symbol = symbol)
+                1 -> checkPacketSize(symbol = symbol)
+                2 -> checkPacketId(symbol = symbol)
+                else -> getPacketData(symbol = symbol)
             }
         }
     }
@@ -89,12 +101,13 @@ class BluetoothPacketManagerImpl(
             CURRENT_MEMORY_PACKET_ID -> emitMemoryInfo(bytesList, packetSize)
             SENSORS_INFO_PACKET_ID -> emitSensorsInfo(bytesList, packetSize)
             SENSOR_INFO_PACKET_ID -> emitSensorInfo(bytesList, packetSize)
+            CLEAR_MEMORY_PACKET_ID -> emitMemoryClearResult(bytesList)
+            LOAD_MEMORY_DATA_PACKET_ID -> defineMemoryLoadPacketType(bytesList, packetSize)
             else -> {}
         }
     }
 
     override fun getNextBufferByte(): Byte {
-
         val symbol: Byte = ringBuffer[bufferHead]
         bufferHead++
         bufferHead %= RING_BUFFER_SIZE
@@ -158,7 +171,7 @@ class BluetoothPacketManagerImpl(
                     (data[2].toInteger() shl 8) or
                     (data[1].toInteger() shl 16) or
                     (data[0].toInteger() shl 24)
-            val percentage = ((address.toFloat() / 1048575) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
+            val percentage = ((address.toFloat() / TOTAL_MEMORY_BYTE_SIZE) * 100).toBigDecimal().setScale(2, RoundingMode.DOWN).toFloat()
 
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.CurrentMemorySpace(
                 MemoryInfoModel(address, percentage)
@@ -202,6 +215,69 @@ class BluetoothPacketManagerImpl(
                     getSensorModelFromList(data)
                 )
         } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun emitMemoryClearResult(data: List<Byte>) {
+        if (data.size == 1) {
+            _bluetoothRequestResult.value =
+                BluetoothRequestResultStatus.MemoryClearResult(data[0].toInteger() == 0xFF)
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun defineMemoryLoadPacketType(data: List<Byte>, listSize: Int) {
+        when(data[0].toInteger()) {
+            0x01 -> emitMemoryServiceData(data.drop(1), (listSize - 1))
+            0x02 -> emitMemoryData(data.drop(1), (listSize - 1))
+            0x03 -> emitStopMemoryDataTransfer()
+            else -> {}
+        }
+    }
+
+    private fun emitMemoryServiceData(data: List<Byte>, listSize: Int) {
+        val sensorsNumber = data[4].toInteger()
+        if (data.size == listSize && data.size == (sensorsNumber*11 + 5)) {
+            val address = fourBytesToIntBigEndian(data.take(4))
+            val localIdList: MutableList<Int> = mutableListOf()
+            val sensorLetterCodeList: MutableList<Int> = mutableListOf()
+            val sensorIdList: MutableList<ULong> = mutableListOf()
+
+            for (i in 0..<sensorsNumber) {
+                localIdList.add((data[5 + i*11]).toInteger())
+                sensorLetterCodeList.add((data.subList(6 + i*11, 8 + i*11)).toLetterCode())
+                sensorIdList.add((data.subList(8 + i*11, 16 + i*11)).toULongBigEndian())
+            }
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryServiceDataReceived(
+                memoryServiceDataModel = MemoryServiceDataModel(
+                    currentAddress = address,
+                    sensorsNumber = sensorsNumber,
+                    localIdList = localIdList,
+                    sensorsLetterCodeList = sensorLetterCodeList,
+                    sensorIdsList = sensorIdList
+                )
+            )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun emitMemoryData(data: List<Byte>, listSize: Int) {
+        if (data.size == listSize && listSize >= 8) {
+            val year = data[1].fromBCDtoInt() + 100
+            val month = data[2].fromBCDtoInt()
+            val day = data[3].fromBCDtoInt()
+            val hour = data[4].fromBCDtoInt()
+            val minutes = data[5].fromBCDtoInt()
+
+            _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryDataReceived(
+                MemoryDataModel(
+                    localId = data[0].toInteger(),
+                    dateTime = Date(year, month, day, hour, minutes),
+                    temperature = data.takeLast(2).toTemperature()
+                )
+            )
+        } else _bluetoothRequestResult.value = BluetoothRequestResultStatus.Error
+    }
+
+    private fun emitStopMemoryDataTransfer() {
+        _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryStopDataTransfer
     }
 
     private fun getSensorModelFromList(data: List<Byte>): SensorModel {
@@ -275,5 +351,16 @@ class BluetoothPacketManagerImpl(
             val wholePart = (this[0].toInt() shl 4) or (this[1].toInteger() shr 4)
             (wholePart + fractionalPart).toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
         }
+    }
+
+    private fun fourBytesToIntBigEndian(bytes: List<Byte>): Int {
+        require(bytes.size == 4) { "Input ByteArray must contain exactly 4 bytes." }
+
+        var result = 0
+        result = result or (bytes[0].toInt() and 0xFF shl 24)
+        result = result or (bytes[1].toInt() and 0xFF shl 16)
+        result = result or (bytes[2].toInt() and 0xFF shl 8)
+        result = result or (bytes[3].toInt() and 0xFF)
+        return result
     }
 }

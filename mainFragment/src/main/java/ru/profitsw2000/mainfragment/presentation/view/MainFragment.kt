@@ -211,6 +211,7 @@ class MainFragment : Fragment() {
             is BluetoothRequestResultStatus.SensorsCurrentInfo -> updateSensorInfoList(bluetoothRequestResultStatus.sensorModelList)
             BluetoothRequestResultStatus.Error -> setErrorBluetoothDataExchange()
             is BluetoothRequestResultStatus.SensorInfo -> {}
+            else -> {}
         }
     }
 

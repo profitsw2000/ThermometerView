@@ -5,6 +5,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import ru.profitsw2000.mainfragment.di.mainModule
+import ru.profitsw2000.memoryfragment.di.memoryModule
+import ru.profitsw2000.thermometerview.di.appModule
 
 class App : Application() {
     override fun onCreate() {
@@ -13,7 +15,9 @@ class App : Application() {
             androidLogger()
             androidContext(this@App)
             modules(
-                mainModule
+                appModule,
+                mainModule,
+                memoryModule
             )
         }
     }
