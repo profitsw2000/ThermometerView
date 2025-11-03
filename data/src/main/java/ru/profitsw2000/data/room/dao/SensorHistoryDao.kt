@@ -13,9 +13,9 @@ interface SensorHistoryDao {
             "ORDER BY SensorHistoryDataEntity.date DESC LIMIT :limit OFFSET :offset")
     suspend fun getSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(sensorHistoryDataEntity: SensorHistoryDataEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertList(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>)
 }

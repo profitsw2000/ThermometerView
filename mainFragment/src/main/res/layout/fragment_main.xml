@@ -169,13 +169,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/memory_text_view" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:indeterminate="false"
                 android:min="0"
                 android:max="131072"
-                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:layout_marginTop="@dimen/main_progress_indicator_margin_top_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -186,6 +184,7 @@
                 android:id="@+id/memory_space_percentage_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
                 app:layout_constraintTop_toBottomOf="@id/progressBar"
                 app:layout_constraintStart_toStartOf="@id/progressBar"
                 app:layout_constraintEnd_toEndOf="@id/progressBar"

@@ -78,18 +78,32 @@
         app:layout_constraintTop_toTopOf="@+id/free_memory_title_text_view"
         android:text="@string/no_data_text" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/memory_space_indicator_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:indeterminate="false"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
         android:max="131072"
         android:min="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text_view" />
+
+<!--    <ProgressBar
+        android:id="@+id/memory_space_indicator_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="55000"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:indeterminate="false"
+        android:max="131072"
+        android:min="0"
+        android:indeterminateDrawable="@color/dark_red"
+        android:progressDrawable="@drawable/progress_bar_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text_view" />-->
 
     <TextView
         android:id="@+id/memory_space_percentage_text_view"
@@ -182,7 +196,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/memory_data_load_status_title_bottom_margin"
-        android:textColor="@color/black"
+        android:textColor="@color/king_blue"
         android:textSize="@dimen/memory_data_load_status_text_size"
         android:textStyle="bold"
         android:text="@string/memory_data_load_status_title"
@@ -190,9 +204,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/memory_data_load_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -204,6 +217,7 @@
         android:id="@+id/memory_data_load_percentage_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white_aluminium"
         tools:text="0 %"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"

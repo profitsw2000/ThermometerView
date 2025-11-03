@@ -362,7 +362,10 @@ class MemoryViewModel(
 
     fun writeLoadedMemoryToDatabase() {
         if (sensorHistoryDataModelList.isNotEmpty()) {
-            _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
+            _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution
+            lifecycleScope.launch {
+                _memoryLoadRequestLiveData.value = insertHistoryDataList()
+            }
         } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
     }
 
@@ -372,7 +375,6 @@ class MemoryViewModel(
                 sensorHistoryInteractor.writeHistoryItemList(sensorHistoryMapper.map(sensorHistoryDataModelList) , false)
                 MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess
             } catch (exception: Exception) {
-                Log.d(TAG, "insertHistoryDataList: ${exception.message}")
                 MemoryDataLoadState.MemoryDataLoadDatabaseWriteError(MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution)
             }
         }
