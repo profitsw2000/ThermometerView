@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screens_main_padding_size">12dp</dimen>
+    <dimen name="category_field_padding_size">8dp</dimen>
+    <dimen name="data_fields_title_size">24sp</dimen>
+    <dimen name="data_exchange_indicator_size">24dp</dimen>
+    <dimen name="data_exchange_indicator_rounding_size">12dp</dimen>
+    <dimen name="margin_between_data_category_size">16dp</dimen>
+    <dimen name="field_title_divider_height_size">2dp</dimen>
+    <dimen name="field_margin_between_elements_size">8dp</dimen>
+    <dimen name="sub_field_title_text_size">20sp</dimen>
+    <dimen name="devices_list_title_size">24sp</dimen>
+    <dimen name="paired_devices_list_bottom_sheet_padding">24dp</dimen>
+    <dimen name="paired_devices_list_bottom_sheet_margin_between_views">12dp</dimen>
+    <dimen name="paired_devices_list_item_vertical_padding">8dp</dimen>
+    <dimen name="paired_devices_list_item_name_text_size">24sp</dimen>
+    <dimen name="paired_devices_list_item_margin_between_views">4dp</dimen>
+    <dimen name="sensor_info_bottom_sheet_padding">16dp</dimen>
+    <dimen name="sensor_info_load_error_text_size">18sp</dimen>
+    <dimen name="sensor_info_bottom_sheet_vertical_margin_between_views">12dp</dimen>
+    <dimen name="sensor_info_bottom_sheet_horizontal_margin_between_views">16dp</dimen>
+    <dimen name="sensor_info_bottom_sheet_big_horizontal_margin_between_views">32dp</dimen>
+    <dimen name="sensor_parameter_title_size">18sp</dimen>
+    <dimen name="sensor_parameter_value_size">16sp</dimen>
+    <dimen name="memory_info_items_vertical_margin">16dp</dimen>
+    <dimen name="memory_usage_percentage_text_vertical_margin">8dp</dimen>
+    <dimen name="memory_data_operation_section_title_vertical_margin">24sp</dimen>
+    <dimen name="memory_data_operation_buttons_vertical_margin">16dp</dimen>
+    <dimen name="memory_data_operation_section_title_text_size">24sp</dimen>
+    <dimen name="memory_data_load_status_text_size">12sp</dimen>
+    <dimen name="main_progress_indicator_margin_top_size">24dp</dimen>
+</resources>

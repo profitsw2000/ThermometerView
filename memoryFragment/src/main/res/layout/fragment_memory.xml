@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/screens_main_padding_size"
+    tools:context=".presentation.view.MemoryFragment">
+
+    <TextView
+        android:id="@+id/total_memory_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_memory_title_text"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/total_memory_value_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        android:text="@string/total_memory_value_text"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/total_memory_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/total_memory_title_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/memory_usage_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/memory_usage_title_text"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_memory_title_text_view" />
+
+    <TextView
+        android:id="@+id/memory_usage_value_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/memory_usage_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/memory_usage_title_text_view"
+        app:layout_constraintTop_toTopOf="@+id/memory_usage_title_text_view"
+        android:text="@string/no_data_text" />
+
+    <TextView
+        android:id="@+id/free_memory_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:text="@string/free_memory_title_text"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sensor_parameter_title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_usage_title_text_view" />
+
+    <TextView
+        android:id="@+id/free_memory_value_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/field_margin_between_elements_size"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/sensor_parameter_value_size"
+        app:layout_constraintBottom_toBottomOf="@+id/free_memory_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/free_memory_title_text_view"
+        app:layout_constraintTop_toTopOf="@+id/free_memory_title_text_view"
+        android:text="@string/no_data_text" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/memory_space_indicator_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:max="131072"
+        android:min="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text_view" />
+
+<!--    <ProgressBar
+        android:id="@+id/memory_space_indicator_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="55000"
+        android:layout_marginTop="@dimen/memory_info_items_vertical_margin"
+        android:indeterminate="false"
+        android:max="131072"
+        android:min="0"
+        android:indeterminateDrawable="@color/dark_red"
+        android:progressDrawable="@drawable/progress_bar_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/free_memory_title_text_view" />-->
+
+    <TextView
+        android:id="@+id/memory_space_percentage_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"
+        app:layout_constraintTop_toBottomOf="@id/memory_space_indicator_progress_bar"
+        app:layout_constraintStart_toStartOf="@id/memory_space_indicator_progress_bar"
+        app:layout_constraintEnd_toEndOf="@id/memory_space_indicator_progress_bar"
+        android:text="@string/no_data_text"
+        android:textStyle="bold"
+        android:textColor="@color/white_aluminium"/>
+
+    <TextView
+        android:id="@+id/data_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/memory_data_operation_section_title_vertical_margin"
+        android:text="@string/memory_data_operation_section_title_text"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/memory_data_operation_section_title_text_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_space_percentage_text_view" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/clear_memory_button"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        app:strokeColor="@color/king_blue"
+        android:layout_marginTop="@dimen/screens_main_padding_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_memory_button_text"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/data_title_text_view" />
+
+    <View
+        android:id="@+id/buttons_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/field_title_divider_height_size"
+        android:background="?android:attr/colorPrimary"
+        android:layout_marginTop="@dimen/memory_data_operation_buttons_vertical_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clear_memory_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load_memory_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/memory_data_operation_buttons_vertical_margin"
+        android:text="@string/retrive_data_button_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttons_divider" />
+
+    <CheckBox
+        android:id="@+id/confirm_data_deletion_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_memory_checkbox_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/load_memory_data_button" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/main_views_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="total_memory_title_text_view, total_memory_value_text_view,
+        memory_usage_title_text_view, memory_usage_value_text_view, free_memory_title_text_view,
+        free_memory_value_text_view, memory_space_indicator_progress_bar, memory_space_percentage_text_view,
+        data_title_text_view, clear_memory_button, buttons_divider, load_memory_data_button,
+        confirm_data_deletion_checkbox" />
+
+    <ProgressBar
+        android:id="@+id/round_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/memory_data_load_status_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/memory_data_load_status_title_bottom_margin"
+        android:textColor="@color/king_blue"
+        android:textSize="@dimen/memory_data_load_status_text_size"
+        android:textStyle="bold"
+        android:text="@string/memory_data_load_status_title"
+        app:layout_constraintBottom_toTopOf="@+id/memory_data_load_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/memory_data_load_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/memory_data_load_percentage_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white_aluminium"
+        tools:text="0 %"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memory_data_load_progress_bar" />
+
+    <TextView
+        android:id="@+id/memory_data_load_status_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/memory_usage_percentage_text_vertical_margin"
+        android:textSize="@dimen/memory_data_load_status_text_size"
+        tools:text="Загрузка сервисных данных..."
+        app:layout_constraintStart_toStartOf="@+id/memory_data_load_progress_bar"
+        app:layout_constraintTop_toBottomOf="@+id/memory_data_load_percentage_progress" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/memory_data_load_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="memory_data_load_status_title_text_view, memory_data_load_progress_bar, memory_data_load_percentage_progress, memory_data_load_status_text_view"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
