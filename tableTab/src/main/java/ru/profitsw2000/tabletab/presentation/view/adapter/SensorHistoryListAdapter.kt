@@ -1,11 +1,13 @@
 package ru.profitsw2000.tabletab.presentation.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.tabletab.databinding.HistoryTableItemViewBinding
@@ -46,10 +48,10 @@ class SensorHistoryListAdapter : PagingDataAdapter<SensorHistoryDataModel, Senso
 
     private fun getMainFieldsTextColor(id: Int?): Int {
         return when(id?.rem(7)) {
-            0 -> ru.profitsw2000.core.R.color.green_base
+            0 -> ru.profitsw2000.core.R.color.red_base
             1 -> ru.profitsw2000.core.R.color.blue_base
-            2 -> ru.profitsw2000.core.R.color.magenta_base
-            3 -> ru.profitsw2000.core.R.color.red_base
+            2 -> ru.profitsw2000.core.R.color.green_base
+            3 -> ru.profitsw2000.core.R.color.magenta_base
             4 -> ru.profitsw2000.core.R.color.yellow_base
             5 -> ru.profitsw2000.core.R.color.cyan_base
             6 -> ru.profitsw2000.core.R.color.black_base

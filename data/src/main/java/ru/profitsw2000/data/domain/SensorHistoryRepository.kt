@@ -12,6 +12,6 @@ interface SensorHistoryRepository {
 
     suspend fun writeHistoryItemList(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>)
 
-    fun getHistoryPagedData(): LiveData<PagingData<SensorHistoryDataModel>>
+    fun getHistoryPagedData(): Flow<PagingData<SensorHistoryDataModel>>
 
 }

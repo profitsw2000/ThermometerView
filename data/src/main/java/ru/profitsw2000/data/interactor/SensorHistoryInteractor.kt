@@ -2,6 +2,7 @@ package ru.profitsw2000.data.interactor
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
 import ru.profitsw2000.data.domain.remote.SensorHistoryRepositoryRemote
 import ru.profitsw2000.data.model.SensorHistoryDataModel
@@ -28,7 +29,7 @@ class SensorHistoryInteractor(
         else sensorHistoryRepositoryLocal.writeHistoryItemList(sensorHistoryDataEntityList = sensorHistoryDataEntityList)
     }
 
-    fun getHistoryPagedData(isRemote: Boolean): LiveData<PagingData<SensorHistoryDataModel>> {
+    fun getHistoryPagedData(isRemote: Boolean): Flow<PagingData<SensorHistoryDataModel>> {
         return if (isRemote) sensorHistoryRepositoryRemote.getHistoryPagedData()
         else sensorHistoryRepositoryLocal.getHistoryPagedData()
     }

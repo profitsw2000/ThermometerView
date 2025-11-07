@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
-import ru.profitsw2000.data.room.dao.SensorHistoryDao
 import ru.profitsw2000.data.room.database.AppDatabase
 
 class HistoryListPagingSource(

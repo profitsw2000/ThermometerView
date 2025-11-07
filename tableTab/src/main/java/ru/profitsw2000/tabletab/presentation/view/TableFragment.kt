@@ -1,6 +1,7 @@
 package ru.profitsw2000.tabletab.presentation.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import androidx.paging.map
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentTableBinding
@@ -25,10 +29,6 @@ class TableFragment : Fragment() {
     private val tableViewModel: TableViewModel by viewModel()
     private val adapter by lazy {
         SensorHistoryListAdapter()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(

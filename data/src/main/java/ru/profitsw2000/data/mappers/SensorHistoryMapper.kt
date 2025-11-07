@@ -10,7 +10,7 @@ class SensorHistoryMapper {
             id = 0,
             localId = sensorHistoryDataModel.localId,
             sensorId = sensorHistoryDataModel.sensorId,
-            letterCode = sensorHistoryDataModel.localId,
+            letterCode = sensorHistoryDataModel.letterCode,
             date = sensorHistoryDataModel.date,
             temperature = sensorHistoryDataModel.temperature,
         )
@@ -20,7 +20,7 @@ class SensorHistoryMapper {
         return SensorHistoryDataModel(
             localId = sensorHistoryDataEntity.localId,
             sensorId = sensorHistoryDataEntity.sensorId,
-            letterCode = sensorHistoryDataEntity.localId,
+            letterCode = sensorHistoryDataEntity.letterCode,
             date = sensorHistoryDataEntity.date,
             temperature = sensorHistoryDataEntity.temperature,
         )

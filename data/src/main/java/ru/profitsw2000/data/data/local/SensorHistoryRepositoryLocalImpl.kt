@@ -28,7 +28,7 @@ class SensorHistoryRepositoryLocalImpl(
         database.sensorHistoryDao.insertList(sensorHistoryDataEntityList = sensorHistoryDataEntityList)
     }
 
-    override fun getHistoryPagedData(): LiveData<PagingData<SensorHistoryDataModel>> {
+    override fun getHistoryPagedData(): Flow<PagingData<SensorHistoryDataModel>> {
         return Pager(
             PagingConfig(
                 pageSize = 50,
@@ -37,6 +37,6 @@ class SensorHistoryRepositoryLocalImpl(
             )
         ) {
             historyListPagingSource
-        }.liveData
+        }.flow
     }
 }
