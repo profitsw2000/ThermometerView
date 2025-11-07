@@ -83,5 +83,5 @@
     <string name="message_continue_button_text">Продолжить</string>
     <string name="error_message_skip_button_text">Прервать</string>
     <string name="memory_data_load_status_title">Загрузка данных из памяти термометра</string>
-    <string name="history_list_page_load_error_text">Ошибка загрузки</string>
+    <string name="history_list_page_load_error_text">Ошибка загрузки. %1$s</string>
 </resources>
