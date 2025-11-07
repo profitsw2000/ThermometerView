@@ -5,9 +5,10 @@ import androidx.paging.PagingState
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.dao.SensorHistoryDao
+import ru.profitsw2000.data.room.database.AppDatabase
 
 class HistoryListPagingSource(
-    private val sensorHistoryDao: SensorHistoryDao,
+    private val database: AppDatabase,
     private val sensorHistoryMapper: SensorHistoryMapper
 ) : PagingSource<Int, SensorHistoryDataModel>() {
 
@@ -15,7 +16,7 @@ class HistoryListPagingSource(
         val page = params.key ?: 0
 
         return try {
-            val sensorHistoryListPage = sensorHistoryDao.getSensorHistoryList(params.loadSize, page*params.loadSize)
+            val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(params.loadSize, page*params.loadSize)
 
             LoadResult.Page(
                 data = sensorHistoryMapper.map(sensorHistoryListPage),
