@@ -1,6 +1,9 @@
 package ru.profitsw2000.data.data.remote
 
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import ru.profitsw2000.data.domain.remote.SensorHistoryRepositoryRemote
+import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
 
 class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
@@ -9,6 +12,10 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     }
 
     override suspend fun writeHistoryItemList(sensorHistoryDataEntityList: List<SensorHistoryDataEntity>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getHistoryPagedData(): LiveData<PagingData<SensorHistoryDataModel>> {
         TODO("Not yet implemented")
     }
 }

@@ -1,7 +1,10 @@
 package ru.profitsw2000.data.interactor
 
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
 import ru.profitsw2000.data.domain.remote.SensorHistoryRepositoryRemote
+import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
 
 class SensorHistoryInteractor(
@@ -25,4 +28,8 @@ class SensorHistoryInteractor(
         else sensorHistoryRepositoryLocal.writeHistoryItemList(sensorHistoryDataEntityList = sensorHistoryDataEntityList)
     }
 
+    fun getHistoryPagedData(isRemote: Boolean): LiveData<PagingData<SensorHistoryDataModel>> {
+        return if (isRemote) sensorHistoryRepositoryRemote.getHistoryPagedData()
+        else sensorHistoryRepositoryLocal.getHistoryPagedData()
+    }
 }

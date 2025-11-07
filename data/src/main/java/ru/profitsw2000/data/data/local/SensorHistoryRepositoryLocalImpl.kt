@@ -6,6 +6,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import ru.profitsw2000.data.data.local.source.HistoryListPagingSource
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
