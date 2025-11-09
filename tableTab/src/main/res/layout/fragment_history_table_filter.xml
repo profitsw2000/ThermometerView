@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.HistoryTableFilterFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filters_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/filter_screen_padding_size">
+
+        <TextView
+            android:id="@+id/serial_number_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/serial_number_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/all_serial_numbers_link_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_unique_elements_link_text"
+            android:textColor="@color/king_blue"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/serial_number_section_title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/serial_number_section_title_text_view" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/serial_number_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_section_title_text_view" />
+
+        <View
+            android:id="@+id/filter_elements_divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_divider_thickness_size"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:background="@color/light_king_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_selection_chip_group" />
+
+        <TextView
+            android:id="@+id/local_id_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sensor_local_id_selection_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_elements_divider_1" />
+
+        <TextView
+            android:id="@+id/all_local_ids_link_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_unique_elements_link_text"
+            android:textColor="@color/king_blue"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/local_id_section_title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/local_id_section_title_text_view" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/local_id_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/local_id_section_title_text_view" />
+
+        <View
+            android:id="@+id/filter_elements_divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_divider_thickness_size"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:background="@color/light_king_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/local_id_selection_chip_group" />
+
+        <TextView
+            android:id="@+id/letter_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/letter_section_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_elements_divider_2" />
+
+        <TextView
+            android:id="@+id/all_letters_link_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_unique_elements_link_text"
+            android:textColor="@color/king_blue"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/letter_section_title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/letter_section_title_text_view" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/letter_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_section_title_text_view" />
+
+        <View
+            android:id="@+id/filter_elements_divider_3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_divider_thickness_size"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:background="@color/light_king_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_selection_chip_group" />
+
+        <TextView
+            android:id="@+id/time_interval_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/interval_section_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_elements_divider_3" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/time_interval_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:checkedChip="@id/ten_min_chip"
+            app:chipSpacingHorizontal="@dimen/horizontal_space_between_chips"
+            app:chipSpacingVertical="@dimen/vertical_space_between_chips"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_interval_section_title_text_view"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ten_min_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:checked="true"
+                android:text="@string/ten_minutes_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/thirty_min_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/thirty_minutes_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/one_hour_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/one_hour_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/two_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/two_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/four_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/four_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/eight_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/eight_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/twelve_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/twelve_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/day_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/day_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/week_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/week_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/month_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipStartPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:ensureMinTouchTargetSize="false"
+                app:chipCornerRadius="@dimen/chip_corner_radius"
+                android:text="@string/month_interval_select_text"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/temperature_value_selection_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/value_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_interval_selection_chip_group" />
+
+        <RadioGroup
+            android:id="@+id/temperature_value_calculation_method_selection_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperature_value_selection_title_text_view">
+
+            <RadioButton
+                android:id="@+id/interval_begin_value_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/interval_begin_radio_button_text" />
+
+            <RadioButton
+                android:id="@+id/interval_end_value_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/interval_end_radio_button_text" />
+
+            <RadioButton
+                android:id="@+id/interval_average_value_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/interval_average_radio_button_text" />
+
+            <RadioButton
+                android:id="@+id/interval_maximum_value_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/interval_maximum_radio_button_text" />
+
+            <RadioButton
+                android:id="@+id/interval_minimum_value_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/interval_minimum_radio_button_text" />
+
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_filters_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/apply_filters_button_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperature_value_calculation_method_selection_radio_group" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
