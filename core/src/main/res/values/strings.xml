@@ -103,6 +103,7 @@
     <string name="interval_end_radio_button_text">В конце интервала</string>
     <string name="interval_average_radio_button_text">Среднее</string>
     <string name="interval_maximum_radio_button_text">Максимальное</string>
+    <string name="interval_minimum_radio_button_text">Минимальное</string>
     <string name="letter_section_title_text">Буквенное обозначение</string>
     <string name="interval_section_title_text">Интервал</string>
     <string name="apply_filters_button_text">ПРИМЕНИТЬ</string>
