@@ -25,6 +25,10 @@
         android:name="ru.profitsw2000.tabletab.presentation.view.TableFragment"
         android:label="@string/bottom_nav_table_tab_text"
         tools:layout="@layout/fragment_table">
+
+        <action
+            android:id="@+id/action_table_to_filter_fragment"
+            app:destination="@+id/history_list_filters_fragment"/>
     </fragment>
 
     <fragment
@@ -46,6 +50,13 @@
         android:name="ru.profitsw2000.memoryfragment.presentation.view.MemoryFragment"
         android:label="@string/thermometer_memory_fragment_label_text"
         tools:layout="@layout/fragment_memory">
+    </fragment>
+
+    <fragment
+        android:id="@+id/history_list_filters_fragment"
+        android:name="ru.profitsw2000.tabletab.presentation.view.HistoryTableFilterFragment"
+        android:label="@string/sort_history_list_fragment_label_text"
+        tools:layout="@layout/fragment_history_table_filter">
     </fragment>
 
 </navigation>

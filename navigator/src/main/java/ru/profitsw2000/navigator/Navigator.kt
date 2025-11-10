@@ -7,5 +7,7 @@ interface Navigator {
 
     fun navigateToThermometerMemoryControlFragment()
 
+    fun navigateToFilterHistoryListFragment()
+
     fun navigateUp()
 }

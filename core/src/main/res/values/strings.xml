@@ -107,4 +107,5 @@
     <string name="letter_section_title_text">Буквенное обозначение</string>
     <string name="interval_section_title_text">Интервал</string>
     <string name="apply_filters_button_text">ПРИМЕНИТЬ</string>
+    <string name="sort_history_list_fragment_label_text">Фильтры</string>
 </resources>

@@ -15,14 +15,17 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.model.SensorHistoryDataModel
+import ru.profitsw2000.navigator.Navigator
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentTableBinding
 import ru.profitsw2000.tabletab.presentation.view.adapter.SensorHistoryListAdapter
 import ru.profitsw2000.tabletab.presentation.view.adapter.SensorHistoryListLoadStateAdapter
 import ru.profitsw2000.tabletab.presentation.viewmodel.TableViewModel
+import kotlin.getValue
 
 class TableFragment : Fragment() {
 
@@ -30,6 +33,7 @@ class TableFragment : Fragment() {
     private val binding
         get() = _binding!!
     private val tableViewModel: TableViewModel by viewModel()
+    private val navigator: Navigator by inject()
     private val adapter by lazy {
         SensorHistoryListAdapter()
     }
@@ -60,12 +64,12 @@ class TableFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
         return when (item.itemId) {
             R.id.time_period_selection -> {
                 true
             }
             R.id.filter_history -> {
+                navigator.navigateToFilterHistoryListFragment()
                 true
             }
             R.id.sort_history -> {
