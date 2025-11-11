@@ -13,6 +13,15 @@ interface SensorHistoryDao {
             "ORDER BY SensorHistoryDataEntity.date DESC LIMIT :limit OFFSET :offset")
     suspend fun getSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
+    @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
+    suspend fun getAllSensorsIdList(): List<Long>
+
+    @Query("SELECT DISTINCT localId FROM SensorHistoryDataEntity")
+    suspend fun getAllSensorsLocalIdList(): List<Int>
+
+    @Query("SELECT DISTINCT letterCode FROM SensorHistoryDataEntity")
+    suspend fun getAllLetterCodesList(): List<Int>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(sensorHistoryDataEntity: SensorHistoryDataEntity)
 
