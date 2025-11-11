@@ -39,4 +39,16 @@ class SensorHistoryRepositoryLocalImpl(
             historyListPagingSource
         }.flow
     }
+
+    override suspend fun getAllSensorIds(): List<Long> {
+        return database.sensorHistoryDao.getAllSensorsIdList()
+    }
+
+    override suspend fun getAllSensorLocalIds(): List<Int> {
+        return database.sensorHistoryDao.getAllSensorsLocalIdList()
+    }
+
+    override suspend fun getAllLetterCodes(): List<Int> {
+        return database.sensorHistoryDao.getAllLetterCodesList()
+    }
 }

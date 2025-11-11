@@ -19,4 +19,16 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     override fun getHistoryPagedData(): Flow<PagingData<SensorHistoryDataModel>> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getAllSensorIds(): List<Long> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllSensorLocalIds(): List<Int> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllLetterCodes(): List<Int> {
+        TODO("Not yet implemented")
+    }
 }

@@ -33,4 +33,19 @@ class SensorHistoryInteractor(
         return if (isRemote) sensorHistoryRepositoryRemote.getHistoryPagedData()
         else sensorHistoryRepositoryLocal.getHistoryPagedData()
     }
+
+    suspend fun getAllSensorIds(isRemote: Boolean): List<Long> {
+        return if (isRemote) sensorHistoryRepositoryRemote.getAllSensorIds()
+        else sensorHistoryRepositoryLocal.getAllSensorIds()
+    }
+
+    suspend fun getAllSensorLocalIds(isRemote: Boolean): List<Int> {
+        return if (isRemote) sensorHistoryRepositoryRemote.getAllSensorLocalIds()
+        else sensorHistoryRepositoryLocal.getAllSensorLocalIds()
+    }
+
+    suspend fun getAllLetterCodes(isRemote: Boolean): List<Int> {
+        return if (isRemote) sensorHistoryRepositoryRemote.getAllLetterCodes()
+        else sensorHistoryRepositoryLocal.getAllLetterCodes()
+    }
 }
