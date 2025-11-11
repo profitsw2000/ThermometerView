@@ -24,4 +24,5 @@ class TableViewModel(
             .getHistoryPagedData(false)
             .cachedIn(viewModelScope)
             .asLiveData()
+
 }
