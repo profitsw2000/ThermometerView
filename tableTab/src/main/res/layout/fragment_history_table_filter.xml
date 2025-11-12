@@ -55,6 +55,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/serial_number_selection_chip_group" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/serial_number_section_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="serial_number_section_title_text_view, serial_number_selection_chip_group, filter_elements_divider_1"
+            android:visibility="visible"/>
+
         <TextView
             android:id="@+id/local_id_section_title_text_view"
             android:layout_width="wrap_content"
@@ -98,6 +105,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/local_id_selection_chip_group" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/local_id_section_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="local_id_section_title_text_view, local_id_selection_chip_group, filter_elements_divider_2"
+            android:visibility="visible"/>
+
         <TextView
             android:id="@+id/letter_section_title_text_view"
             android:layout_width="wrap_content"
@@ -140,6 +154,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/letter_selection_chip_group" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/letter_selection_section_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="letter_section_title_text_view, letter_selection_chip_group, filter_elements_divider_3"
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/time_interval_section_title_text_view"
