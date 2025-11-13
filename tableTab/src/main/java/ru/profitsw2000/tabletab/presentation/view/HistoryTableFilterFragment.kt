@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
@@ -72,7 +73,11 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.serialNumberProgressBar, false)
             }
             SensorIdsLoadState.Loading -> setViewVisibility(binding.serialNumberProgressBar, true)
-            is SensorIdsLoadState.Success -> inflateSerialNumberChips(sensorIdsLoadState.sensorIdsList)
+            is SensorIdsLoadState.Success -> inflateChips(
+                sensorIdsLoadState.sensorIdsList,
+                binding.serialNumberProgressBar,
+                binding.serialNumberSelectionChipGroup
+            )
         }
     }
 
@@ -83,7 +88,11 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.localIdProgressBar, false)
             }
             LocalIdsLoadState.Loading -> setViewVisibility(binding.localIdProgressBar, true)
-            is LocalIdsLoadState.Success -> TODO()
+            is LocalIdsLoadState.Success -> inflateChips(
+                localIdsLoadState.localIdsList,
+                binding.localIdProgressBar,
+                binding.localIdSelectionChipGroup
+            )
         }
     }
 
@@ -94,7 +103,11 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.letterProgressBar, false)
             }
             LetterCodesLoadState.Loading -> setViewVisibility(binding.letterProgressBar, true)
-            is LetterCodesLoadState.Success -> TODO()
+            is LetterCodesLoadState.Success -> inflateChips(
+                letterCodesLoadState.letterCodesList,
+                binding.letterProgressBar,
+                binding.letterSelectionChipGroup
+            )
         }
     }
 
@@ -104,16 +117,23 @@ class HistoryTableFilterFragment : Fragment() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun inflateSerialNumberChips(serialNumberList: List<Long>) {
-        setViewVisibility(binding.serialNumberProgressBar, false)
-        if (serialNumberList.isNotEmpty()) {
-            serialNumberList.forEach { item ->
+    private fun <T : Number> inflateChips(numberList: List<T>,
+                                          progressBarView: View,
+                                          chipGroup: ChipGroup) {
+        setViewVisibility(progressBarView, false)
+        if (numberList.isNotEmpty()) {
+            numberList.forEach { item ->
                 val chip = Chip(requireContext())
-                chip.text = "${item.toHexString(hexFormat)}"
+                chip.text = when(item) {
+                    is Int -> "${item.toHexString(hexFormat)}"
+                    is Long -> "${item.toHexString(hexFormat)}"
+                    else -> "${item.toString()}"
+                }
                 chip.textSize = 12f
                 chip.isCheckable = true
-                binding.serialNumberSelectionChipGroup.addView(chip)
+                chip.id = item.toInt()
+                chipGroup.addView(chip)
             }
-        } else setViewVisibility(binding.serialNumberSectionGroup, false)
+        } else setViewVisibility(chipGroup, false)
     }
 }
