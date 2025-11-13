@@ -1,17 +1,22 @@
 package ru.profitsw2000.tabletab.presentation.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
+import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
 import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
+import ru.profitsw2000.navigator.Navigator
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentHistoryTableFilterBinding
 import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
@@ -28,10 +33,7 @@ class HistoryTableFilterFragment : Fragment() {
     private val binding
         get() = _binding!!
     private val filterViewModel: FilterViewModel by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val navigator: Navigator by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +46,15 @@ class HistoryTableFilterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initViews()
+        observeData()
+        filterViewModel.loadFilterElements()
     }
 
     private fun observeData() {
-
+        observeSerialNumberData()
+        observeLocalIdData()
+        observeLetterCodeData()
     }
 
     private fun observeSerialNumberData() {
@@ -64,6 +70,13 @@ class HistoryTableFilterFragment : Fragment() {
     private fun observeLetterCodeData() {
         val observer = Observer<LetterCodesLoadState> { renderLetterCodeData(it) }
         filterViewModel.letterCodesLoadLiveData.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun initViews() = with(binding) {
+        applyFiltersButton.setOnClickListener {
+            navigator.navigateUp()
+        }
+        letterProgressBar.visibility = View.GONE
     }
 
     private fun renderSerialNumberData(sensorIdsLoadState: SensorIdsLoadState) {
@@ -104,23 +117,24 @@ class HistoryTableFilterFragment : Fragment() {
             }
             LetterCodesLoadState.Loading -> setViewVisibility(binding.letterProgressBar, true)
             is LetterCodesLoadState.Success -> inflateChips(
-                letterCodesLoadState.letterCodesList,
-                binding.letterProgressBar,
-                binding.letterSelectionChipGroup
-            )
+                    getLettersFromCodeList(letterCodesLoadState.letterCodesList),
+                    binding.letterProgressBar,
+                    binding.letterSelectionChipGroup
+                )
         }
     }
 
     private fun setViewVisibility(view: View, visible: Boolean) {
-        if (visible) view.visibility = View.GONE
-        else view.visibility = View.VISIBLE
+        if (visible) view.visibility = View.VISIBLE
+        else view.visibility = View.GONE
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun <T : Number> inflateChips(numberList: List<T>,
-                                          progressBarView: View,
+    private fun <T> inflateChips(numberList: List<T>,
+                                          progressBarView: ProgressBar,
                                           chipGroup: ChipGroup) {
         setViewVisibility(progressBarView, false)
+        var id = 0
         if (numberList.isNotEmpty()) {
             numberList.forEach { item ->
                 val chip = Chip(requireContext())
@@ -131,9 +145,10 @@ class HistoryTableFilterFragment : Fragment() {
                 }
                 chip.textSize = 12f
                 chip.isCheckable = true
-                chip.id = item.toInt()
+                chip.id = id
+                id++
                 chipGroup.addView(chip)
             }
-        } else setViewVisibility(chipGroup, false)
+        } else setViewVisibility(binding.letterSelectionSectionGroup, false)
     }
 }

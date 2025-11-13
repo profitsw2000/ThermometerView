@@ -21,13 +21,13 @@ class FilterViewModel(
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private lateinit var _sensorIdsLoadLiveData: MutableLiveData<SensorIdsLoadState>
+    private val _sensorIdsLoadLiveData: MutableLiveData<SensorIdsLoadState> = MutableLiveData<SensorIdsLoadState>()
     val sensorIdsLoadLiveData: LiveData<SensorIdsLoadState> by this::_sensorIdsLoadLiveData
 
-    private lateinit var _localIdsLoadLiveData: MutableLiveData<LocalIdsLoadState>
+    private val _localIdsLoadLiveData: MutableLiveData<LocalIdsLoadState> = MutableLiveData<LocalIdsLoadState>()
     val localIdsLoadLiveData: LiveData<LocalIdsLoadState> by this::_localIdsLoadLiveData
 
-    private lateinit var _letterCodesLoadLiveData: MutableLiveData<LetterCodesLoadState>
+    private val _letterCodesLoadLiveData: MutableLiveData<LetterCodesLoadState> = MutableLiveData<LetterCodesLoadState>()
     val letterCodesLoadLiveData: LiveData<LetterCodesLoadState> by this::_letterCodesLoadLiveData
 
     fun loadFilterElements() {
