@@ -8,5 +8,15 @@
     <style name="letterInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/text_box_stroke_color</item>
     </style>
+    
+    <style name="customChipStyle" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipBackgroundColor">@color/filter_chip_background_color</item>
+        <item name="chipStrokeColor">@color/filter_chip_stroke_color</item>
+        <item name="android:textColor">@color/filter_chip_text_color</item>
+        <item name="chipStartPadding">10dp</item>
+        <item name="chipEndPadding">10dp</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="chipCornerRadius">16dp</item>
+    </style>
 
 </resources>

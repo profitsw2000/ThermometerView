@@ -191,108 +191,60 @@
                 android:id="@+id/ten_min_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/king_blue"
-                android:textColor="@color/white_aluminium"
-                app:chipStrokeColor="@color/white_aluminium"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
-                android:checked="true"
                 android:text="@string/ten_minutes_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/thirty_min_chip"
-                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/white"
-                android:textColor="@color/king_blue"
-                app:chipStrokeColor="@color/king_blue"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/thirty_minutes_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/one_hour_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/one_hour_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/two_hours_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/two_hours_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/four_hours_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/four_hours_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/eight_hours_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/eight_hours_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/twelve_hours_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/twelve_hours_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/day_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/day_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/week_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/week_interval_select_text"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/month_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipStartPadding="0dp"
-                app:chipEndPadding="0dp"
-                app:ensureMinTouchTargetSize="false"
-                app:chipCornerRadius="@dimen/chip_corner_radius"
                 android:text="@string/month_interval_select_text"/>
 
         </com.google.android.material.chip.ChipGroup>
@@ -319,6 +271,7 @@
                 android:id="@+id/interval_begin_value_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:padding="0dp"
