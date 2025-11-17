@@ -20,12 +20,14 @@ import ru.profitsw2000.navigator.Navigator
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentHistoryTableFilterBinding
 import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
+const val SECTION_ITEMS_MAXIMUM_NUMBER = 1
 
 class HistoryTableFilterFragment : Fragment() {
 
     @OptIn(ExperimentalStdlibApi::class)
     private val hexFormat = HexFormat {
         upperCase = true
+        number.removeLeadingZeros = true
         number{ prefix = "0x" }
     }
 
@@ -79,6 +81,18 @@ class HistoryTableFilterFragment : Fragment() {
         letterProgressBar.visibility = View.GONE
     }
 
+    private fun setAllItemsTextClickListeners() = with(binding) {
+        allSerialNumbersLinkText.setOnClickListener {
+            TODO()
+        }
+        allLocalIdsLinkText.setOnClickListener {
+            TODO()
+        }
+        allLettersLinkText.setOnClickListener {
+            TODO()
+        }
+    }
+
     private fun renderSerialNumberData(sensorIdsLoadState: SensorIdsLoadState) {
         when(sensorIdsLoadState) {
             SensorIdsLoadState.Error -> {
@@ -86,7 +100,8 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.serialNumberProgressBar, false)
             }
             SensorIdsLoadState.Loading -> setViewVisibility(binding.serialNumberProgressBar, true)
-            is SensorIdsLoadState.Success -> inflateChips(
+            is SensorIdsLoadState.Success -> dataLoadSuccess(
+                binding.allSerialNumbersLinkText,
                 sensorIdsLoadState.sensorIdsList,
                 binding.serialNumberProgressBar,
                 binding.serialNumberSelectionChipGroup
@@ -101,7 +116,8 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.localIdProgressBar, false)
             }
             LocalIdsLoadState.Loading -> setViewVisibility(binding.localIdProgressBar, true)
-            is LocalIdsLoadState.Success -> inflateChips(
+            is LocalIdsLoadState.Success -> dataLoadSuccess(
+                binding.allLocalIdsLinkText,
                 localIdsLoadState.localIdsList,
                 binding.localIdProgressBar,
                 binding.localIdSelectionChipGroup
@@ -116,11 +132,30 @@ class HistoryTableFilterFragment : Fragment() {
                 setViewVisibility(binding.letterProgressBar, false)
             }
             LetterCodesLoadState.Loading -> setViewVisibility(binding.letterProgressBar, true)
-            is LetterCodesLoadState.Success -> inflateChips(
+            is LetterCodesLoadState.Success -> dataLoadSuccess(
+                binding.allLettersLinkText,
                     getLettersFromCodeList(letterCodesLoadState.letterCodesList),
                     binding.letterProgressBar,
                     binding.letterSelectionChipGroup
                 )
+        }
+    }
+
+    private fun <T> dataLoadSuccess(allItemsTextView: View,
+                               numberList: List<T>,
+                               progressBarView: ProgressBar,
+                               chipGroup: ChipGroup) {
+        if (numberList.size < SECTION_ITEMS_MAXIMUM_NUMBER) {
+            inflateChips(numberList = numberList,
+                progressBarView = progressBarView,
+                chipGroup = chipGroup
+            )
+        } else {
+            setViewVisibility(allItemsTextView, true)
+            inflateChips(numberList = numberList.take(SECTION_ITEMS_MAXIMUM_NUMBER),
+                progressBarView = progressBarView,
+                chipGroup = chipGroup
+            )
         }
     }
 
