@@ -191,6 +191,9 @@
                 android:id="@+id/ten_min_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:chipBackgroundColor="@color/king_blue"
+                android:textColor="@color/white_aluminium"
+                app:chipStrokeColor="@color/white_aluminium"
                 app:chipStartPadding="0dp"
                 app:chipEndPadding="0dp"
                 app:ensureMinTouchTargetSize="false"
@@ -200,8 +203,12 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/thirty_min_chip"
+                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:chipBackgroundColor="@color/white"
+                android:textColor="@color/king_blue"
+                app:chipStrokeColor="@color/king_blue"
                 app:chipStartPadding="0dp"
                 app:chipEndPadding="0dp"
                 app:ensureMinTouchTargetSize="false"
