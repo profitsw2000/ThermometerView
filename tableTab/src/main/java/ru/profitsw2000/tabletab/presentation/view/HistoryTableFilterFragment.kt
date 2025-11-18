@@ -184,6 +184,6 @@ class HistoryTableFilterFragment : Fragment() {
                 id++
                 chipGroup.addView(chip)
             }
-        } else setViewVisibility(binding.letterSelectionSectionGroup, false)
+        } else setViewVisibility(chipGroup, false)
     }
 }
