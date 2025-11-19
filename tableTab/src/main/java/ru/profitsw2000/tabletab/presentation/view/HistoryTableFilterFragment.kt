@@ -178,6 +178,11 @@ class HistoryTableFilterFragment : Fragment() {
                     is Long -> "${item.toHexString(hexFormat)}"
                     else -> "${item.toString()}"
                 }
+                chip.setOnClickListener {
+                    val clickedChip = it as Chip
+                    if (clickedChip.isChecked) TODO()
+                    else TODO()
+                }
                 chip.textSize = 12f
                 chip.isCheckable = true
                 chip.id = id
