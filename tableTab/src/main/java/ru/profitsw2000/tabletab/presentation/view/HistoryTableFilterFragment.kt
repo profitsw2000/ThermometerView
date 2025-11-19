@@ -213,8 +213,9 @@ class HistoryTableFilterFragment : Fragment() {
                 }
                 chip.setOnClickListener {
                     val clickedChip = it as Chip
-                    if (clickedChip.isChecked) filterViewModel.removeElementFromCheckedList(item)
-                    else filterViewModel.addElementToCheckedList(item)
+                    Log.d(TAG, "inflateChips: ${clickedChip.isChecked}")
+                    if (clickedChip.isChecked) filterViewModel.addElementToCheckedList(item)
+                    else filterViewModel.removeElementFromCheckedList(item)
                 }
                 chip.textSize = 12f
                 chip.isCheckable = true
