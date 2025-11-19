@@ -57,6 +57,16 @@
         android:name="ru.profitsw2000.tabletab.presentation.view.HistoryTableFilterFragment"
         android:label="@string/sort_history_list_fragment_label_text"
         tools:layout="@layout/fragment_history_table_filter">
+
+        <action
+            android:id="@+id/history_list_filters_to_all_filter_items"
+            app:destination="@+id/all_filter_items_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/all_filter_items_fragment"
+        android:name="ru.profitsw2000.tabletab.presentation.view.AllFilterItemsFragment"
+        tools:layout="@layout/fragment_all_filter_items">
     </fragment>
 
 </navigation>

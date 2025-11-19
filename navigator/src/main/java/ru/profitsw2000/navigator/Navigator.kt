@@ -9,5 +9,7 @@ interface Navigator {
 
     fun navigateToFilterHistoryListFragment()
 
+    fun navigateToAllFilterItemsFragment(bundle: Bundle)
+
     fun navigateUp()
 }

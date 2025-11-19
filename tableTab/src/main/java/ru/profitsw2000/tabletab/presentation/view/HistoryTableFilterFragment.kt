@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
+import ru.profitsw2000.core.utils.constants.ALL_FILTER_ITEMS_KEY
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
@@ -83,18 +84,20 @@ class HistoryTableFilterFragment : Fragment() {
             filterViewModel.getFilters()
             navigator.navigateUp()
         }
-        letterProgressBar.visibility = View.GONE
+        setAllFiltersCategoryTextViewClickListeners()
     }
 
-    private fun setAllItemsTextClickListeners() = with(binding) {
-        allSerialNumbersLinkText.setOnClickListener {
-            TODO()
-        }
-        allLocalIdsLinkText.setOnClickListener {
-            TODO()
-        }
-        allLettersLinkText.setOnClickListener {
-            TODO()
+    private fun setAllFiltersCategoryTextViewClickListeners() = with(binding) {
+        setAllItemsTextClickListener(allSerialNumbersLinkText, SensorDataAction.SerialNumberDataAction)
+        setAllItemsTextClickListener(allLocalIdsLinkText, SensorDataAction.LocalIdDataAction)
+        setAllItemsTextClickListener(allLettersLinkText, SensorDataAction.LetterCodeDataAction)
+    }
+
+    private fun setAllItemsTextClickListener(textView: TextView, sensorDataAction: SensorDataAction) {
+        textView.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable(ALL_FILTER_ITEMS_KEY, sensorDataAction)
+            navigator.navigateToAllFilterItemsFragment(bundle = bundle)
         }
     }
 
