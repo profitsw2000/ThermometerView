@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -20,6 +22,8 @@ import ru.profitsw2000.navigator.Navigator
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentHistoryTableFilterBinding
 import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
+import ru.profitsw2000.tabletab.utils.SensorDataAction
+
 const val SECTION_ITEMS_MAXIMUM_NUMBER = 1
 
 class HistoryTableFilterFragment : Fragment() {
@@ -76,6 +80,7 @@ class HistoryTableFilterFragment : Fragment() {
 
     private fun initViews() = with(binding) {
         applyFiltersButton.setOnClickListener {
+            filterViewModel.getFilters()
             navigator.navigateUp()
         }
         letterProgressBar.visibility = View.GONE
@@ -93,6 +98,38 @@ class HistoryTableFilterFragment : Fragment() {
         }
     }
 
+    private fun getSectionGroup(sensorDataAction: SensorDataAction): Group = with(binding) {
+        return when(sensorDataAction) {
+            SensorDataAction.LetterCodeDataAction -> letterSelectionSectionGroup
+            SensorDataAction.LocalIdDataAction -> localIdSectionGroup
+            SensorDataAction.SerialNumberDataAction -> serialNumberSectionGroup
+        }
+    }
+
+    private fun getProgressBar(sensorDataAction: SensorDataAction): ProgressBar = with(binding) {
+        return when(sensorDataAction) {
+            SensorDataAction.LetterCodeDataAction -> letterProgressBar
+            SensorDataAction.LocalIdDataAction -> localIdProgressBar
+            SensorDataAction.SerialNumberDataAction -> serialNumberProgressBar
+        }
+    }
+
+    private fun getAllItemsTextView(sensorDataAction: SensorDataAction): TextView = with(binding) {
+        return when(sensorDataAction) {
+            SensorDataAction.LetterCodeDataAction -> allLettersLinkText
+            SensorDataAction.LocalIdDataAction -> allLocalIdsLinkText
+            SensorDataAction.SerialNumberDataAction -> allSerialNumbersLinkText
+        }
+    }
+
+    private fun getChipGroup(sensorDataAction: SensorDataAction): ChipGroup = with(binding) {
+        return when(sensorDataAction) {
+            SensorDataAction.LetterCodeDataAction -> letterSelectionChipGroup
+            SensorDataAction.LocalIdDataAction -> localIdSelectionChipGroup
+            SensorDataAction.SerialNumberDataAction -> serialNumberSelectionChipGroup
+        }
+    }
+
     private fun renderSerialNumberData(sensorIdsLoadState: SensorIdsLoadState) {
         when(sensorIdsLoadState) {
             SensorIdsLoadState.Error -> {
@@ -101,10 +138,8 @@ class HistoryTableFilterFragment : Fragment() {
             }
             SensorIdsLoadState.Loading -> setViewVisibility(binding.serialNumberProgressBar, true)
             is SensorIdsLoadState.Success -> dataLoadSuccess(
-                binding.allSerialNumbersLinkText,
-                sensorIdsLoadState.sensorIdsList,
-                binding.serialNumberProgressBar,
-                binding.serialNumberSelectionChipGroup
+                SensorDataAction.SerialNumberDataAction,
+                sensorIdsLoadState.sensorIdsList
             )
         }
     }
@@ -117,10 +152,8 @@ class HistoryTableFilterFragment : Fragment() {
             }
             LocalIdsLoadState.Loading -> setViewVisibility(binding.localIdProgressBar, true)
             is LocalIdsLoadState.Success -> dataLoadSuccess(
-                binding.allLocalIdsLinkText,
-                localIdsLoadState.localIdsList,
-                binding.localIdProgressBar,
-                binding.localIdSelectionChipGroup
+                sensorDataAction = SensorDataAction.LocalIdDataAction,
+                numberList = localIdsLoadState.localIdsList
             )
         }
     }
@@ -133,32 +166,27 @@ class HistoryTableFilterFragment : Fragment() {
             }
             LetterCodesLoadState.Loading -> setViewVisibility(binding.letterProgressBar, true)
             is LetterCodesLoadState.Success -> dataLoadSuccess(
-                binding.allLettersLinkText,
-                    getLettersFromCodeList(letterCodesLoadState.letterCodesList),
-                    binding.letterProgressBar,
-                    binding.letterSelectionChipGroup
-                )
+                sensorDataAction = SensorDataAction.LetterCodeDataAction,
+                getLettersFromCodeList(letterCodesLoadState.letterCodesList)
+            )
         }
     }
 
-    private fun <T> dataLoadSuccess(allItemsTextView: View,
-                               numberList: List<T>,
-                               progressBarView: ProgressBar,
-                               chipGroup: ChipGroup) {
+    private fun <T> dataLoadSuccess(
+        sensorDataAction: SensorDataAction,
+        numberList: List<T>
+    ) {
         if (numberList.size < SECTION_ITEMS_MAXIMUM_NUMBER) {
             inflateChips(numberList = numberList,
-                progressBarView = progressBarView,
-                chipGroup = chipGroup
+                sensorDataAction = sensorDataAction
             )
         } else {
-            setViewVisibility(allItemsTextView, true)
+            setViewVisibility(getAllItemsTextView(sensorDataAction), true)
             inflateChips(numberList = numberList.take(SECTION_ITEMS_MAXIMUM_NUMBER),
-                progressBarView = progressBarView,
-                chipGroup = chipGroup
+                sensorDataAction = sensorDataAction
             )
         }
     }
-
     private fun setViewVisibility(view: View, visible: Boolean) {
         if (visible) view.visibility = View.VISIBLE
         else view.visibility = View.GONE
@@ -166,10 +194,9 @@ class HistoryTableFilterFragment : Fragment() {
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun <T> inflateChips(numberList: List<T>,
-                                          progressBarView: ProgressBar,
-                                          chipGroup: ChipGroup) {
-        setViewVisibility(progressBarView, false)
-        var id = 0
+                                 sensorDataAction: SensorDataAction) {
+        setViewVisibility(getProgressBar(sensorDataAction), false)
+
         if (numberList.isNotEmpty()) {
             numberList.forEach { item ->
                 val chip = Chip(requireContext())
@@ -178,17 +205,21 @@ class HistoryTableFilterFragment : Fragment() {
                     is Long -> "${item.toHexString(hexFormat)}"
                     else -> "${item.toString()}"
                 }
+                chip.isChecked = when(item) {
+                    is Int -> filterViewModel.checkedLocalIdList.contains(item)
+                    is Long -> filterViewModel.checkedSensorNumberList.contains(item)
+                    is String -> filterViewModel.checkedLetterList.contains(item)
+                    else -> false
+                }
                 chip.setOnClickListener {
                     val clickedChip = it as Chip
-                    if (clickedChip.isChecked) TODO()
-                    else TODO()
+                    if (clickedChip.isChecked) filterViewModel.removeElementFromCheckedList(item)
+                    else filterViewModel.addElementToCheckedList(item)
                 }
                 chip.textSize = 12f
                 chip.isCheckable = true
-                chip.id = id
-                id++
-                chipGroup.addView(chip)
+                getChipGroup(sensorDataAction = sensorDataAction).addView(chip)
             }
-        } else setViewVisibility(chipGroup, false)
+        } else setViewVisibility(getSectionGroup(sensorDataAction), false)
     }
 }

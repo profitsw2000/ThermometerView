@@ -1,5 +1,6 @@
 package ru.profitsw2000.tabletab.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
@@ -29,6 +31,10 @@ class FilterViewModel(
 
     private val _letterCodesLoadLiveData: MutableLiveData<LetterCodesLoadState> = MutableLiveData<LetterCodesLoadState>()
     val letterCodesLoadLiveData: LiveData<LetterCodesLoadState> by this::_letterCodesLoadLiveData
+
+    val checkedSensorNumberList = mutableListOf<Long>()
+    val checkedLocalIdList = mutableListOf<Int>()
+    val checkedLetterList = mutableListOf<String>()
 
     fun loadFilterElements() {
         _sensorIdsLoadLiveData.value = SensorIdsLoadState.Loading
@@ -78,5 +84,30 @@ class FilterViewModel(
             }
         }
         return deferred.await()
+    }
+
+    fun <T> addElementToCheckedList(element: T) {
+        when(element) {
+            is Int -> checkedLocalIdList.add(element)
+            is Long -> checkedSensorNumberList.add(element)
+            is String -> checkedLetterList.add(element)
+            else -> {}
+        }
+    }
+
+    fun <T> removeElementFromCheckedList(element: T) {
+        when(element) {
+            is Int -> checkedLocalIdList.remove(element)
+            is Long -> checkedSensorNumberList.remove(element)
+            is String -> checkedLetterList.remove(element)
+            else -> {}
+        }
+    }
+
+    fun getFilters() {
+        Log.d(TAG, "getFilters: \n" +
+                "checkedSensorNumberList = $checkedSensorNumberList\n" +
+                "checkedLocalIdList = $checkedLocalIdList\n" +
+                "checkedLetterList = $checkedLetterList\n")
     }
 }
