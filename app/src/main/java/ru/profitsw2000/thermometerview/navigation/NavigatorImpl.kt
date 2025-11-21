@@ -20,7 +20,7 @@ class NavigatorImpl(private val navController: NavController) : Navigator {
     }
 
     override fun navigateToAllFilterItemsFragment(bundle: Bundle) {
-        navController.navigate(ru.profitsw2000.thermometerview.R.id.history_list_filters_to_all_filter_items)
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.history_list_filters_to_all_filter_items, bundle)
     }
 
     override fun navigateUp() {

@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <CheckBox
+<!--            <CheckBox
                 android:id="@+id/check_box_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,9 +30,16 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/field_title_divider_height_size"
-                android:background="@color/white_aluminium"/>
+                android:background="@color/white_aluminium"/>-->
 
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
 
         <LinearLayout
             android:id="@+id/button_linear_layout"
@@ -45,7 +52,17 @@
                 android:id="@+id/apply_filters_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:text="@string/apply_filters_button_text" />
+
+            <TextView
+                android:id="@+id/filter_elements_load_error_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_elements_load_error_text"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 

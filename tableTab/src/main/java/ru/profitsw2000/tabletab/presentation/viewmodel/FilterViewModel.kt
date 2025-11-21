@@ -36,11 +36,11 @@ class FilterViewModel(
     val checkedLocalIdList = mutableListOf<Int>()
     val checkedLetterList = mutableListOf<String>()
 
-    fun loadFilterElements() {
+    fun loadFilterElements(lifecycleScope: CoroutineScope) {
         _sensorIdsLoadLiveData.value = SensorIdsLoadState.Loading
         _localIdsLoadLiveData.value = LocalIdsLoadState.Loading
         _letterCodesLoadLiveData.value = LetterCodesLoadState.Loading
-        viewModelScope.launch {
+        lifecycleScope.launch {
             _sensorIdsLoadLiveData.value = querySensorIdList()
             _localIdsLoadLiveData.value = queryLocalIdList()
             _letterCodesLoadLiveData.value = queryLetterCodesList()

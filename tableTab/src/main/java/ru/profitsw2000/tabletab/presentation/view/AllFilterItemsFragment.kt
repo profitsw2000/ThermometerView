@@ -1,19 +1,19 @@
 package ru.profitsw2000.tabletab.presentation.view
 
+import android.graphics.drawable.StateListDrawable
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.google.android.material.chip.Chip
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.ALL_FILTER_ITEMS_KEY
-import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
@@ -37,14 +37,11 @@ class AllFilterItemsFragment : Fragment() {
         get() = _binding!!
     private val filterViewModel: FilterViewModel by viewModel()
     private val navigator: Navigator by inject()
-    private val sensorDataAction: SensorDataAction? by lazy {
-        arguments?.getParcelable(ALL_FILTER_ITEMS_KEY)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentAllFilterItemsBinding.bind(inflater.inflate(R.layout.fragment_all_filter_items, container, false))
         return binding.root
@@ -52,14 +49,22 @@ class AllFilterItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeData()
+
+        val sensorDataAction = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            arguments?.getParcelable(ALL_FILTER_ITEMS_KEY, SensorDataAction::class.java)
+        else arguments?.getParcelable(ALL_FILTER_ITEMS_KEY)
+        setToolbarLabel(sensorDataAction = sensorDataAction)
+        observeData(sensorDataAction = sensorDataAction)
+        initViews()
     }
 
-    private fun initViews() {
-
+    private fun initViews() = with(binding) {
+        applyFiltersButton.setOnClickListener {
+            navigator.navigateUp()
+        }
     }
 
-    private fun observeData() {
+    private fun observeData(sensorDataAction: SensorDataAction?) {
         when(sensorDataAction) {
             SensorDataAction.LetterCodeDataAction -> observeLetterCodeData()
             SensorDataAction.LocalIdDataAction -> observeLocalIdData()
@@ -85,8 +90,8 @@ class AllFilterItemsFragment : Fragment() {
 
     private fun renderSerialNumberData(sensorIdsLoadState: SensorIdsLoadState) {
         when(sensorIdsLoadState) {
-            SensorIdsLoadState.Error -> {}
-            SensorIdsLoadState.Loading -> {}
+            SensorIdsLoadState.Error -> setErrorState()
+            SensorIdsLoadState.Loading -> setLoadingState()
             is SensorIdsLoadState.Success -> createCheckBoxes(
                 sensorIdsLoadState.sensorIdsList
             )
@@ -95,8 +100,8 @@ class AllFilterItemsFragment : Fragment() {
 
     private fun renderLocalIdData(localIdsLoadState: LocalIdsLoadState) {
         when(localIdsLoadState) {
-            LocalIdsLoadState.Error -> {}
-            LocalIdsLoadState.Loading -> {}
+            LocalIdsLoadState.Error -> setErrorState()
+            LocalIdsLoadState.Loading -> setLoadingState()
             is LocalIdsLoadState.Success -> createCheckBoxes(
                 numberList = localIdsLoadState.localIdsList
             )
@@ -105,8 +110,8 @@ class AllFilterItemsFragment : Fragment() {
 
     private fun renderLetterCodeData(letterCodesLoadState: LetterCodesLoadState) {
         when(letterCodesLoadState) {
-            LetterCodesLoadState.Error -> {}
-            LetterCodesLoadState.Loading -> {}
+            LetterCodesLoadState.Error -> setErrorState()
+            LetterCodesLoadState.Loading -> setLoadingState()
             is LetterCodesLoadState.Success -> createCheckBoxes(
                 getLettersFromCodeList(letterCodesLoadState.letterCodesList)
             )
@@ -116,19 +121,23 @@ class AllFilterItemsFragment : Fragment() {
     @OptIn(ExperimentalStdlibApi::class)
     private fun <T> createCheckBoxes(numberList: List<T>) {
 
+        setSuccessState()
+
         if (numberList.isNotEmpty()) {
             numberList.forEach { item ->
 
                 val contextThemeWrapper = ContextThemeWrapper(requireContext(), ru.profitsw2000.core.R.style.filterItemsCheckBoxStyle)
                 val checkBoxesLinearLayout = binding.checkBoxesLinearLayout
                 val checkBox = CheckBox(contextThemeWrapper)
-                val view = View(requireContext())
+                val view = View(requireContext()).apply {
+                    setBackgroundResource(ru.profitsw2000.core.R.color.white_aluminium)
+                }
 
                 checkBox.apply {
                     text = when(item) {
-                        is Int -> "${item.toHexString(hexFormat)}"
-                        is Long -> "${item.toHexString(hexFormat)}"
-                        else -> "${item.toString()}"
+                        is Int -> item.toHexString(hexFormat)
+                        is Long -> item.toHexString(hexFormat)
+                        else -> item.toString()
                     }
                     isChecked = when(item) {
                         is Int -> filterViewModel.checkedLocalIdList.contains(item)
@@ -136,12 +145,64 @@ class AllFilterItemsFragment : Fragment() {
                         is String -> filterViewModel.checkedLetterList.contains(item)
                         else -> false
                     }
-                    setOnCheckedChangeListener { buttonView, isChecked ->
+                    buttonDrawable = StateListDrawable()
+                    setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) filterViewModel.addElementToCheckedList(item)
                         else filterViewModel.removeElementFromCheckedList(item)
                     }
                 }
+                checkBoxesLinearLayout.addView(checkBox)
+                checkBoxesLinearLayout.addView(view)
+                view.layoutParams.height = resources.getDimension(ru.profitsw2000.core.R.dimen.field_title_divider_height_size).toInt()
             }
-        } else TODO("Убрать кнопку")
+        } else binding.applyFiltersButton.visibility = View.GONE
+    }
+
+    private fun setVisibility(view: View, isVisible: Boolean) {
+        if (isVisible) view.visibility = View.VISIBLE
+        else view.visibility = View.GONE
+    }
+
+    private fun setVisibility(viewList: List<View>, isVisibleList: List<Boolean>) {
+        viewList.forEachIndexed { index, view ->
+            setVisibility(view = view, isVisibleList[index])
+        }
+    }
+
+    private fun setErrorState() {
+        setVisibility(
+            arrayListOf(binding.filterElementsLoadErrorTextView,
+                binding.applyFiltersButton,
+                binding.progressBar),
+            arrayListOf(true,false,false)
+        )
+    }
+
+    private fun setLoadingState() {
+        setVisibility(
+            arrayListOf(binding.filterElementsLoadErrorTextView,
+                binding.applyFiltersButton,
+                binding.progressBar),
+            arrayListOf(false,false,true)
+        )
+    }
+
+    private fun setSuccessState() {
+        setVisibility(
+            arrayListOf(binding.filterElementsLoadErrorTextView,
+                binding.applyFiltersButton,
+                binding.progressBar),
+            arrayListOf(false,true,false)
+        )
+    }
+
+    private fun setToolbarLabel(sensorDataAction: SensorDataAction?) {
+        val titleText = when(sensorDataAction) {
+            SensorDataAction.SerialNumberDataAction -> resources.getString(ru.profitsw2000.core.R.string.serial_number_title_text)
+            SensorDataAction.LocalIdDataAction -> resources.getString(ru.profitsw2000.core.R.string.sensor_local_id_selection_title_text)
+            SensorDataAction.LetterCodeDataAction -> resources.getString(ru.profitsw2000.core.R.string.letter_section_title_text)
+            null -> ""
+        }
+        (activity as? AppCompatActivity)?.supportActionBar?.title = titleText
     }
 }

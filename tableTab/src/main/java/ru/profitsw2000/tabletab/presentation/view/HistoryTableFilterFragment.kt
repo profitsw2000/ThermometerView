@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
@@ -25,7 +26,7 @@ import ru.profitsw2000.tabletab.databinding.FragmentHistoryTableFilterBinding
 import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
 import ru.profitsw2000.tabletab.utils.SensorDataAction
 
-const val SECTION_ITEMS_MAXIMUM_NUMBER = 1
+const val SECTION_ITEMS_MAXIMUM_NUMBER = 8
 
 class HistoryTableFilterFragment : Fragment() {
 
@@ -55,7 +56,7 @@ class HistoryTableFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         observeData()
-        filterViewModel.loadFilterElements()
+        filterViewModel.loadFilterElements(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun observeData() {
@@ -95,8 +96,10 @@ class HistoryTableFilterFragment : Fragment() {
 
     private fun setAllItemsTextClickListener(textView: TextView, sensorDataAction: SensorDataAction) {
         textView.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable(ALL_FILTER_ITEMS_KEY, sensorDataAction)
+            val bundle = Bundle().apply {
+                putParcelable(ALL_FILTER_ITEMS_KEY, sensorDataAction)
+            }
+            this@HistoryTableFilterFragment.arguments = bundle
             navigator.navigateToAllFilterItemsFragment(bundle = bundle)
         }
     }
@@ -216,7 +219,6 @@ class HistoryTableFilterFragment : Fragment() {
                 }
                 chip.setOnClickListener {
                     val clickedChip = it as Chip
-                    Log.d(TAG, "inflateChips: ${clickedChip.isChecked}")
                     if (clickedChip.isChecked) filterViewModel.addElementToCheckedList(item)
                     else filterViewModel.removeElementFromCheckedList(item)
                 }
