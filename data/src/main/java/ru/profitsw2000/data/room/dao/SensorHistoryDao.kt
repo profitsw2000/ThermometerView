@@ -22,6 +22,9 @@ interface SensorHistoryDao {
     @Query("SELECT DISTINCT letterCode FROM SensorHistoryDataEntity")
     suspend fun getAllLetterCodesList(): List<Int>
 
+    @Query("SELECT COUNT(*) FROM SensorHistoryDataEntity")
+    suspend fun getSensorHistoryDataEntityCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(sensorHistoryDataEntity: SensorHistoryDataEntity)
 
