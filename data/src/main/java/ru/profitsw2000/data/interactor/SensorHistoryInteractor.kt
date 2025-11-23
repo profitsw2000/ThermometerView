@@ -48,4 +48,9 @@ class SensorHistoryInteractor(
         return if (isRemote) sensorHistoryRepositoryRemote.getAllLetterCodes()
         else sensorHistoryRepositoryLocal.getAllLetterCodes()
     }
+
+    suspend fun getHistoryDataEntitySize(isRemote: Boolean): Int {
+        return if (isRemote) sensorHistoryRepositoryRemote.getHistoryDataEntitySize()
+        else sensorHistoryRepositoryLocal.getHistoryDataEntitySize()
+    }
 }

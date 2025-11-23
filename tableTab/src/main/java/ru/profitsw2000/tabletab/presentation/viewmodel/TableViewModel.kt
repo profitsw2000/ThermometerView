@@ -10,9 +10,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import ru.profitsw2000.data.data.local.source.HistoryListPagingSource
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
@@ -26,6 +29,7 @@ class TableViewModel(
     private val sensorHistoryInteractor: SensorHistoryInteractor
 ) : ViewModel() {
 
+    private var sensorHistoryDataEntitySize = 0
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private lateinit var _sensorIdsLoadLiveData: MutableLiveData<SensorIdsLoadState>
@@ -43,5 +47,32 @@ class TableViewModel(
             .cachedIn(viewModelScope)
             .asLiveData()
 
+    init {
+        viewModelScope.launch {
+            sensorHistoryDataEntitySize = getHistoryDataEntitySize()
+        }
+    }
+
+    fun checkDatabaseUpdate(lifecycleScope: CoroutineScope) {
+        lifecycleScope.launch {
+            val tableSize = getHistoryDataEntitySize()
+            if (tableSize != sensorHistoryDataEntitySize) {
+                //sensorHistoryInteractor.updateHistoryPagedData(false)
+                sensorHistoryDataEntitySize = tableSize
+            }
+        }
+    }
+
+    private suspend fun getHistoryDataEntitySize(): Int {
+        val deferred: Deferred<Int> = coroutineScope.async {
+            try {
+                sensorHistoryInteractor.getHistoryDataEntitySize(false)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                sensorHistoryDataEntitySize
+            }
+        }
+        return deferred.await()
+    }
 
 }

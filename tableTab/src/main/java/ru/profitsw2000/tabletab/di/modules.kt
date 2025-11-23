@@ -6,7 +6,6 @@ import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
 import ru.profitsw2000.tabletab.presentation.viewmodel.TableViewModel
 
 val tableModule = module {
-    single<HistoryListPagingSource> { HistoryListPagingSource(get(), get()) }
     single<TableViewModel> { TableViewModel(get()) }
     single<FilterViewModel> { FilterViewModel(get()) }
 }

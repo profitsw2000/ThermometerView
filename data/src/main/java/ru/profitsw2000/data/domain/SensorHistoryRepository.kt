@@ -20,4 +20,6 @@ interface SensorHistoryRepository {
 
     suspend fun getAllLetterCodes(): List<Int>
 
+    suspend fun getHistoryDataEntitySize(): Int
+
 }

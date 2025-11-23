@@ -54,6 +54,8 @@ class TableFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Log.d(TAG, "onCreate, savedInstanceState == null: ${savedInstanceState == null}")
+        //if (savedInstanceState != null) tableViewModel.checkDatabaseUpdate(viewLifecycleOwner.lifecycleScope)
         initViews()
         observeData()
     }

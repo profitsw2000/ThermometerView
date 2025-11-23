@@ -31,4 +31,8 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     override suspend fun getAllLetterCodes(): List<Int> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getHistoryDataEntitySize(): Int {
+        TODO("Not yet implemented")
+    }
 }
