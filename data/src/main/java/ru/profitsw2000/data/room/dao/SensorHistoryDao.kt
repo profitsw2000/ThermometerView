@@ -13,6 +13,10 @@ interface SensorHistoryDao {
             "ORDER BY SensorHistoryDataEntity.date DESC LIMIT :limit OFFSET :offset")
     suspend fun getSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
+    @Query("SELECT * FROM SensorHistoryDataEntity " +
+            "WHERE (:sensorIdList IS NULL OR :sensorIdList = '') OR sensorId IN (:sensorIdList)")
+    suspend fun getFilteredSensorHistoryList(sensorIdList: List<Long>)
+
     @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
     suspend fun getAllSensorsIdList(): List<Long>
 
