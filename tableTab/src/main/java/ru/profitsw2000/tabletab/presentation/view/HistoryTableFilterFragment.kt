@@ -27,6 +27,7 @@ import ru.profitsw2000.core.utils.constants.THIRTY_MINUTES_FRAME_FACTOR
 import ru.profitsw2000.core.utils.constants.TWELVE_HOURS_FRAME_FACTOR
 import ru.profitsw2000.core.utils.constants.TWO_HOURS_FRAME_FACTOR
 import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
+import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
 import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
@@ -92,6 +93,12 @@ class HistoryTableFilterFragment : Fragment() {
 
     private fun initViews() = with(binding) {
         applyFiltersButton.setOnClickListener {
+            Log.d(TAG, "selectedChip: ${getSelectedChip()}")
+            Log.d(TAG, "selectedRadioButton: ${getSelectedRadioButton()}")
+            filterViewModel.applyFilters(
+                getSelectedChip(),
+                getSelectedRadioButton()
+            )
             filterViewModel.getFilters()
             navigator.navigateUp()
         }
@@ -113,6 +120,19 @@ class HistoryTableFilterFragment : Fragment() {
             weekChip.id -> ONE_WEEK_FRAME_FACTOR
             monthChip.id -> ONE_MONTH_FRAME_FACTOR
             else -> TEN_MINUTES_FRAME_FACTOR
+        }
+    }
+
+    private fun getSelectedRadioButton(): TimeFrameDataObtainingMethod = with(binding) {
+        val checkedRadioButtonId = temperatureValueCalculationMethodSelectionRadioGroup.checkedRadioButtonId
+
+        return when(checkedRadioButtonId) {
+            intervalBeginValueRadioButton.id -> TimeFrameDataObtainingMethod.TimeFrameBegin
+            intervalEndValueRadioButton.id -> TimeFrameDataObtainingMethod.TimeFrameEnd
+            intervalAverageValueRadioButton.id -> TimeFrameDataObtainingMethod.TimeFrameAverage
+            intervalMaximumValueRadioButton.id -> TimeFrameDataObtainingMethod.TimeFrameMaximum
+            intervalMinimumValueRadioButton.id -> TimeFrameDataObtainingMethod.TimeFrameMinimum
+            else -> TimeFrameDataObtainingMethod.TimeFrameBegin
         }
     }
 

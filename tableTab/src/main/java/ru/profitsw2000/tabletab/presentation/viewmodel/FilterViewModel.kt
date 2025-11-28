@@ -12,13 +12,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
+import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
 import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
 
 class FilterViewModel(
-    private val sensorHistoryInteractor: SensorHistoryInteractor
+    private val sensorHistoryInteractor: SensorHistoryInteractor,
+    private val sensorHistoryTableFilterRepository: SensorHistoryTableFilterRepository
 ) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -109,5 +112,15 @@ class FilterViewModel(
                 "checkedSensorNumberList = $checkedSensorNumberList\n" +
                 "checkedLocalIdList = $checkedLocalIdList\n" +
                 "checkedLetterList = $checkedLetterList\n")
+    }
+
+    fun applyFilters(timeFrameFactor: Int, timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {
+        sensorHistoryTableFilterRepository.apply {
+            sensorIdList = checkedSensorNumberList
+            localIdList = checkedLocalIdList
+            letterCodeList = checkedLetterList
+            this.timeFrameFactor = timeFrameFactor
+            this.timeFrameDataObtainingMethod = timeFrameDataObtainingMethod
+        }
     }
 }

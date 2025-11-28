@@ -7,7 +7,7 @@ import java.util.Date
 class SensorHistoryTableFilterRepositoryImpl : SensorHistoryTableFilterRepository {
     override var sensorIdList: List<Long> = arrayListOf()
     override var localIdList: List<Int> = arrayListOf()
-    override var letterCodeList: List<Int> = arrayListOf()
+    override var letterCodeList: List<String> = arrayListOf()
     override var timeFrameFactor: Int = 1
     override var timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
     override var isAscendingOreder: Boolean = true

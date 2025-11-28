@@ -7,5 +7,5 @@ import ru.profitsw2000.tabletab.presentation.viewmodel.TableViewModel
 
 val tableModule = module {
     single<TableViewModel> { TableViewModel(get()) }
-    single<FilterViewModel> { FilterViewModel(get()) }
+    single<FilterViewModel> { FilterViewModel(get(), get()) }
 }

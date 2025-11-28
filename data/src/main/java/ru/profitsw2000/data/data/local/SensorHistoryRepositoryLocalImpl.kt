@@ -49,8 +49,9 @@ class SensorHistoryRepositoryLocalImpl(
                 database = database,
                 sensorHistoryMapper = sensorHistoryMapper,
                 sensorHistoryTableFilterRepository = sensorHistoryTableFilterRepository).also {
-                currentPagingSource = it
-            } }
+                    currentPagingSource = it
+                }
+            }
         ).flow
     }
 
