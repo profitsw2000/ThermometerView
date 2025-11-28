@@ -15,7 +15,17 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
 import ru.profitsw2000.core.utils.constants.ALL_FILTER_ITEMS_KEY
+import ru.profitsw2000.core.utils.constants.EIGHT_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.FOUR_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_DAY_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_HOUR_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_MONTH_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_WEEK_FRAME_FACTOR
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.THIRTY_MINUTES_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.TWELVE_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.TWO_HOURS_FRAME_FACTOR
 import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
@@ -86,6 +96,24 @@ class HistoryTableFilterFragment : Fragment() {
             navigator.navigateUp()
         }
         setAllFiltersCategoryTextViewClickListeners()
+    }
+
+    private fun getSelectedChip(): Int = with(binding) {
+        val checkedChipId = timeIntervalSelectionChipGroup.checkedChipId
+
+        return when(checkedChipId) {
+            tenMinChip.id -> TEN_MINUTES_FRAME_FACTOR
+            thirtyMinChip.id -> THIRTY_MINUTES_FRAME_FACTOR
+            oneHourChip.id -> ONE_HOUR_FRAME_FACTOR
+            twoHoursChip.id -> TWO_HOURS_FRAME_FACTOR
+            fourHoursChip.id -> FOUR_HOURS_FRAME_FACTOR
+            eightHoursChip.id -> EIGHT_HOURS_FRAME_FACTOR
+            twelveHoursChip.id -> TWELVE_HOURS_FRAME_FACTOR
+            dayChip.id -> ONE_DAY_FRAME_FACTOR
+            weekChip.id -> ONE_WEEK_FRAME_FACTOR
+            monthChip.id -> ONE_MONTH_FRAME_FACTOR
+            else -> TEN_MINUTES_FRAME_FACTOR
+        }
     }
 
     private fun setAllFiltersCategoryTextViewClickListeners() = with(binding) {
