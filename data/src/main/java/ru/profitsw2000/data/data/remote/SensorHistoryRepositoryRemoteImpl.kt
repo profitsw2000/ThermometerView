@@ -35,4 +35,8 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     override suspend fun getHistoryDataEntitySize(): Int {
         TODO("Not yet implemented")
     }
+
+    override fun invalidateDataSource() {
+        TODO("Not yet implemented")
+    }
 }

@@ -2,13 +2,15 @@ package ru.profitsw2000.data.data.local.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.database.AppDatabase
 
 class HistoryListPagingSource(
     private val database: AppDatabase,
-    private val sensorHistoryMapper: SensorHistoryMapper
+    private val sensorHistoryMapper: SensorHistoryMapper,
+    private val sensorHistoryTableFilterRepository: SensorHistoryTableFilterRepository
 ) : PagingSource<Int, SensorHistoryDataModel>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SensorHistoryDataModel> {

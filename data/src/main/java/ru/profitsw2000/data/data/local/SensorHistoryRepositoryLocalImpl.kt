@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.data.local.source.HistoryListPagingSource
+import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
@@ -21,7 +22,8 @@ import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
 
 class SensorHistoryRepositoryLocalImpl(
     private val database: AppDatabase,
-    private val sensorHistoryMapper: SensorHistoryMapper
+    private val sensorHistoryMapper: SensorHistoryMapper,
+    private val sensorHistoryTableFilterRepository: SensorHistoryTableFilterRepository
 ): SensorHistoryRepositoryLocal {
 
     private var currentPagingSource: HistoryListPagingSource? = null
@@ -43,7 +45,10 @@ class SensorHistoryRepositoryLocalImpl(
                 enablePlaceholders = false,
                 initialLoadSize = 100
             ),
-            pagingSourceFactory = { HistoryListPagingSource(database = database, sensorHistoryMapper).also {
+            pagingSourceFactory = { HistoryListPagingSource(
+                database = database,
+                sensorHistoryMapper = sensorHistoryMapper,
+                sensorHistoryTableFilterRepository = sensorHistoryTableFilterRepository).also {
                 currentPagingSource = it
             } }
         ).flow
@@ -63,5 +68,9 @@ class SensorHistoryRepositoryLocalImpl(
 
     override suspend fun getHistoryDataEntitySize(): Int {
         return database.sensorHistoryDao.getSensorHistoryDataEntityCount()
+    }
+
+    override fun invalidateDataSource() {
+        currentPagingSource?.invalidate()
     }
 }

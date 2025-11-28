@@ -22,4 +22,6 @@ interface SensorHistoryRepository {
 
     suspend fun getHistoryDataEntitySize(): Int
 
+    fun invalidateDataSource()
+
 }
