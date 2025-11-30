@@ -8,5 +8,5 @@ interface SensorHistoryTableFilterRepository : SensorHistoryFilterRepository {
     var letterCodeList: List<Int>
     var timeFrameFactor: Int
     var timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod
-    var isAscendingOreder: Boolean
+    var isAscendingOrder: Boolean
 }

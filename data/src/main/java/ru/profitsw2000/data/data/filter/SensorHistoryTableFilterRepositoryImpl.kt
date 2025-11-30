@@ -10,7 +10,7 @@ class SensorHistoryTableFilterRepositoryImpl : SensorHistoryTableFilterRepositor
     override var letterCodeList: List<Int> = arrayListOf()
     override var timeFrameFactor: Int = 1
     override var timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
-    override var isAscendingOreder: Boolean = true
+    override var isAscendingOrder: Boolean = false
     override var fromDate: Date? = null
     override var toDate: Date? = null
 }

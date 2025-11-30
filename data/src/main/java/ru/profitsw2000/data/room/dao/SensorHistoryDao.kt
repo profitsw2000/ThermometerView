@@ -10,33 +10,44 @@ import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
 interface SensorHistoryDao {
 
     @Query("SELECT * FROM SensorHistoryDataEntity " +
-            "ORDER BY SensorHistoryDataEntity.date DESC LIMIT :limit OFFSET :offset")
-    suspend fun getUnfilteredSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN SensorHistoryDataEntity.date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN SensorHistoryDataEntity.date END DESC " +
+            "LIMIT :limit OFFSET :offset")
+    suspend fun getUnfilteredSensorHistoryList(orderIsAscending: Boolean, limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
     @Query("SELECT * FROM SensorHistoryDataEntity " +
             "WHERE sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList) " +
-            "ORDER BY SensorHistoryDataEntity.date DESC LIMIT :limit OFFSET :offset")
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN SensorHistoryDataEntity.date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN SensorHistoryDataEntity.date END DESC " +
+            "LIMIT :limit OFFSET :offset")
     suspend fun getFilteredSensorHistoryList(
         sensorIdList: List<Long>,
         localIdList: List<Int>,
         letterCodeList: List<Int>,
+        orderIsAscending: Boolean,
         limit: Int,
         offset: Int): List<SensorHistoryDataEntity>
 
     suspend fun getSensorHistoryList(sensorIdList: List<Long>,
                                      localIdList: List<Int>,
                                      letterCodeList: List<Int>,
+                                     orderIsAscending: Boolean,
                                      limit: Int,
                                      offset: Int): List<SensorHistoryDataEntity> {
-        return if (sensorIdList.isEmpty() && localIdList.isEmpty() && letterCodeList.isEmpty()) getUnfilteredSensorHistoryList(limit, offset)
+        return if (sensorIdList.isEmpty() && localIdList.isEmpty() && letterCodeList.isEmpty())
+            getUnfilteredSensorHistoryList(orderIsAscending, limit, offset)
         else getFilteredSensorHistoryList(
             sensorIdList,
             localIdList,
             letterCodeList,
+            orderIsAscending,
             limit,
-            offset)
+            offset
+        )
     }
 
     @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
