@@ -53,4 +53,9 @@ class SensorHistoryInteractor(
         return if (isRemote) sensorHistoryRepositoryRemote.getHistoryDataEntitySize()
         else sensorHistoryRepositoryLocal.getHistoryDataEntitySize()
     }
+
+    fun invalidateDataSource(isRemote: Boolean) {
+        if (isRemote) sensorHistoryRepositoryRemote.invalidateDataSource()
+        else sensorHistoryRepositoryLocal.invalidateDataSource()
+    }
 }

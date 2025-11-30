@@ -122,5 +122,6 @@ class FilterViewModel(
             this.timeFrameFactor = timeFrameFactor
             this.timeFrameDataObtainingMethod = timeFrameDataObtainingMethod
         }
+        sensorHistoryInteractor.invalidateDataSource(false)
     }
 }
