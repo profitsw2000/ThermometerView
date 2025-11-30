@@ -1,7 +1,9 @@
 package ru.profitsw2000.data.data.local.source
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
@@ -17,7 +19,15 @@ class HistoryListPagingSource(
         val page = params.key ?: 0
 
         return try {
-            val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(params.loadSize, page*params.loadSize)
+            //val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(params.loadSize, page*params.loadSize)
+            val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(
+                sensorHistoryTableFilterRepository.sensorIdList,
+                sensorHistoryTableFilterRepository.localIdList,
+                sensorHistoryTableFilterRepository.letterCodeList,
+                params.loadSize,
+                page*params.loadSize
+            )
+            Log.d(TAG, "load: ${sensorHistoryTableFilterRepository.sensorIdList}")
 
             LoadResult.Page(
                 data = sensorHistoryMapper.map(sensorHistoryListPage),
@@ -25,6 +35,7 @@ class HistoryListPagingSource(
                 nextKey = if (sensorHistoryListPage.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
+            Log.d(TAG, "load: Error - ${e.message}")
             LoadResult.Error(e)
         }
     }

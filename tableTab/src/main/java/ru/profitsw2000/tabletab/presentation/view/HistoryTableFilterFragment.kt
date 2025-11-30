@@ -93,13 +93,10 @@ class HistoryTableFilterFragment : Fragment() {
 
     private fun initViews() = with(binding) {
         applyFiltersButton.setOnClickListener {
-            Log.d(TAG, "selectedChip: ${getSelectedChip()}")
-            Log.d(TAG, "selectedRadioButton: ${getSelectedRadioButton()}")
             filterViewModel.applyFilters(
                 getSelectedChip(),
                 getSelectedRadioButton()
             )
-            filterViewModel.getFilters()
             navigator.navigateUp()
         }
         setAllFiltersCategoryTextViewClickListeners()
@@ -255,9 +252,9 @@ class HistoryTableFilterFragment : Fragment() {
             numberList.forEach { item ->
                 val chip = Chip(requireContext())
                 chip.text = when(item) {
-                    is Int -> "${item.toHexString(hexFormat)}"
-                    is Long -> "${item.toHexString(hexFormat)}"
-                    else -> "${item.toString()}"
+                    is Int -> item.toHexString(hexFormat)
+                    is Long -> item.toHexString(hexFormat)
+                    else -> item.toString()
                 }
                 chip.isChecked = when(item) {
                     is Int -> filterViewModel.checkedLocalIdList.contains(item)

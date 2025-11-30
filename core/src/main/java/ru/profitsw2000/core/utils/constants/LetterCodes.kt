@@ -100,3 +100,11 @@ fun getLettersFromCodeList(letterCodeList: List<Int>): List<String> {
     }
     return letterList
 }
+
+fun getCodeFromLetterList(letterList: List<String>): List<Int> {
+    val letterCodeList = mutableListOf<Int>()
+    letterList.forEach { item ->
+        letterCodeList.add(getIntCodeFromLetter(item))
+    }
+    return letterCodeList
+}
