@@ -29,7 +29,12 @@ class HistoryListPagingSource(
             )
 
             LoadResult.Page(
-                data = sensorHistoryMapper.map(sensorHistoryListPage),
+                data = sensorHistoryMapper.filteredMap(
+                    sensorHistoryListPage,
+                    sensorHistoryTableFilterRepository.timeFrameFactor,
+                    sensorHistoryTableFilterRepository.timeFrameDataObtainingMethod,
+                    sensorHistoryTableFilterRepository.isAscendingOrder
+                ),//sensorHistoryMapper.map(sensorHistoryListPage),
                 prevKey = if (page == 0) null else page - 1,
                 nextKey = if (sensorHistoryListPage.isEmpty()) null else page + 1
             )
