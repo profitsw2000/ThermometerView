@@ -81,12 +81,67 @@ class SensorHistoryMapper {
                     timeFrameStart = sensorHistoryTimeFrameDataModelList[sensorIndexInList].timeFrameStartDate,
                     isAscendingDate = isAscendingOrder
                 )
+
                 if (isInRange)
                     sensorHistoryTimeFrameDataModelList[sensorIndexInList].temperatureMutableList.add(item.temperature)
-                else
-                    calculateTemperatureAndUpdateFrame()
+                else{
+                    sensorHistoryDataModelMutableList.add(
+                        SensorHistoryDataModel(
+                            localId = sensorHistoryTimeFrameDataModelList[sensorIndexInList].sensorHistoryDataModel.localId,
+                            sensorId = sensorHistoryTimeFrameDataModelList[sensorIndexInList].sensorHistoryDataModel.sensorId,
+                            letterCode = sensorHistoryTimeFrameDataModelList[sensorIndexInList].sensorHistoryDataModel.letterCode,
+                            date = sensorHistoryTimeFrameDataModelList[sensorIndexInList].sensorHistoryDataModel.date,
+                            temperature = calculateTemperature(
+                                sensorHistoryTimeFrameDataModelList[sensorIndexInList],
+                                timeFrameDataObtainingMethod
+                            )
+                        )
+                    )
+
+                    sensorHistoryTimeFrameDataModelList[sensorIndexInList] =
+                        SensorHistoryTimeFrameDataModel(
+                            sensorHistoryDataModel = map(item),
+                            timeFrameStartDate = item.date,
+                            timeFrameEndDate = getTimeFrameEndDate(
+                                item.date,
+                                timeFrameFactor,
+                                isAscendingOrder
+                            ),
+                            temperatureMutableList = mutableListOf(item.temperature)
+                        )
+                }
+            } else {
+                sensorHistoryTimeFrameDataModelList.add(
+                    SensorHistoryTimeFrameDataModel(
+                        sensorHistoryDataModel = map(item),
+                        timeFrameStartDate = item.date,
+                        timeFrameEndDate = getTimeFrameEndDate(
+                            item.date,
+                            timeFrameFactor,
+                            isAscendingOrder
+                        ),
+                        temperatureMutableList = mutableListOf(item.temperature)
+                    )
+                )
             }
         }
+
+        sensorHistoryTimeFrameDataModelList.forEach { item ->
+            sensorHistoryDataModelMutableList.add(
+                SensorHistoryDataModel(
+                    localId = item.sensorHistoryDataModel.localId,
+                    sensorId = item.sensorHistoryDataModel.sensorId,
+                    letterCode = item.sensorHistoryDataModel.letterCode,
+                    date = item.sensorHistoryDataModel.date,
+                    temperature = calculateTemperature(
+                        item,
+                        timeFrameDataObtainingMethod
+                    )
+                )
+            )
+        }
+
+        return sensorHistoryDataModelMutableList
     }
 
     private fun getIndexOfElementInSensorHistoryTimeFrameDataModelListBySerialNumber(
@@ -122,5 +177,18 @@ class SensorHistoryMapper {
         return Date(timeFrameStart.time + timeFrameInMillis)
     }
 
-    private fun calculateTemperatureAndUpdateFrame() {}
+    private fun calculateTemperature(
+        sensorHistoryTimeFrameDataModel: SensorHistoryTimeFrameDataModel,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod
+    ): Double {
+        val temperatureList: List<Double> = sensorHistoryTimeFrameDataModel.temperatureMutableList
+
+        return when(timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage -> temperatureList.average()
+            TimeFrameDataObtainingMethod.TimeFrameBegin -> temperatureList.first()
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> temperatureList.last()
+            TimeFrameDataObtainingMethod.TimeFrameMaximum -> temperatureList.max()
+            TimeFrameDataObtainingMethod.TimeFrameMinimum -> temperatureList.min()
+        }
+    }
 }
