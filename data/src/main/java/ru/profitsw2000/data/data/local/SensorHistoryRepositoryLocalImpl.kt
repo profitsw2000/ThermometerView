@@ -41,9 +41,9 @@ class SensorHistoryRepositoryLocalImpl(
     override fun getHistoryPagedData(): Flow<PagingData<SensorHistoryDataModel>> {
         return Pager(
             PagingConfig(
-                pageSize = 50,
+                pageSize = 15120,
                 enablePlaceholders = false,
-                initialLoadSize = 100
+                initialLoadSize = 15120
             ),
             pagingSourceFactory = { HistoryListPagingSource(
                 database = database,

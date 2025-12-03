@@ -115,7 +115,6 @@ class HistoryTableFilterFragment : Fragment() {
             twelveHoursChip.id -> TWELVE_HOURS_FRAME_FACTOR
             dayChip.id -> ONE_DAY_FRAME_FACTOR
             weekChip.id -> ONE_WEEK_FRAME_FACTOR
-            monthChip.id -> ONE_MONTH_FRAME_FACTOR
             else -> TEN_MINUTES_FRAME_FACTOR
         }
     }
