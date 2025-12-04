@@ -36,7 +36,7 @@ interface SensorHistoryDao {
         limit: Int,
         offset: Int): List<SensorHistoryDataEntity>
 
-    @Query("SELECT AVG(temperature) AS temperature, *" +
+    @Query("SELECT AVG(temperature) AS temperature, sensorId, localId, letterCode, date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
@@ -58,13 +58,13 @@ interface SensorHistoryDao {
         limit: Int,
         offset: Int): List<SensorHistoryDataEntity>
 
-    @Query("SELECT MAX(temperature) AS temperature, *" +
+    @Query("SELECT MAX(temperature) AS temperature, sensorId " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, date/(:timeFrameInMillis)" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN SensorHistoryDataEntity.date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN SensorHistoryDataEntity.date END DESC " +
@@ -80,7 +80,7 @@ interface SensorHistoryDao {
         limit: Int,
         offset: Int): List<SensorHistoryDataEntity>
 
-    @Query("SELECT MIN(temperature) AS temperature, *" +
+    @Query("SELECT MIN(temperature) AS temperature, sensorId " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
