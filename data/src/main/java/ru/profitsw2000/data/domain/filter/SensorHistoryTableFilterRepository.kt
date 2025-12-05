@@ -6,7 +6,7 @@ interface SensorHistoryTableFilterRepository : SensorHistoryFilterRepository {
     var sensorIdList: List<Long>
     var localIdList: List<Int>
     var letterCodeList: List<Int>
-    var timeFrameFactor: Int
+    var timeFrameMillis: Long
     var timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod
     var isAscendingOrder: Boolean
 }

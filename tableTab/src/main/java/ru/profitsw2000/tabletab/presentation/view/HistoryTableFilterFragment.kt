@@ -1,7 +1,6 @@
 package ru.profitsw2000.tabletab.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +15,24 @@ import com.google.android.material.chip.ChipGroup
 import org.koin.android.ext.android.inject
 import ru.profitsw2000.core.utils.constants.ALL_FILTER_ITEMS_KEY
 import ru.profitsw2000.core.utils.constants.EIGHT_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.EIGHT_HOURS_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.FOUR_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.FOUR_HOURS_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.ONE_DAY_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_DAY_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.ONE_HOUR_FRAME_FACTOR
-import ru.profitsw2000.core.utils.constants.ONE_MONTH_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_HOUR_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.ONE_WEEK_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.ONE_WEEK_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.THIRTY_MINUTES_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.THIRTY_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.TWELVE_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.TWELVE_HOURS_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.TWO_HOURS_FRAME_FACTOR
+import ru.profitsw2000.core.utils.constants.TWO_HOURS_FRAME_MILLIS
 import ru.profitsw2000.core.utils.constants.getLettersFromCodeList
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
@@ -102,20 +109,20 @@ class HistoryTableFilterFragment : Fragment() {
         setAllFiltersCategoryTextViewClickListeners()
     }
 
-    private fun getSelectedChip(): Int = with(binding) {
+    private fun getSelectedChip(): Long = with(binding) {
         val checkedChipId = timeIntervalSelectionChipGroup.checkedChipId
 
         return when(checkedChipId) {
-            tenMinChip.id -> TEN_MINUTES_FRAME_FACTOR
-            thirtyMinChip.id -> THIRTY_MINUTES_FRAME_FACTOR
-            oneHourChip.id -> ONE_HOUR_FRAME_FACTOR
-            twoHoursChip.id -> TWO_HOURS_FRAME_FACTOR
-            fourHoursChip.id -> FOUR_HOURS_FRAME_FACTOR
-            eightHoursChip.id -> EIGHT_HOURS_FRAME_FACTOR
-            twelveHoursChip.id -> TWELVE_HOURS_FRAME_FACTOR
-            dayChip.id -> ONE_DAY_FRAME_FACTOR
-            weekChip.id -> ONE_WEEK_FRAME_FACTOR
-            else -> TEN_MINUTES_FRAME_FACTOR
+            tenMinChip.id -> TEN_MINUTES_FRAME_MILLIS
+            thirtyMinChip.id -> THIRTY_MINUTES_FRAME_MILLIS
+            oneHourChip.id -> ONE_HOUR_FRAME_MILLIS
+            twoHoursChip.id -> TWO_HOURS_FRAME_MILLIS
+            fourHoursChip.id -> FOUR_HOURS_FRAME_MILLIS
+            eightHoursChip.id -> EIGHT_HOURS_FRAME_MILLIS
+            twelveHoursChip.id -> TWELVE_HOURS_FRAME_MILLIS
+            dayChip.id -> ONE_DAY_FRAME_MILLIS
+            weekChip.id -> ONE_WEEK_FRAME_MILLIS
+            else -> TEN_MINUTES_FRAME_MILLIS
         }
     }
 

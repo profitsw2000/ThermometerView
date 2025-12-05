@@ -108,12 +108,12 @@ class FilterViewModel(
         }
     }
 
-    fun applyFilters(timeFrameFactor: Int, timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {
+    fun applyFilters(timeFrameMillis: Long, timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {
         sensorHistoryTableFilterRepository.apply {
             sensorIdList = checkedSensorNumberList
             localIdList = checkedLocalIdList
             letterCodeList = getCodeFromLetterList(checkedLetterList)
-            this.timeFrameFactor = timeFrameFactor
+            this.timeFrameMillis = timeFrameMillis
             this.timeFrameDataObtainingMethod = timeFrameDataObtainingMethod
         }
         sensorHistoryInteractor.invalidateDataSource(false)

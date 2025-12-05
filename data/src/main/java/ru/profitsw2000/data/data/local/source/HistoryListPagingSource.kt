@@ -20,21 +20,13 @@ class HistoryListPagingSource(
 
         return try {
             val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(
-                sensorHistoryTableFilterRepository.sensorIdList,
-                sensorHistoryTableFilterRepository.localIdList,
-                sensorHistoryTableFilterRepository.letterCodeList,
-                sensorHistoryTableFilterRepository.isAscendingOrder,
+                sensorHistoryTableFilterRepository,
                 params.loadSize,
                 page*params.loadSize
             )
 
             LoadResult.Page(
-                data = sensorHistoryMapper.filteredMap(
-                    sensorHistoryListPage,
-                    sensorHistoryTableFilterRepository.timeFrameFactor,
-                    sensorHistoryTableFilterRepository.timeFrameDataObtainingMethod,
-                    sensorHistoryTableFilterRepository.isAscendingOrder
-                ),//sensorHistoryMapper.map(sensorHistoryListPage),
+                data = sensorHistoryMapper.map(sensorHistoryListPage),
                 prevKey = if (page == 0) null else page - 1,
                 nextKey = if (sensorHistoryListPage.isEmpty()) null else page + 1
             )

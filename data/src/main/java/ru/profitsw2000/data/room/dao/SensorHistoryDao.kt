@@ -4,19 +4,48 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
+import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
+import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
 import java.util.Date
 
 @Dao
 interface SensorHistoryDao {
 
+    suspend fun getSensorHistoryList(
+        filter: SensorHistoryTableFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return if (filter.sensorIdList.isEmpty()
+            && filter.localIdList.isEmpty()
+            && filter.letterCodeList.isEmpty()) {
+            getSensorHistoryListWithoutMainFilters(
+                filter = filter,
+                limit = limit,
+                offset = offset
+            )
+        }
+        else getFilteredSensorHistoryList(
+            filter = filter,
+            limit = limit,
+            offset = offset
+        )
+    }
+
     @Query("SELECT * FROM SensorHistoryDataEntity " +
+            "WHERE date BETWEEN (:fromDate) AND (:toDate) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN SensorHistoryDataEntity.date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN SensorHistoryDataEntity.date END DESC " +
             "LIMIT :limit OFFSET :offset")
     suspend fun getUnfilteredSensorHistoryList(
-        orderIsAscending: Boolean, limit: Int, offset: Int
+        fromDate: Date,
+        toDate: Date,
+        orderIsAscending: Boolean,
+        limit: Int,
+        offset: Int
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT * FROM SensorHistoryDataEntity " +
@@ -135,7 +164,7 @@ interface SensorHistoryDao {
             "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
             "LIMIT :limit OFFSET :offset ")
-    suspend fun getFilteredByMainFieldsTimeFrameBoundryTemperatureValueSensorHistoryList(
+    suspend fun getFilteredByMainFieldsTimeFrameBoundaryTemperatureValueSensorHistoryList(
         sensorIdList: List<Long>,
         localIdList: List<Int>,
         letterCodeList: List<Int>,
@@ -148,23 +177,261 @@ interface SensorHistoryDao {
         offset: Int
     ): List<SensorHistoryDataEntity>
 
-    suspend fun getSensorHistoryList(sensorIdList: List<Long>,
-                                     localIdList: List<Int>,
-                                     letterCodeList: List<Int>,
-                                     orderIsAscending: Boolean,
-                                     limit: Int,
-                                     offset: Int): List<SensorHistoryDataEntity> {
-        return if (sensorIdList.isEmpty() && localIdList.isEmpty() && letterCodeList.isEmpty())
-            getUnfilteredSensorHistoryList(orderIsAscending, limit, offset)
-        else getUnfilteredSensorHistoryList(orderIsAscending, limit, offset)
-/*        getFilteredSensorHistoryList(
-            sensorIdList,
-            localIdList,
-            letterCodeList,
-            orderIsAscending,
-            limit,
-            offset
-        )*/
+    @Query("SELECT AVG(temperature) AS temperature, " +
+            "MIN(id), " +
+            "sensorId, localId, letterCode, " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE date BETWEEN (:startDate) AND (:endDate) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getAverageTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+        timeFrameInMillis: Long,
+        orderIsAscending: Boolean,
+        startDate: Date,
+        endDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MAX(temperature) AS temperature, " +
+            "MIN(id), " +
+            "sensorId, localId, letterCode, " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE date BETWEEN (:startDate) AND (:endDate)" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getMaxTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+        timeFrameInMillis: Long,
+        orderIsAscending: Boolean,
+        startDate: Date,
+        endDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MIN(temperature) AS temperature, " +
+            "MIN(id), " +
+            "sensorId, localId, letterCode, " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE date BETWEEN (:startDate) AND (:endDate)" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis)" +
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getMinTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+        timeFrameInMillis: Long,
+        orderIsAscending: Boolean,
+        startDate: Date,
+        endDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+            "FIRST_VALUE(date) OVER w AS timeFrameDate, * " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE date BETWEEN (:startDate) AND (:endDate)" +
+            "WINDOW w AS (" +
+            "   PARTITION BY" +
+            "       sensorId, date/(:timeFrameInMillis)" +
+            "       ORDER BY " +
+            "CASE WHEN (:isFirstValue) THEN SensorHistoryDataEntity.date END DESC, " +
+            "CASE WHEN NOT (:isFirstValue) THEN SensorHistoryDataEntity.date END ASC " +
+            ")" +
+            "ORDER BY " +
+            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getTimeFrameBoundaryTemperatureValueWithoutMainFiltersSensorHistoryList(
+        timeFrameInMillis: Long,
+        isFirstValue: Boolean,
+        orderIsAscending: Boolean,
+        startDate: Date,
+        endDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    private suspend fun getSensorHistoryListWithoutMainFilters(
+        filter: SensorHistoryTableFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return if (filter.timeFrameMillis == TEN_MINUTES_FRAME_MILLIS)
+            getUnfilteredSensorHistoryList(
+                fromDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                toDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                orderIsAscending = filter.isAscendingOrder,
+                limit = limit,
+                offset = offset
+            )
+        else
+            getTimeFrameTemperatureValueWithoutMainFiltersSensorHistoryList(
+                filter = filter,
+                limit = limit,
+                offset = offset
+            )
+    }
+
+    private suspend fun getFilteredSensorHistoryList(
+        filter: SensorHistoryTableFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return if (filter.timeFrameMillis == TEN_MINUTES_FRAME_MILLIS)
+            getFilteredByMainFieldsSensorHistoryList(
+                sensorIdList = filter.sensorIdList,
+                localIdList = filter.localIdList,
+                letterCodeList = filter.letterCodeList,
+                orderIsAscending = filter.isAscendingOrder,
+                startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                limit = limit,
+                offset = offset
+            )
+        else
+            getFilteredTimeFrameTemperatureValueSensorHistoryList(
+                filter = filter,
+                limit = limit,
+                offset = offset
+            )
+    }
+
+    private suspend fun getTimeFrameTemperatureValueWithoutMainFiltersSensorHistoryList(
+        filter: SensorHistoryTableFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return when(filter.timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage ->
+                getAverageTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameMaximum ->
+                getMaxTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameMinimum ->
+                getMinTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameBegin ->
+                getTimeFrameBoundaryTemperatureValueWithoutMainFiltersSensorHistoryList(
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    isFirstValue = true,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameEnd ->
+                getTimeFrameBoundaryTemperatureValueWithoutMainFiltersSensorHistoryList(
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    isFirstValue = false,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+        }
+    }
+
+    private suspend fun getFilteredTimeFrameTemperatureValueSensorHistoryList(
+        filter: SensorHistoryTableFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return when(filter.timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage ->
+                getFilteredByMainFieldsAverageTemperatureGroupedByDateSensorHistoryList(
+                    sensorIdList = filter.sensorIdList,
+                    localIdList = filter.localIdList,
+                    letterCodeList = filter.letterCodeList,
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameMaximum ->
+                getFilteredByMainFieldsMaxTemperatureGroupedByDateSensorHistoryList(
+                    sensorIdList = filter.sensorIdList,
+                    localIdList = filter.localIdList,
+                    letterCodeList = filter.letterCodeList,
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameMinimum ->
+                getFilteredByMainFieldsMinTemperatureGroupedByDateSensorHistoryList(
+                    sensorIdList = filter.sensorIdList,
+                    localIdList = filter.localIdList,
+                    letterCodeList = filter.letterCodeList,
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameBegin ->
+                getFilteredByMainFieldsTimeFrameBoundaryTemperatureValueSensorHistoryList(
+                    sensorIdList = filter.sensorIdList,
+                    localIdList = filter.localIdList,
+                    letterCodeList = filter.letterCodeList,
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    isFirstValue = true,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+            TimeFrameDataObtainingMethod.TimeFrameEnd ->
+                getFilteredByMainFieldsTimeFrameBoundaryTemperatureValueSensorHistoryList(
+                    sensorIdList = filter.sensorIdList,
+                    localIdList = filter.localIdList,
+                    letterCodeList = filter.letterCodeList,
+                    timeFrameInMillis = filter.timeFrameMillis,
+                    isFirstValue = false,
+                    orderIsAscending = filter.isAscendingOrder,
+                    startDate = filter.fromDate ?: Date(Long.MIN_VALUE),
+                    endDate = filter.toDate ?: Date(Long.MAX_VALUE),
+                    limit = limit,
+                    offset = offset
+                )
+        }
     }
 
     @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
