@@ -39,7 +39,7 @@ class SensorHistoryListAdapter : PagingDataAdapter<SensorHistoryDataModel, Senso
             localIdText.text = localIdText.resources.getString(ru.profitsw2000.core.R.string.hex_string, historyListModelItem?.localId?.toString(16)?.uppercase(Locale.getDefault()))
             sensorLetterText.text = getLetterFromCode(historyListModelItem?.letterCode ?: 0)
             dateTimeText.text = SimpleDateFormat("yyyy.MM.dd   HH:mm").format(historyListModelItem?.date)
-            temperatureText.text = temperatureText.resources.getString(ru.profitsw2000.core.R.string.sensor_temperature_text, historyListModelItem?.temperature.toString())
+            temperatureText.text = temperatureText.resources.getString(ru.profitsw2000.core.R.string.sensor_temperature_text, String.format("%.1f",historyListModelItem?.temperature))
 
             serialNumberText.setTextColor(serialNumberText.resources.getColor(getMainFieldsTextColor(historyListModelItem?.localId)))
             temperatureText.setTextColor(temperatureText.resources.getColor(getMainFieldsTextColor(historyListModelItem?.localId)))

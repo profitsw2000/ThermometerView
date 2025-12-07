@@ -69,9 +69,9 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT AVG(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
@@ -79,8 +79,8 @@ interface SensorHistoryDao {
             "AND date BETWEEN (:startDate) AND (:endDate) " +
             "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getFilteredByMainFieldsAverageTemperatureGroupedByDateSensorHistoryList(
         sensorIdList: List<Long>,
@@ -95,9 +95,9 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT MAX(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
@@ -105,8 +105,8 @@ interface SensorHistoryDao {
             "AND date BETWEEN (:startDate) AND (:endDate)" +
             "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getFilteredByMainFieldsMaxTemperatureGroupedByDateSensorHistoryList(
         sensorIdList: List<Long>,
@@ -121,9 +121,9 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT MIN(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
@@ -131,8 +131,8 @@ interface SensorHistoryDao {
             "AND date BETWEEN (:startDate) AND (:endDate)" +
             "GROUP BY sensorId, date/(:timeFrameInMillis)" +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getFilteredByMainFieldsMinTemperatureGroupedByDateSensorHistoryList(
         sensorIdList: List<Long>,
@@ -147,12 +147,13 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
-            "FIRST_VALUE(date) OVER w AS timeFrameDate, * " +
+            "FIRST_VALUE(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate)" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
             "   PARTITION BY" +
             "       sensorId, date/(:timeFrameInMillis)" +
@@ -161,8 +162,8 @@ interface SensorHistoryDao {
                         "CASE WHEN NOT (:isFirstValue) THEN SensorHistoryDataEntity.date END ASC " +
             ")" +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getFilteredByMainFieldsTimeFrameBoundaryTemperatureValueSensorHistoryList(
         sensorIdList: List<Long>,
@@ -178,15 +179,15 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT AVG(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate) " +
             "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getAverageTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
         timeFrameInMillis: Long,
@@ -198,15 +199,15 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT MAX(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
             "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getMaxTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
         timeFrameInMillis: Long,
@@ -218,15 +219,15 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT MIN(temperature) AS temperature, " +
-            "MIN(id), " +
+            "MIN(id) AS id, " +
             "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as timeFrameDate " +
+            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
             "GROUP BY sensorId, date/(:timeFrameInMillis)" +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getMinTemperatureGroupedByDateWithoutMainFiltersSensorHistoryList(
         timeFrameInMillis: Long,
@@ -238,9 +239,10 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
-            "FIRST_VALUE(date) OVER w AS timeFrameDate, * " +
+            "FIRST_VALUE(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
             "   PARTITION BY" +
             "       sensorId, date/(:timeFrameInMillis)" +
@@ -249,8 +251,8 @@ interface SensorHistoryDao {
             "CASE WHEN NOT (:isFirstValue) THEN SensorHistoryDataEntity.date END ASC " +
             ")" +
             "ORDER BY " +
-            "CASE WHEN (:orderIsAscending) THEN timeFrameDate END ASC, " +
-            "CASE WHEN NOT (:orderIsAscending) THEN timeFrameDate END DESC " +
+            "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
+            "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getTimeFrameBoundaryTemperatureValueWithoutMainFiltersSensorHistoryList(
         timeFrameInMillis: Long,
