@@ -70,15 +70,13 @@ interface SensorHistoryDao {
 
     @Query("SELECT AVG(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate) " +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -97,15 +95,13 @@ interface SensorHistoryDao {
 
     @Query("SELECT MAX(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -124,15 +120,13 @@ interface SensorHistoryDao {
 
     @Query("SELECT MIN(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -150,16 +144,16 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
-            "FIRST_VALUE(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
             "WHERE (sensorId IN (:sensorIdList) " +
             "OR localId IN (:localIdList) " +
             "OR letterCode IN (:letterCodeList)) " +
             "AND date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (date % (:timeFrameInMillis)) - 10*60*1000)/(:timeFrameInMillis))" +
+            "GROUP BY sensorId, date/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
             "   PARTITION BY" +
-            "       sensorId, ((date + (:timeFrameInMillis) - (date % (:timeFrameInMillis)) - 10*60*1000)/(:timeFrameInMillis))" +
+            "       sensorId, date/(:timeFrameInMillis) " +
             "       ORDER BY " +
                         "CASE WHEN (:isFirstValue) THEN SensorHistoryDataEntity.date END DESC, " +
                         "CASE WHEN NOT (:isFirstValue) THEN SensorHistoryDataEntity.date END ASC " +
@@ -183,12 +177,10 @@ interface SensorHistoryDao {
 
     @Query("SELECT AVG(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate) " +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -204,12 +196,10 @@ interface SensorHistoryDao {
 
     @Query("SELECT MAX(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -225,12 +215,10 @@ interface SensorHistoryDao {
 
     @Query("SELECT MIN(temperature) AS temperature, " +
             "MIN(id) AS id, " +
-            "sensorId, localId, letterCode, " +
-            "CASE WHEN (:orderIsAscending) THEN MIN(date) ELSE MAX(date) END as date " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (SELECT (MAX(date) % (:timeFrameInMillis)) FROM SensorHistoryDataEntity " +
-            "             WHERE date BETWEEN (:startDate) AND (:endDate)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "ORDER BY " +
             "CASE WHEN (:orderIsAscending) THEN date END ASC, " +
             "CASE WHEN NOT (:orderIsAscending) THEN date END DESC " +
@@ -245,13 +233,13 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
-            "FIRST_VALUE(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
             "WHERE date BETWEEN (:startDate) AND (:endDate)" +
-            "GROUP BY sensorId, ((date + (:timeFrameInMillis) - (date % (:timeFrameInMillis)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "GROUP BY sensorId, date/(:timeFrameInMillis) " +
             "WINDOW w AS (" +
             "   PARTITION BY" +
-            "       sensorId, ((date + (:timeFrameInMillis) - (date % (:timeFrameInMillis)) - 10*60*1000)/(:timeFrameInMillis)) " +
+            "       sensorId, date/(:timeFrameInMillis) " +
             "       ORDER BY " +
             "           CASE WHEN (:isFirstValue) THEN SensorHistoryDataEntity.date END DESC, " +
             "           CASE WHEN NOT (:isFirstValue) THEN SensorHistoryDataEntity.date END ASC " +
