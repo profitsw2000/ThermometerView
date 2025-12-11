@@ -5,56 +5,57 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.tabletab.R
+import ru.profitsw2000.tabletab.databinding.FragmentTableOrderBottomSheetBinding
+import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TableOrderBottomSheetFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class TableOrderBottomSheetFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentTableOrderBottomSheetBinding? = null
+    private val binding
+        get() = _binding!!
+    private val filterViewModel: FilterViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_table_order_bottom_sheet, container, false)
+        _binding = FragmentTableOrderBottomSheetBinding.bind(inflater.inflate(R.layout.fragment_table_order_bottom_sheet, container, false))
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TableOrderBottomSheetFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TableOrderBottomSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        val layout: CoordinatorLayout = binding.rootCoordinatorLayout
+        layout.minimumHeight = 1500
+
+        initViews()
+    }
+
+    private fun initViews() = with(binding) {
+        initRadioButtons()
+        initApplyButton()
+    }
+
+    private fun initRadioButtons() = with(binding) {
+        if (filterViewModel.isHistoryListOrderAscending()) orderSelectionRadioGroup.check(R.id.ascending_order_radio_button)
+        else orderSelectionRadioGroup.check(R.id.descending_order_radio_button)
+    }
+
+    private fun initApplyButton() = with(binding) {
+        when(orderSelectionRadioGroup.checkedRadioButtonId) {
+            R.id.descending_order_radio_button -> filterViewModel.setHistoryListOrder(false)
+            R.id.ascending_order_radio_button -> filterViewModel.setHistoryListOrder(true)
+            else -> filterViewModel.setHistoryListOrder(false)
+        }
+        this@TableOrderBottomSheetFragment.dismiss()
     }
 }

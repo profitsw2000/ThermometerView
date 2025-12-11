@@ -24,22 +24,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/descending_order_radio_button"
+
+        <RadioGroup
+            android:id="@+id/order_selection_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/descending_order_selection_radio_button_text"
             android:layout_marginTop="@dimen/vertical_space_between_chips"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/history_list_order_title_text_view" />
+            app:layout_constraintTop_toBottomOf="@+id/history_list_order_title_text_view">
 
-        <RadioButton
-            android:id="@+id/ascending_order_radio_button"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/descending_order_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/descending_order_selection_radio_button_text" />
+
+            <RadioButton
+                android:id="@+id/ascending_order_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ascending_order_selection_radio_button_text" />
+
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_filters_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ascending_order_selection_radio_button_text"
+            android:text="@string/apply_filters_button_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descending_order_radio_button" />
+            app:layout_constraintTop_toBottomOf="@+id/order_selection_radio_group" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

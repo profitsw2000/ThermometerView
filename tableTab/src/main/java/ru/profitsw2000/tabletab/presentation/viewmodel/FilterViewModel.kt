@@ -108,6 +108,14 @@ class FilterViewModel(
         }
     }
 
+    fun isHistoryListOrderAscending(): Boolean {
+        return sensorHistoryTableFilterRepository.isAscendingOrder
+    }
+
+    fun setHistoryListOrder(isAscending: Boolean) {
+        sensorHistoryTableFilterRepository.isAscendingOrder = isAscending
+    }
+
     fun applyFilters(timeFrameMillis: Long, timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {
         sensorHistoryTableFilterRepository.apply {
             sensorIdList = checkedSensorNumberList
