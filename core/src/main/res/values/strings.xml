@@ -109,4 +109,6 @@
     <string name="apply_filters_button_text">ПРИМЕНИТЬ</string>
     <string name="sort_history_list_fragment_label_text">Фильтры</string>
     <string name="filter_elements_load_error_text">Ошибка. Не удалось загрузить элементы фильтра.</string>
+    <string name="descending_order_selection_radio_button_text">Сначала новые</string>
+    <string name="ascending_order_selection_radio_button_text">Сначала старые</string>
 </resources>
