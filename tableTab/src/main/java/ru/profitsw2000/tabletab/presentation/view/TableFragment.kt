@@ -68,6 +68,7 @@ class TableFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.time_period_selection -> {
+                startBottomSheetDialog()
                 true
             }
             R.id.filter_history -> {
@@ -96,5 +97,11 @@ class TableFragment : Fragment() {
         lifecycleScope.launch {
             adapter.submitData(pagingData)
         }
+    }
+
+    private fun startBottomSheetDialog() {
+        val tableOrderBottomSheetFragment = TableOrderBottomSheetFragment()
+
+        tableOrderBottomSheetFragment.show(parentFragmentManager, "select list order")
     }
 }
