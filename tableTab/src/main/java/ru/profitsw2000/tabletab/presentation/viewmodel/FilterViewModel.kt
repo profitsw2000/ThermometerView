@@ -114,6 +114,7 @@ class FilterViewModel(
 
     fun setHistoryListOrder(isAscending: Boolean) {
         sensorHistoryTableFilterRepository.isAscendingOrder = isAscending
+        sensorHistoryInteractor.invalidateDataSource(false)
     }
 
     fun applyFilters(timeFrameMillis: Long, timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {

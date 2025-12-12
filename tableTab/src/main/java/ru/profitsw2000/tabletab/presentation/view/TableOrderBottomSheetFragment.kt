@@ -1,14 +1,18 @@
 package ru.profitsw2000.tabletab.presentation.view
 
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.profitsw2000.core.utils.constants.SENSOR_INFO_DISMISS
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.tabletab.R
 import ru.profitsw2000.tabletab.databinding.FragmentTableOrderBottomSheetBinding
 import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
@@ -16,14 +20,17 @@ import ru.profitsw2000.tabletab.presentation.viewmodel.FilterViewModel
 class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentTableOrderBottomSheetBinding? = null
-    private val binding
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val filterViewModel: FilterViewModel by viewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentTableOrderBottomSheetBinding.bind(inflater.inflate(R.layout.fragment_table_order_bottom_sheet, container, false))
         return binding.root
@@ -40,6 +47,10 @@ class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
         initViews()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     private fun initViews() = with(binding) {
         initRadioButtons()
         initApplyButton()
@@ -51,11 +62,26 @@ class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun initApplyButton() = with(binding) {
-        when(orderSelectionRadioGroup.checkedRadioButtonId) {
-            R.id.descending_order_radio_button -> filterViewModel.setHistoryListOrder(false)
-            R.id.ascending_order_radio_button -> filterViewModel.setHistoryListOrder(true)
-            else -> filterViewModel.setHistoryListOrder(false)
+
+        applyOrderButton.setOnClickListener {
+            val selectedId = orderSelectionRadioGroup.checkedRadioButtonId
+
+            when(selectedId) {
+                R.id.descending_order_radio_button -> filterViewModel.setHistoryListOrder(false)
+                R.id.ascending_order_radio_button -> filterViewModel.setHistoryListOrder(true)
+                else -> filterViewModel.setHistoryListOrder(false)
+            }
+            this@TableOrderBottomSheetFragment.dismiss()
         }
-        this@TableOrderBottomSheetFragment.dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(SENSOR_INFO_DISMISS, true)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -11,5 +11,7 @@ interface Navigator {
 
     fun navigateToAllFilterItemsFragment(bundle: Bundle)
 
+    fun navigateToTableOrderBottomSheet()
+
     fun navigateUp()
 }

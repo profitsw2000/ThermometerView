@@ -54,8 +54,6 @@ class TableFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Log.d(TAG, "onCreate, savedInstanceState == null: ${savedInstanceState == null}")
-        //if (savedInstanceState != null) tableViewModel.checkDatabaseUpdate(viewLifecycleOwner.lifecycleScope)
         initViews()
         observeData()
     }
@@ -68,7 +66,6 @@ class TableFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.time_period_selection -> {
-                startBottomSheetDialog()
                 true
             }
             R.id.filter_history -> {
@@ -76,6 +73,7 @@ class TableFragment : Fragment() {
                 true
             }
             R.id.sort_history -> {
+                navigator.navigateToTableOrderBottomSheet()
                 true
             }
             else -> true
@@ -97,11 +95,5 @@ class TableFragment : Fragment() {
         lifecycleScope.launch {
             adapter.submitData(pagingData)
         }
-    }
-
-    private fun startBottomSheetDialog() {
-        val tableOrderBottomSheetFragment = TableOrderBottomSheetFragment()
-
-        tableOrderBottomSheetFragment.show(parentFragmentManager, "select list order")
     }
 }

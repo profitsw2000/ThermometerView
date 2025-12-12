@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootCoordinatorLayout"
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bottom Sheet Title"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is some supplementary content."
+        android:layout_marginTop="8dp"/>
+
+    &lt;!&ndash; Add other views (buttons, etc.) here &ndash;&gt;
+</LinearLayout>-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.view.TableOrderBottomSheetFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Сортировка списка"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/black"
             android:textSize="@dimen/devices_list_title_size"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,15 +69,16 @@
         </RadioGroup>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/apply_filters_button"
+            android:id="@+id/apply_order_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/king_blue"
+            android:textColor="@color/white"
             android:text="@string/apply_filters_button_text"
             android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/order_selection_radio_group" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
