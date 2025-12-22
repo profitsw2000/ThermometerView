@@ -66,6 +66,7 @@ class TableFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.time_period_selection -> {
+                navigator.navigateToDateSelectionBottomSheet()
                 true
             }
             R.id.filter_history -> {

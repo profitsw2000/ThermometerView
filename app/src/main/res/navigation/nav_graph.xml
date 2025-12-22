@@ -33,6 +33,11 @@
         <action
             android:id="@+id/action_table_to_table_order_fragment"
             app:destination="@+id/table_order_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_table_to_date_selection_fragment"
+            app:destination="@+id/date_time_period_selection_bottom_sheet"/>
+
     </fragment>
 
     <fragment
@@ -77,6 +82,12 @@
         android:id="@+id/table_order_bottom_sheet"
         android:name="ru.profitsw2000.tabletab.presentation.view.TableOrderBottomSheetFragment"
         tools:layout="@layout/fragment_table_order_bottom_sheet">
+    </dialog>
+
+    <dialog
+        android:id="@+id/date_time_period_selection_bottom_sheet"
+        android:name="ru.profitsw2000.tabletab.presentation.view.DateTimePeriodSelectionBottomSheetFragment"
+        tools:layout="@layout/fragment_date_time_period_selection_bottom_sheet">
     </dialog>
 
 </navigation>

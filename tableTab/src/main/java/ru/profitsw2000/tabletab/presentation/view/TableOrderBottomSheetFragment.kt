@@ -47,10 +47,6 @@ class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
         initViews()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun initViews() = with(binding) {
         initRadioButtons()
         initApplyButton()
@@ -73,11 +69,6 @@ class TableOrderBottomSheetFragment : BottomSheetDialogFragment() {
             }
             this@TableOrderBottomSheetFragment.dismiss()
         }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(SENSOR_INFO_DISMISS, true)
     }
 
     override fun onDestroyView() {

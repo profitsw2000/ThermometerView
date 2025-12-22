@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":navigator"))
 
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

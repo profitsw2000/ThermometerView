@@ -27,6 +27,10 @@ class NavigatorImpl(private val navController: NavController) : Navigator {
         navController.navigate(ru.profitsw2000.thermometerview.R.id.action_table_to_table_order_fragment)
     }
 
+    override fun navigateToDateSelectionBottomSheet() {
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.action_table_to_date_selection_fragment)
+    }
+
     override fun navigateUp() {
         navController.navigateUp()
     }

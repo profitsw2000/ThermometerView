@@ -13,5 +13,7 @@ interface Navigator {
 
     fun navigateToTableOrderBottomSheet()
 
+    fun navigateToDateSelectionBottomSheet()
+
     fun navigateUp()
 }
