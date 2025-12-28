@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/filter_screen_padding_size"
     tools:context=".presentation.view.DateTimePeriodSelectionBottomSheetFragment">
 
-
-
-    <DatePicker
-        android:id="@+id/history_list_date_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/apply_order_button"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/king_blue"
-        android:textColor="@color/white"
-        android:text="@string/apply_filters_button_text"
-        android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/history_list_date_picker" />
+        android:layout_height="match_parent"
+        android:padding="@dimen/filter_screen_padding_size">
+
+        <TextView
+            android:id="@+id/data_for_date_period_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_for_date_period_title_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/devices_list_title_size"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date_period_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/full_date_period_data_text"
+            android:textSize="@dimen/data_date_period_text_size"
+            android:layout_marginTop="@dimen/data_date_period_margin_between_title_and_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/data_for_date_period_title_text_view"/>
+
+        <TextView
+            android:id="@+id/edit_date_period_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_edit_sensor_letter_form_text"
+            android:layout_marginLeft="@dimen/sensor_info_bottom_sheet_big_horizontal_margin_between_views"
+            android:textColor="@color/king_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/date_period_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/date_period_text_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

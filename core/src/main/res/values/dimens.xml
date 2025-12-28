@@ -38,4 +38,6 @@
     <dimen name="chip_corner_radius">16dp</dimen>
     <dimen name="history_list_page_load_error_text_size">16sp</dimen>
     <dimen name="vertical_space_between_chips">8dp</dimen>
+    <dimen name="data_date_period_text_size">18sp</dimen>
+    <dimen name="data_date_period_margin_between_title_and_text">32dp</dimen>
 </resources>

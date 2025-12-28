@@ -111,4 +111,6 @@
     <string name="filter_elements_load_error_text">Ошибка. Не удалось загрузить элементы фильтра.</string>
     <string name="descending_order_selection_radio_button_text">Сначала новые</string>
     <string name="ascending_order_selection_radio_button_text">Сначала старые</string>
+    <string name="data_for_date_period_title_text">Данные за период</string>
+    <string name="full_date_period_data_text">За всё время</string>
 </resources>
