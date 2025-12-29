@@ -150,6 +150,7 @@ class FilterViewModel(
         sensorHistoryTableFilterRepository.fromDate = fromDate
         sensorHistoryTableFilterRepository.toDate = toDate
         sensorHistoryInteractor.invalidateDataSource(false)
+        setDateRangeLiveData()
     }
 
     private fun getStringDateRange(fromDate: Date?, toDate: Date?): String {
