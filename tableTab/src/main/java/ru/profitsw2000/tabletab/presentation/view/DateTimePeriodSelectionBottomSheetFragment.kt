@@ -42,9 +42,9 @@ class DateTimePeriodSelectionBottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         val layout: CoordinatorLayout = binding.rootCoordinatorLayout
-        layout.minimumHeight = 1500
+        layout.minimumHeight = 500
 
         observeDateRangeLiveData()
         initViews()
@@ -65,9 +65,9 @@ class DateTimePeriodSelectionBottomSheetFragment : BottomSheetDialogFragment() {
         val dateRangePicker = MaterialDatePicker
             .Builder
             .dateRangePicker()
-            .setTitleText("Выбрать временной период")
-            .setPositiveButtonText("Выбрать")
-            .setNegativeButtonText("Отмена")
+            .setTitleText(ru.profitsw2000.core.R.string.history_table_date_range_picker_dialog_title_text)
+            .setPositiveButtonText(ru.profitsw2000.core.R.string.history_table_date_range_picker_dialog_positive_button_text)
+            .setNegativeButtonText(ru.profitsw2000.core.R.string.message_cancel_button_text)
             .setSelection(
                 Pair(
                     MaterialDatePicker.thisMonthInUtcMilliseconds(),

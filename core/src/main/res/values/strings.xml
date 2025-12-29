@@ -113,4 +113,6 @@
     <string name="ascending_order_selection_radio_button_text">Сначала старые</string>
     <string name="data_for_date_period_title_text">Данные за период</string>
     <string name="full_date_period_data_text">За всё время</string>
+    <string name="history_table_date_range_picker_dialog_title_text">Выбрать временной период</string>
+    <string name="history_table_date_range_picker_dialog_positive_button_text">Выбрать</string>
 </resources>
