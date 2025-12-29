@@ -19,6 +19,9 @@ import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.model.state.filterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.filterscreen.LocalIdsLoadState
 import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 class FilterViewModel(
     private val sensorHistoryInteractor: SensorHistoryInteractor,
@@ -35,6 +38,14 @@ class FilterViewModel(
 
     private val _letterCodesLoadLiveData: MutableLiveData<LetterCodesLoadState> = MutableLiveData<LetterCodesLoadState>()
     val letterCodesLoadLiveData: LiveData<LetterCodesLoadState> by this::_letterCodesLoadLiveData
+
+    private val _dateRangeStringLiveData: MutableLiveData<String> =
+        MutableLiveData(getStringDateRange(
+                sensorHistoryTableFilterRepository.fromDate,
+                sensorHistoryTableFilterRepository.toDate
+            )
+        )
+    val dateRangeStringLiveData: LiveData<String> by this::_dateRangeStringLiveData
 
     val checkedSensorNumberList = mutableListOf<Long>()
     val checkedLocalIdList = mutableListOf<Int>()
@@ -126,5 +137,25 @@ class FilterViewModel(
             this.timeFrameDataObtainingMethod = timeFrameDataObtainingMethod
         }
         sensorHistoryInteractor.invalidateDataSource(false)
+    }
+
+    fun setDateRangeLiveData() {
+        _dateRangeStringLiveData.value = getStringDateRange(
+            sensorHistoryTableFilterRepository.fromDate,
+            sensorHistoryTableFilterRepository.toDate
+        )
+    }
+
+    fun setFilterDateRange(fromDate: Date?, toDate: Date?) {
+        sensorHistoryTableFilterRepository.fromDate = fromDate
+        sensorHistoryTableFilterRepository.toDate = toDate
+        sensorHistoryInteractor.invalidateDataSource(false)
+    }
+
+    private fun getStringDateRange(fromDate: Date?, toDate: Date?): String {
+        val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy")
+
+        return if (fromDate == null || toDate == null) "За всё время"
+            else "${simpleDateFormat.format(fromDate)} - ${simpleDateFormat.format(toDate)}"
     }
 }
