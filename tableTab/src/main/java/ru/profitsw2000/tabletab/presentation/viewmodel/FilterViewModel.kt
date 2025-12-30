@@ -159,4 +159,12 @@ class FilterViewModel(
         return if (fromDate == null || toDate == null) "За всё время"
             else "${simpleDateFormat.format(fromDate)} - ${simpleDateFormat.format(toDate)}"
     }
+
+    fun getTimeFramePeriod(): Long {
+        return sensorHistoryTableFilterRepository.timeFrameMillis
+    }
+
+    fun getTimeFrameDataObtainingMethod(): TimeFrameDataObtainingMethod {
+        return sensorHistoryTableFilterRepository.timeFrameDataObtainingMethod
+    }
 }

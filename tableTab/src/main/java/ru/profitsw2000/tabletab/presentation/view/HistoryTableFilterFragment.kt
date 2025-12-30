@@ -107,6 +107,8 @@ class HistoryTableFilterFragment : Fragment() {
             navigator.navigateUp()
         }
         setAllFiltersCategoryTextViewClickListeners()
+        setTimeFramePeriodSelectionView(filterViewModel.getTimeFramePeriod())
+        setTimeFrameDataObtainingMethodSelectionView(filterViewModel.getTimeFrameDataObtainingMethod())
     }
 
     private fun getSelectedChip(): Long = with(binding) {
@@ -278,5 +280,32 @@ class HistoryTableFilterFragment : Fragment() {
                 getChipGroup(sensorDataAction = sensorDataAction).addView(chip)
             }
         } else setViewVisibility(getSectionGroup(sensorDataAction), false)
+    }
+
+    private fun setTimeFramePeriodSelectionView(timeFramePeriod: Long) = with(binding) {
+        when(timeFramePeriod) {
+            TEN_MINUTES_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.ten_min_chip)
+            THIRTY_MINUTES_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.thirty_min_chip)
+            ONE_HOUR_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.one_hour_chip)
+            TWO_HOURS_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.two_hours_chip)
+            FOUR_HOURS_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.four_hours_chip)
+            EIGHT_HOURS_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.eight_hours_chip)
+            TWELVE_HOURS_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.twelve_hours_chip)
+            ONE_DAY_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.day_chip)
+            ONE_WEEK_FRAME_MILLIS -> timeIntervalSelectionChipGroup.check(R.id.week_chip)
+            else -> timeIntervalSelectionChipGroup.check(R.id.ten_min_chip)
+        }
+    }
+
+    private fun setTimeFrameDataObtainingMethodSelectionView(
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod
+    ) = with(binding) {
+        when(timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage -> intervalAverageValueRadioButton.isChecked = true
+            TimeFrameDataObtainingMethod.TimeFrameBegin -> intervalBeginValueRadioButton.isChecked = true
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> intervalEndValueRadioButton.isChecked = true
+            TimeFrameDataObtainingMethod.TimeFrameMaximum -> intervalMaximumValueRadioButton.isChecked = true
+            TimeFrameDataObtainingMethod.TimeFrameMinimum -> intervalMinimumValueRadioButton.isChecked = true
+        }
     }
 }
