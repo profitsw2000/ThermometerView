@@ -7,5 +7,13 @@ interface Navigator {
 
     fun navigateToThermometerMemoryControlFragment()
 
+    fun navigateToFilterHistoryListFragment()
+
+    fun navigateToAllFilterItemsFragment(bundle: Bundle)
+
+    fun navigateToTableOrderBottomSheet()
+
+    fun navigateToDateSelectionBottomSheet()
+
     fun navigateUp()
 }

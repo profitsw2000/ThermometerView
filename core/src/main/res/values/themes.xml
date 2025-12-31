@@ -20,6 +20,7 @@
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:statusBarColor">@color/blue_elis</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="chipStyle">@style/customChipStyle</item>
     </style>
 
     <style name="Theme.ThermometerView" parent="Base.Theme.ThermometerView" />

@@ -269,7 +269,7 @@ class BluetoothPacketManagerImpl(
             _bluetoothRequestResult.value = BluetoothRequestResultStatus.MemoryDataReceived(
                 MemoryDataModel(
                     localId = data[0].toInteger(),
-                    dateTime = Date(year, month, day, hour, minutes),
+                    dateTime = Date(year, month - 1, day, hour, minutes),
                     temperature = data.takeLast(2).toTemperature()
                 )
             )

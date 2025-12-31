@@ -92,3 +92,19 @@ fun getIntCodeFromLetter(letter: String): Int {
         else -> 0xFFFF
     }
 }
+
+fun getLettersFromCodeList(letterCodeList: List<Int>): List<String> {
+    val letterList = mutableListOf<String>()
+    letterCodeList.forEach { item ->
+        letterList.add(getLetterFromCode(item))
+    }
+    return letterList
+}
+
+fun getCodeFromLetterList(letterList: List<String>): List<Int> {
+    val letterCodeList = mutableListOf<Int>()
+    letterList.forEach { item ->
+        letterCodeList.add(getIntCodeFromLetter(item))
+    }
+    return letterCodeList
+}

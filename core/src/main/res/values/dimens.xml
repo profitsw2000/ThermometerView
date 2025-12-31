@@ -29,4 +29,15 @@
     <dimen name="memory_data_operation_section_title_text_size">24sp</dimen>
     <dimen name="memory_data_load_status_text_size">12sp</dimen>
     <dimen name="main_progress_indicator_margin_top_size">24dp</dimen>
+    <dimen name="page_load_item_padding">16dp</dimen>
+    <dimen name="filter_section_title_size">16sp</dimen>
+    <dimen name="filter_screen_vertical_margin_between_views_size">16dp</dimen>
+    <dimen name="line_divider_thickness_size">2dp</dimen>
+    <dimen name="filter_screen_padding_size">16dp</dimen>
+    <dimen name="horizontal_space_between_chips">8dp</dimen>
+    <dimen name="chip_corner_radius">16dp</dimen>
+    <dimen name="history_list_page_load_error_text_size">16sp</dimen>
+    <dimen name="vertical_space_between_chips">8dp</dimen>
+    <dimen name="data_date_period_text_size">18sp</dimen>
+    <dimen name="data_date_period_margin_between_title_and_text">32dp</dimen>
 </resources>

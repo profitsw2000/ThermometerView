@@ -10,4 +10,12 @@
     <color name="red">#FFFF0000</color>
     <color name="dark_green">#FF00B300</color>
     <color name="dark_red">#FFB30000</color>
+
+    <color name="green_base">#FF008000</color>
+    <color name="blue_base">#FF0000FF</color>
+    <color name="magenta_base">#FFFF00FF</color>
+    <color name="red_base">#FFFF0000</color>
+    <color name="yellow_base">#FFFFFF00</color>
+    <color name="cyan_base">#FF00FFFF</color>
+    <color name="black_base">#FF000000</color>
 </resources>

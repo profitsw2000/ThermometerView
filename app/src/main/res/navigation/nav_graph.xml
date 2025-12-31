@@ -25,6 +25,19 @@
         android:name="ru.profitsw2000.tabletab.presentation.view.TableFragment"
         android:label="@string/bottom_nav_table_tab_text"
         tools:layout="@layout/fragment_table">
+
+        <action
+            android:id="@+id/action_table_to_filter_fragment"
+            app:destination="@+id/history_list_filters_fragment"/>
+
+        <action
+            android:id="@+id/action_table_to_table_order_fragment"
+            app:destination="@+id/table_order_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_table_to_date_selection_fragment"
+            app:destination="@+id/date_time_period_selection_bottom_sheet"/>
+
     </fragment>
 
     <fragment
@@ -47,5 +60,34 @@
         android:label="@string/thermometer_memory_fragment_label_text"
         tools:layout="@layout/fragment_memory">
     </fragment>
+
+    <fragment
+        android:id="@+id/history_list_filters_fragment"
+        android:name="ru.profitsw2000.tabletab.presentation.view.HistoryTableFilterFragment"
+        android:label="@string/sort_history_list_fragment_label_text"
+        tools:layout="@layout/fragment_history_table_filter">
+
+        <action
+            android:id="@+id/history_list_filters_to_all_filter_items"
+            app:destination="@+id/all_filter_items_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/all_filter_items_fragment"
+        android:name="ru.profitsw2000.tabletab.presentation.view.AllFilterItemsFragment"
+        tools:layout="@layout/fragment_all_filter_items">
+    </fragment>
+
+    <dialog
+        android:id="@+id/table_order_bottom_sheet"
+        android:name="ru.profitsw2000.tabletab.presentation.view.TableOrderBottomSheetFragment"
+        tools:layout="@layout/fragment_table_order_bottom_sheet">
+    </dialog>
+
+    <dialog
+        android:id="@+id/date_time_period_selection_bottom_sheet"
+        android:name="ru.profitsw2000.tabletab.presentation.view.DateTimePeriodSelectionBottomSheetFragment"
+        tools:layout="@layout/fragment_date_time_period_selection_bottom_sheet">
+    </dialog>
 
 </navigation>

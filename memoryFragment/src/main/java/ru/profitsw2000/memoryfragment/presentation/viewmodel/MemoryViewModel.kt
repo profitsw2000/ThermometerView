@@ -174,6 +174,7 @@ class MemoryViewModel(
             sensorsLetterCodes = sensorsLetterCodeList
             sensorIds = sensorIdsList
         }
+
         memoryAddressCounter = 0
         sensorHistoryDataModelList.clear()
         loadFirstMemoryDataPacket()
@@ -197,6 +198,7 @@ class MemoryViewModel(
             val dateTime = memoryDataModel.dateTime
             val temperature = memoryDataModel.temperature
 
+
             sensorHistoryDataModelList.add(
                 SensorHistoryDataModel(
                     localId = localId,
@@ -206,6 +208,7 @@ class MemoryViewModel(
                     temperature = temperature
                 )
             )
+
             memoryAddressCounter += 8
             loadNextMemoryDataPacket()
             MemoryDataLoadState.MemoryHistoryDataLoading(
@@ -300,7 +303,7 @@ class MemoryViewModel(
     }
 
     fun continueMemoryDataLoad(memoryDataLoadState: MemoryDataLoadState) {
-        Log.d(TAG, "continueMemoryDataLoad: /////////////////////////////////////////////////////////////////////////////////////")
+        //Log.d(TAG, "continueMemoryDataLoad: /////////////////////////////////////////////////////////////////////////////////////")
         when(memoryDataLoadState) {
             is MemoryDataLoadState.MemoryHistoryDataLoading -> loadFirstMemoryDataPacket()
             MemoryDataLoadState.MemoryDataLoadClearRequest -> memoryDataLoadClear()
