@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/time_period_selection"
+        android:icon="@drawable/calendar_icon"
+        android:title="Select time period"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/sort_history"
+        android:icon="@drawable/sort_icon"
+        android:title="Sort history list"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/filter_history"
+        android:icon="@drawable/filter_icon"
+        android:title="Filter history list"
+        app:showAsAction="always"/>
+
+</menu>
