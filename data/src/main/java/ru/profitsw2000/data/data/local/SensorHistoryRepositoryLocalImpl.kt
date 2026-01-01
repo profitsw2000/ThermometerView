@@ -55,6 +55,14 @@ class SensorHistoryRepositoryLocalImpl(
         ).flow
     }
 
+    override suspend fun getSimpleSensorHistoryList(
+        sensorId: Long,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return database.sensorHistoryDao.getSimpleSensorHistoryList(sensorId, limit, offset)
+    }
+
     override suspend fun getAllSensorIds(): List<Long> {
         return database.sensorHistoryDao.getAllSensorsIdList()
     }

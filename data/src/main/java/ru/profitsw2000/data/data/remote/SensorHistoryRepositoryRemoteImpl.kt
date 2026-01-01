@@ -20,6 +20,14 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getSimpleSensorHistoryList(
+        sensorId: Long,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getAllSensorIds(): List<Long> {
         TODO("Not yet implemented")
     }

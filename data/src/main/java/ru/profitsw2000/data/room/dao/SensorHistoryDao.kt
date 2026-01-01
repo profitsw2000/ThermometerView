@@ -13,6 +13,12 @@ import java.util.Date
 @Dao
 interface SensorHistoryDao {
 
+    @Query("SELECT * FROM SensorHistoryDataEntity " +
+            "WHERE SensorHistoryDataEntity.sensorId LIKE :sensorId " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset")
+    suspend fun getSimpleSensorHistoryList(sensorId: Long, limit: Int, offset: Int): List<SensorHistoryDataEntity>
+
     suspend fun getSensorHistoryList(
         filter: SensorHistoryTableFilterRepository,
         limit: Int,

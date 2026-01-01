@@ -14,6 +14,8 @@ interface SensorHistoryRepository {
 
     fun getHistoryPagedData(): Flow<PagingData<SensorHistoryDataModel>>
 
+    suspend fun getSimpleSensorHistoryList(sensorId: Long, limit: Int, offset: Int): List<SensorHistoryDataEntity>
+
     suspend fun getAllSensorIds(): List<Long>
 
     suspend fun getAllSensorLocalIds(): List<Int>
