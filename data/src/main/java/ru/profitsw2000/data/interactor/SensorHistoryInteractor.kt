@@ -31,7 +31,7 @@ class SensorHistoryInteractor(
 
     suspend fun getSimpleSensorHistoryList(sensorId: Long, limit: Int, offset: Int, isRemote: Boolean): List<SensorHistoryDataEntity> {
         return if (isRemote) sensorHistoryRepositoryRemote.getSimpleSensorHistoryList(sensorId, limit, offset)
-        else sensorHistoryRepositoryRemote.getSimpleSensorHistoryList(sensorId, limit, offset)
+        else sensorHistoryRepositoryLocal.getSimpleSensorHistoryList(sensorId, limit, offset)
     }
 
     fun getHistoryPagedData(isRemote: Boolean): Flow<PagingData<SensorHistoryDataModel>> {

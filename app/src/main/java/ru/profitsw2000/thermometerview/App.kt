@@ -4,6 +4,7 @@ import android.app.Application
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import ru.profitsw2000.graphtab.di.graphModule
 import ru.profitsw2000.mainfragment.di.mainModule
 import ru.profitsw2000.memoryfragment.di.memoryModule
 import ru.profitsw2000.tabletab.di.tableModule
@@ -19,6 +20,7 @@ class App : Application() {
                 appModule,
                 mainModule,
                 memoryModule,
+                graphModule,
                 tableModule
             )
         }
