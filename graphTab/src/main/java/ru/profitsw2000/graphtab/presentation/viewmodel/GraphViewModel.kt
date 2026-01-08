@@ -22,6 +22,8 @@ class GraphViewModel(
     private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var lifecycleScope: CoroutineScope
 
+    var offset = 0
+
     //LiveData
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
         MutableLiveData<SensorHistoryDataLoadState>()
@@ -31,9 +33,9 @@ class GraphViewModel(
         this.lifecycleScope = coroutineScope
     }
 
-    fun loadData() {
+    fun loadData(newItemsNumber: Int) {
         lifecycleScope.launch {
-            _sensorHistoryListLiveData.value = getSimpleSensorHistoryDataList()
+            _sensorHistoryListLiveData.value = getSensorHistoryDataList(newItemsNumber)
         }
     }
 
@@ -44,6 +46,30 @@ class GraphViewModel(
                     sensorId = 0x28FF5CCAC11704C5,
                     limit = 48,
                     offset = 0,
+                    false
+                )
+                SensorHistoryDataLoadState.Success(
+                    sensorHistoryMapper.map(
+                        sensorHistoryDataList
+                    )
+                )
+            } catch (exc: Exception) {
+                SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
+            }
+        }
+        return deferred.await()
+    }
+
+    private suspend fun getSensorHistoryDataList(newItemsNumber: Int): SensorHistoryDataLoadState {
+        offset = if (offset + newItemsNumber < 0) 0
+        else offset + newItemsNumber
+
+        val deferred: Deferred<SensorHistoryDataLoadState> = ioCoroutineScope.async {
+            try {
+                val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
+                    sensorId = 0x28FF5CCAC11704C5,
+                    limit = 48,
+                    offset = offset,
                     false
                 )
                 SensorHistoryDataLoadState.Success(

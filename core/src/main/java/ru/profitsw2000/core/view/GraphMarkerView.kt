@@ -44,7 +44,7 @@ class GraphMarkerView(
         // Use stored touch position
         val offset = getOffsetForDrawingAtPoint(posX, posY)
         val translateX = posX + offset.x
-        val translateY = chartView.height*0.03f
+        val translateY = chartView.height*0.02f
 
         canvas.save()
         canvas.translate(translateX, translateY)
