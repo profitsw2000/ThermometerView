@@ -1,13 +1,190 @@
 package ru.profitsw2000.graphtab.presentation.view.utils
 
+import android.content.Context
+import android.graphics.Color
+import android.view.GestureDetector
+import android.view.MotionEvent
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import ru.profitsw2000.core.view.GraphMarkerView
+import ru.profitsw2000.data.model.SensorHistoryDataModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.math.abs
 
 class LineChartConfigurator(
-    val lineChart: LineChart
+    val lineChart: LineChart,
+    val context: Context
 ) {
+    private lateinit var marker: GraphMarkerView
 
-    fun configureLineChart() {
-        lineChart.isDragEnabled = true
+    fun setupTouchListener(gestureDetector: GestureDetector) {
+        lineChart.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            // Allow chart to still handle its own touch events
+            false
+        }
     }
 
+    fun setupChart() {
+        setChartBehaviour()
+        configureXAxis()
+        configureLeftYAxis()
+        configureRightYAxis()
+        setChartDescription()
+        setChartLegend()
+        //setAnimation(1000)
+    }
+
+    fun setChartMarker(isVisible: Boolean) {
+        //Marker
+        marker = GraphMarkerView(context, ru.profitsw2000.core.R.layout.graph_marker_view)
+        marker.chartView = lineChart
+        if (isVisible) lineChart.marker = marker
+        else lineChart.marker = null
+    }
+
+    fun displayTemperatureData(
+        sensorHistoryDataModelList: List<SensorHistoryDataModel>
+    ) {
+        // Always sort by date ascending for the chart
+        val sortedList = sensorHistoryDataModelList.sortedBy { it.date.time }
+        if (sensorHistoryDataModelList.isEmpty()) {
+            lineChart.clear()
+            lineChart.invalidate()
+            return
+        }
+        setDataToChart(
+            getChartDataSet(
+                getEntriesList(
+                    sortedList
+                )
+            )
+        )
+        sortedList.run {
+            if (this.isNotEmpty()) configureViewPort(this)
+        }
+        lineChart.invalidate()
+    }
+
+    private fun setChartBehaviour() {
+        lineChart.setTouchEnabled(true)
+        lineChart.isDragEnabled = true
+        lineChart.setScaleEnabled(true)
+        lineChart.setPinchZoom(true)
+        lineChart.setDrawGridBackground(false)
+        lineChart.performClick()
+    }
+
+    private fun configureXAxis() {
+        // Configure X axis (Date/Time)
+        val xAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(true)
+        xAxis.gridColor = Color.LTGRAY
+        xAxis.textColor = Color.BLACK
+        xAxis.axisLineColor = Color.BLACK
+        xAxis.setDrawLabels(true)
+        xAxis.isGranularityEnabled = true
+        xAxis.granularity = 10*60f*1000f
+        xAxis.setLabelCount(5, true)
+        xAxis.valueFormatter = object : ValueFormatter() {
+            private val dateFormat = SimpleDateFormat("HH:mm dd.MM", Locale.getDefault())
+
+            override fun getFormattedValue(value: Float): String {
+                val timestamp = value.toLong()
+                return dateFormat.format(Date(timestamp))
+            }
+        }
+    }
+
+    private fun configureLeftYAxis() {
+        // Configure left Y axis (Temperature)
+        val leftAxis = lineChart.axisLeft
+        leftAxis.setDrawGridLines(true)
+        leftAxis.gridColor = Color.LTGRAY
+        leftAxis.textColor = Color.BLACK
+        leftAxis.axisLineColor = Color.BLACK
+        leftAxis.setDrawLabels(true)
+    }
+
+    private fun configureRightYAxis() {
+        // Configure right Y axis
+        val rightAxis = lineChart.axisRight
+        rightAxis.isEnabled = false
+    }
+
+    private fun setChartDescription() {
+        // Description
+        lineChart.description.isEnabled = true
+        lineChart.description.text = "Temperature Over Time"
+        lineChart.description.textColor = Color.BLACK
+    }
+
+    private fun setChartLegend() {
+        // Legend
+        lineChart.legend.isEnabled = true
+        lineChart.legend.textColor = Color.BLACK
+    }
+
+    private fun setAnimation(duration: Int) {
+        // Animation
+        lineChart.animateX(duration)
+    }
+
+    private fun getChartDataSet(entries: ArrayList<Entry>): LineDataSet {
+        // Configure dataset appearance
+        val dataSet = LineDataSet(entries, "Temperature (°C)")
+
+        dataSet.color = Color.RED
+        dataSet.valueTextColor = Color.BLACK
+        dataSet.lineWidth = 2f
+        dataSet.setCircleColor(Color.RED)
+        dataSet.circleRadius = 4f
+        dataSet.setDrawCircleHole(false)
+        dataSet.setDrawValues(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        dataSet.cubicIntensity = 0.2f
+
+        return dataSet
+    }
+
+    private fun getEntriesList(
+        sensorHistoryDataModelList: List<SensorHistoryDataModel>
+    ): ArrayList<Entry> {
+        val entries = ArrayList<Entry>()
+
+        sensorHistoryDataModelList.forEach { data ->
+            val xValue = data.date.time.toFloat()
+            val yValue = data.temperature.toFloat()
+            entries.add(Entry(xValue, yValue))
+        }
+        return entries
+    }
+
+    private fun setDataToChart(lineDataSet: LineDataSet) {
+        lineChart.data = LineData(lineDataSet)
+    }
+
+
+    private fun configureViewPort(
+        sensorHistoryDataModelList: List<SensorHistoryDataModel>
+    ) {
+        val first = sensorHistoryDataModelList.first()
+        val last = sensorHistoryDataModelList.last()
+        // Adjust Y axis based on data
+        val minTemp = sensorHistoryDataModelList.minOf { it.temperature }.toFloat()
+        val maxTemp = sensorHistoryDataModelList.maxOf { it.temperature }.toFloat()
+        val padding = (maxTemp - minTemp) * 0.1f // 10% padding
+
+        lineChart.xAxis.axisMinimum = first.date.time.toFloat()
+        lineChart.xAxis.axisMaximum = last.date.time.toFloat()
+        lineChart.axisLeft.axisMinimum = minTemp - padding
+        lineChart.axisLeft.axisMaximum = maxTemp + padding
+    }
 }
