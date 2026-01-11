@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +40,6 @@ class GraphFragment : Fragment() {
     private val binding
         get() = _binding!!
     private val graphViewModel: GraphViewModel by viewModel()
-    private lateinit var marker: GraphMarkerView
     // Gesture detection
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
@@ -51,7 +53,7 @@ class GraphFragment : Fragment() {
                 val diffY = e2.y - (e1?.y ?: 0f)
                 val newItemsNumber = diffX/(binding.lineChart.width/50)
                 // Only consider horizontal swipes
-                if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > abs(diffY) && !markerIsVisible) {
                     if (abs(diffX) > 100 && abs(velocityX) > 50) {
                         if (diffX > 0) {
                             // Swipe right - load older data
@@ -70,6 +72,12 @@ class GraphFragment : Fragment() {
     private val lineChartConfigurator: LineChartConfigurator by lazy {
         LineChartConfigurator(binding.lineChart, requireContext())
     }
+    private var markerIsVisible = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,8 +93,34 @@ class GraphFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         lineChartConfigurator.setupTouchListener(gestureDetector)
         lineChartConfigurator.setupChart()
-        lineChartConfigurator.setChartMarker(false)
+        lineChartConfigurator.setChartMarker(markerIsVisible)
+        observeData()
         graphViewModel.loadData(0)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.graph_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.graph_mode -> {
+                markerIsVisible = !markerIsVisible
+                lineChartConfigurator.setChartMarker(markerIsVisible)
+                requireActivity().invalidateOptionsMenu()
+                true
+            }
+            else -> true
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        if (markerIsVisible)
+            menu.findItem(R.id.graph_mode).setIcon(ru.profitsw2000.core.R.drawable.drag_mode)
+        else
+            menu.findItem(R.id.graph_mode).setIcon(ru.profitsw2000.core.R.drawable.marker_mode)
     }
 
     private fun observeData() {
@@ -97,10 +131,18 @@ class GraphFragment : Fragment() {
     private fun renderData(sensorHistoryDataLoadState: SensorHistoryDataLoadState) {
         when(sensorHistoryDataLoadState) {
             is SensorHistoryDataLoadState.Error -> {}
-            SensorHistoryDataLoadState.Loading -> {}
-            is SensorHistoryDataLoadState.Success -> lineChartConfigurator.displayTemperatureData(
-                sensorHistoryDataLoadState.sensorHistoryDataModelList
-            )
+            SensorHistoryDataLoadState.Loading -> setProgressBarState(true)
+            is SensorHistoryDataLoadState.Success -> {
+                setProgressBarState(false)
+                lineChartConfigurator.displayTemperatureData(
+                    sensorHistoryDataLoadState.sensorHistoryDataModelList
+                )
+            }
         }
+    }
+
+    private fun setProgressBarState(isVisible: Boolean) = with(binding) {
+        if (isVisible) progressBar.visibility = View.VISIBLE
+        else progressBar.visibility = View.GONE
     }
 }

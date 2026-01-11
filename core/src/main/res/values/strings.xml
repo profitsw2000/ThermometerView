@@ -115,4 +115,7 @@
     <string name="full_date_period_data_text">За всё время</string>
     <string name="history_table_date_range_picker_dialog_title_text">Выбрать временной период</string>
     <string name="history_table_date_range_picker_dialog_positive_button_text">Выбрать</string>
+    <string name="graph_mode_menu_item_title_text">Режим графика</string>
+    <string name="graph_data_load_error_text">Ошибка загрузки данных графика</string>
+    <string name="select_sensor_menu_item_title_text">Выбрать датчик</string>
 </resources>

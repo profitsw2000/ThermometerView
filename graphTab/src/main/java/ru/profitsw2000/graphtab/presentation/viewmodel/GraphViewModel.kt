@@ -14,6 +14,8 @@ import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
 
+const val SENSOR_HISTORY_DATA_LOAD_SIZE = 48
+
 class GraphViewModel(
     private val sensorHistoryInteractor: SensorHistoryInteractor,
     private val sensorHistoryMapper: SensorHistoryMapper
@@ -44,7 +46,7 @@ class GraphViewModel(
             try {
                 val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
                     sensorId = 0x28FF5CCAC11704C5,
-                    limit = 48,
+                    limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
                     offset = 0,
                     false
                 )
@@ -68,7 +70,7 @@ class GraphViewModel(
             try {
                 val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
                     sensorId = 0x28FF5CCAC11704C5,
-                    limit = 48,
+                    limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
                     offset = offset,
                     false
                 )
