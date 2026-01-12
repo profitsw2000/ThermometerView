@@ -13,6 +13,7 @@ import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
+import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
 
 const val SENSOR_HISTORY_DATA_LOAD_SIZE = 48
 
@@ -23,13 +24,17 @@ class GraphViewModel(
     //coroutine
     private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var lifecycleScope: CoroutineScope
-
+    val selectedSensorIdsMutableList = mutableListOf<Long>()
     var offset = 0
 
     //LiveData
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
         MutableLiveData<SensorHistoryDataLoadState>()
     val sensorHistoryListLiveData: LiveData<SensorHistoryDataLoadState> by this::_sensorHistoryListLiveData
+
+    init {
+
+    }
 
     fun setCoroutineScope(coroutineScope: CoroutineScope) {
         this.lifecycleScope = coroutineScope
@@ -81,6 +86,18 @@ class GraphViewModel(
                 )
             } catch (exc: Exception) {
                 SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
+            }
+        }
+        return deferred.await()
+    }
+
+    private suspend fun getSensorIdsList(): List<Long> {
+        val deferred: Deferred<List<Long>> = ioCoroutineScope.async {
+            try {
+                sensorHistoryInteractor.getAllSensorIds(false)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                arrayListOf<Long>()
             }
         }
         return deferred.await()
