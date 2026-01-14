@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
+import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
@@ -18,6 +19,48 @@ interface SensorHistoryDao {
             "ORDER BY SensorHistoryDataEntity.date DESC " +
             "LIMIT :limit OFFSET :offset")
     suspend fun getSimpleSensorHistoryList(sensorId: Long, limit: Int, offset: Int): List<SensorHistoryDataEntity>
+
+    suspend fun getGraphFirstCurveSensorHistoryList(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return when {
+            filter.sensorIdList.isNotEmpty() -> getGraphFirstCurveSensorHistoryListById(filter, limit, offset)
+            filter.letterCodeList.isNotEmpty() -> TODO()
+            else -> arrayListOf<SensorHistoryDataEntity>()
+        }
+    }
+
+    suspend fun getGraphFirstCurveSensorHistoryListById(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int
+    ) : List<SensorHistoryDataEntity> {
+        return if (filter.timeFrameMillis == TEN_MINUTES_FRAME_MILLIS)
+            getGraphFirstCurveSensorHistoryListByIdBaseTimeFrame(filter, limit, offset)
+        else TODO()
+    }
+
+    suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrame(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return if (filter.fromDate == null || filter.toDate == null)
+            getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameAllDateRange(
+                filter.sensorIdList[0],
+                limit = limit,
+                offset = offset
+            )
+        else TODO()
+    }
+
+    suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameAllDateRange(
+        sensorId: Long,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
 
     suspend fun getSensorHistoryList(
         filter: SensorHistoryTableFilterRepository,
