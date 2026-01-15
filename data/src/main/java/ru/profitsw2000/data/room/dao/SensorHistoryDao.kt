@@ -63,7 +63,13 @@ interface SensorHistoryDao {
                 limit = limit,
                 offset = offset
             )
-        else TODO()
+        else getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameSelectedDateRange(
+            filter.sensorIdList[0],
+            filter.fromDate!!,
+            filter.toDate!!,
+            limit = limit,
+            offset = offset
+        )
     }
 
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrame(
@@ -74,10 +80,20 @@ interface SensorHistoryDao {
         return if (filter.fromDate == null || filter.toDate == null)
             getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAllDateRange(
                 filter.sensorIdList[0],
+                filter.timeFrameMillis,
+                filter.timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
-        else TODO()
+        else getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameSelectedDateRange(
+            filter.sensorIdList[0],
+            filter.timeFrameMillis,
+            filter.timeFrameDataObtainingMethod,
+            filter.fromDate!!,
+            filter.toDate!!,
+            limit = limit,
+            offset = offset
+        )
     }
 
     suspend fun getGraphFirstCurveSensorHistoryListByLetterBaseTimeFrame(
@@ -87,11 +103,17 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity> {
         return if (filter.fromDate == null || filter.toDate == null)
             getGraphFirstCurveSensorHistoryListByLetterBaseTimeFrameAllDateRange(
-                filter.sensorIdList[0],
+                filter.letterCodeList[0],
                 limit = limit,
                 offset = offset
             )
-        else TODO()
+        else getGraphFirstCurveSensorHistoryListByLetterBaseTimeFrameSelectedDateRange(
+            filter.letterCodeList[0],
+            filter.fromDate!!,
+            filter.toDate!!,
+            limit = limit,
+            offset = offset
+        )
     }
 
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrame(
@@ -101,11 +123,21 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity> {
         return if (filter.fromDate == null || filter.toDate == null)
             getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameAllDateRange(
-                filter.sensorIdList[0],
+                filter.letterCodeList[0],
+                filter.timeFrameMillis,
+                filter.timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
-        else TODO()
+        else getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameSelectedDateRange(
+            filter.letterCodeList[0],
+            filter.timeFrameMillis,
+            filter.timeFrameDataObtainingMethod,
+            filter.fromDate!!,
+            filter.toDate!!,
+            limit = limit,
+            offset = offset
+        )
     }
 
     suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameAllDateRange(
@@ -114,24 +146,65 @@ interface SensorHistoryDao {
         offset: Int
     ): List<SensorHistoryDataEntity>
 
+    suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameSelectedDateRange(
+        sensorId: Long,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAllDateRange(
         sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
 
     suspend fun getGraphFirstCurveSensorHistoryListByLetterBaseTimeFrameAllDateRange(
-        sensorId: Long,
+        letter: Int,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    suspend fun getGraphFirstCurveSensorHistoryListByLetterBaseTimeFrameSelectedDateRange(
+        letter: Int,
+        fromDate: Date,
+        toDate: Date,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
 
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameAllDateRange(
-        sensorId: Long,
+        letter: Int,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
 
+    suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameSelectedDateRange(
+        letter: Int,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    //Table functions
     suspend fun getSensorHistoryList(
         filter: SensorHistoryTableFilterRepository,
         limit: Int,
