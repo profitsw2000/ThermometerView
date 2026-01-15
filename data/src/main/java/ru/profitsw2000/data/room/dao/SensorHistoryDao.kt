@@ -140,12 +140,21 @@ interface SensorHistoryDao {
         )
     }
 
+    @Query("SELECT * FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset")
     suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameAllDateRange(
         sensorId: Long,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
 
+    @Query("SELECT * FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset")
     suspend fun getGraphFirstCurveSensorHistoryListByIdBaseTimeFrameSelectedDateRange(
         sensorId: Long,
         fromDate: Date,
@@ -160,9 +169,280 @@ interface SensorHistoryDao {
         timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return when(timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageAllDateRange(
+                sensorId,
+                timeFrameInMillis,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginAllDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndAllDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumAllDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumAllDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                limit = limit,
+                offset = offset
+            )
+        }
+    }
+
+    @Query("SELECT AVG(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageAllDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
+            "WINDOW w AS (" +
+            "   PARTITION BY" +
+            "       sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "       ORDER BY SensorHistoryDataEntity.date ASC)" +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginAllDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
+            "WINDOW w AS (" +
+            "   PARTITION BY" +
+            "       sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "       ORDER BY SensorHistoryDataEntity.date DESC)" +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndAllDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MAX(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumAllDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MIN(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumAllDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        limit: Int,
+        offset: Int
     ): List<SensorHistoryDataEntity>
 
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>{
+        return when(timeFrameDataObtainingMethod) {
+            TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageSelectedDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                fromDate,
+                toDate,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginSelectedDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                fromDate,
+                toDate,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndSelectedDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                fromDate,
+                toDate,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumSelectedDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                fromDate,
+                toDate,
+                limit = limit,
+                offset = offset
+            )
+            TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumSelectedDateRange(
+                sensorId,
+                timeFrameInMillis,
+                timeFrameDataObtainingMethod,
+                fromDate,
+                toDate,
+                limit = limit,
+                offset = offset
+            )
+        }
+    }
+
+    @Query("SELECT AVG(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
+            "WINDOW w AS (" +
+            "   PARTITION BY" +
+            "       sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "       ORDER BY SensorHistoryDataEntity.date ASC)" +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+            "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
+            "WINDOW w AS (" +
+            "   PARTITION BY" +
+            "       sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "       ORDER BY SensorHistoryDataEntity.date DESC)" +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MAX(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumSelectedDateRange(
+        sensorId: Long,
+        timeFrameInMillis: Long,
+        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
+        fromDate: Date,
+        toDate: Date,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity>
+
+    @Query("SELECT MIN(temperature) AS temperature, " +
+            "MIN(id) AS id, " +
+            "sensorId, localId, letterCode, MIN(date) AS date " +
+            "FROM SensorHistoryDataEntity " +
+            "WHERE sensorId LIKE :sensorId " +
+            "AND date BETWEEN (:fromDate) AND (:toDate)" +
+            "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
+            "ORDER BY SensorHistoryDataEntity.date DESC " +
+            "LIMIT :limit OFFSET :offset ")
+    suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
         timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
