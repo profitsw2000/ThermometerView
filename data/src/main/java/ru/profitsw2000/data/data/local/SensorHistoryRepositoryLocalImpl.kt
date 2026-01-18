@@ -13,12 +13,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.data.local.source.HistoryListPagingSource
+import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.database.AppDatabase
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
+import java.util.Date
 
 class SensorHistoryRepositoryLocalImpl(
     private val database: AppDatabase,
@@ -77,6 +79,23 @@ class SensorHistoryRepositoryLocalImpl(
 
     override suspend fun getHistoryDataEntitySize(): Int {
         return database.sensorHistoryDao.getSensorHistoryDataEntityCount()
+    }
+
+    override suspend fun getGraphFirstCurveSensorHistoryList(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        return database.sensorHistoryDao.getGraphFirstCurveSensorHistoryList(filter, limit, offset)
+    }
+
+    override suspend fun getGraphSubsequentCurvesSensorHistoryList(
+        sensorIndex: Int,
+        filter: SensorHistoryGraphFilterRepository,
+        fromDate: Date,
+        toDate: Date
+    ): List<SensorHistoryDataEntity> {
+        return database.sensorHistoryDao.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, filter, fromDate, toDate)
     }
 
     override fun invalidateDataSource() {

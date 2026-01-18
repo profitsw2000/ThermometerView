@@ -184,28 +184,24 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginAllDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndAllDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumAllDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumAllDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
@@ -241,7 +237,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginAllDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -260,7 +255,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndAllDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -276,7 +270,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumAllDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -292,7 +285,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumAllDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -310,7 +302,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageSelectedDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -319,7 +310,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginSelectedDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -328,7 +318,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndSelectedDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -337,7 +326,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumSelectedDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -346,7 +334,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumSelectedDateRange(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -367,7 +354,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameAverageSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -389,7 +375,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameBeginSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -411,7 +396,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameEndSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -430,7 +414,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMaximumSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -449,7 +432,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByIdCustomTimeFrameMinimumSelectedDateRange(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -467,7 +449,7 @@ interface SensorHistoryDao {
     ): List<SensorHistoryDataEntity>
 
     @Query("SELECT * FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
             "LIMIT :limit OFFSET :offset")
@@ -496,28 +478,24 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameBeginAllDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameEndAllDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMaximumAllDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMinimumAllDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 limit = limit,
                 offset = offset
             )
@@ -528,7 +506,7 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
             "LIMIT :limit OFFSET :offset ")
@@ -542,7 +520,7 @@ interface SensorHistoryDao {
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
             "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
             "   PARTITION BY" +
@@ -553,7 +531,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameBeginAllDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -561,7 +538,7 @@ interface SensorHistoryDao {
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
             "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
             "   PARTITION BY" +
@@ -572,7 +549,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameEndAllDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -581,14 +557,13 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMaximumAllDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -597,14 +572,13 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
             "LIMIT :limit OFFSET :offset ")
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMinimumAllDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity>
@@ -623,7 +597,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameAverageSelectedDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -632,7 +605,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameBeginSelectedDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -641,7 +613,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameEndSelectedDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -650,7 +621,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMaximumSelectedDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -659,7 +629,6 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMinimumSelectedDateRange(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate,
                 limit = limit,
@@ -672,7 +641,7 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
@@ -680,7 +649,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameAverageSelectedDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -690,7 +658,7 @@ interface SensorHistoryDao {
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
             "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
@@ -702,7 +670,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameBeginSelectedDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -712,7 +679,7 @@ interface SensorHistoryDao {
     @Query("SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
             "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis)" +
             "WINDOW w AS (" +
@@ -724,7 +691,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameEndSelectedDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -735,7 +701,7 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
@@ -743,7 +709,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMaximumSelectedDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -754,7 +719,7 @@ interface SensorHistoryDao {
             "MIN(id) AS id, " +
             "sensorId, localId, letterCode, MIN(date) AS date " +
             "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :letterCode " +
+            "WHERE letterCode LIKE :letterCode " +
             "AND date BETWEEN (:fromDate) AND (:toDate)" +
             "GROUP BY sensorId, (date + (3*60*60*1000))/(:timeFrameInMillis) " +
             "ORDER BY SensorHistoryDataEntity.date DESC " +
@@ -762,7 +727,6 @@ interface SensorHistoryDao {
     suspend fun getGraphFirstCurveSensorHistoryListByLetterCustomTimeFrameMinimumSelectedDateRange(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date,
         limit: Int,
@@ -859,35 +823,30 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameAverage(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameBegin(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameEnd(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameMaximum(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameMinimum(
                 sensorId,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
@@ -905,7 +864,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameAverage(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -924,7 +882,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameBegin(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -943,7 +900,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameEnd(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -959,7 +915,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameMaximum(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -975,7 +930,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByIdCustomTimeFrameMinimum(
         sensorId: Long,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -1001,35 +955,30 @@ interface SensorHistoryDao {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameAverage(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameBegin -> getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameBegin(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameEnd -> getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameEnd(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameMaximum(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameMinimum(
                 letterCode,
                 timeFrameInMillis,
-                timeFrameDataObtainingMethod,
                 fromDate,
                 toDate
             )
@@ -1047,7 +996,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameAverage(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -1066,7 +1014,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameBegin(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -1085,7 +1032,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameEnd(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -1101,7 +1047,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameMaximum(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>
@@ -1117,7 +1062,6 @@ interface SensorHistoryDao {
     suspend fun getGraphSubsequentCurvesSensorHistoryListByLetterCustomTimeFrameMinimum(
         letterCode: Int,
         timeFrameInMillis: Long,
-        timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>

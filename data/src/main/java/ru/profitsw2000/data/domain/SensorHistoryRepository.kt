@@ -3,8 +3,10 @@ package ru.profitsw2000.data.domain
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
+import java.util.Date
 
 interface SensorHistoryRepository {
 
@@ -23,6 +25,15 @@ interface SensorHistoryRepository {
     suspend fun getAllLetterCodes(): List<Int>
 
     suspend fun getHistoryDataEntitySize(): Int
+
+    suspend fun getGraphFirstCurveSensorHistoryList(filter: SensorHistoryGraphFilterRepository, limit: Int, offset: Int): List<SensorHistoryDataEntity>
+
+    suspend fun getGraphSubsequentCurvesSensorHistoryList(
+        sensorIndex: Int,
+        filter: SensorHistoryGraphFilterRepository,
+        fromDate: Date,
+        toDate: Date
+    ): List<SensorHistoryDataEntity>
 
     fun invalidateDataSource()
 

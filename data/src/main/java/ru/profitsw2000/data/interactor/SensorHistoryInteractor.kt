@@ -3,10 +3,12 @@ package ru.profitsw2000.data.interactor
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.domain.local.SensorHistoryRepositoryLocal
 import ru.profitsw2000.data.domain.remote.SensorHistoryRepositoryRemote
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
+import java.util.Date
 
 class SensorHistoryInteractor(
     val sensorHistoryRepositoryLocal: SensorHistoryRepositoryLocal,
@@ -57,6 +59,33 @@ class SensorHistoryInteractor(
     suspend fun getHistoryDataEntitySize(isRemote: Boolean): Int {
         return if (isRemote) sensorHistoryRepositoryRemote.getHistoryDataEntitySize()
         else sensorHistoryRepositoryLocal.getHistoryDataEntitySize()
+    }
+
+    suspend fun getGraphFirstCurveSensorHistoryList(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int,
+        isRemote: Boolean
+    ): List<SensorHistoryDataEntity> {
+        return if (isRemote) {
+            sensorHistoryRepositoryRemote.getGraphFirstCurveSensorHistoryList(filter, limit, offset)
+        } else {
+            sensorHistoryRepositoryLocal.getGraphFirstCurveSensorHistoryList(filter, limit, offset)
+        }
+    }
+
+    suspend fun getGraphSubsequentCurvesSensorHistoryList(
+        sensorIndex: Int,
+        filter: SensorHistoryGraphFilterRepository,
+        fromDate: Date,
+        toDate: Date,
+        isRemote: Boolean
+    ): List<SensorHistoryDataEntity> {
+        return if (isRemote) {
+            sensorHistoryRepositoryRemote.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, filter, fromDate, toDate)
+        } else {
+            sensorHistoryRepositoryLocal.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, filter, fromDate, toDate)
+        }
     }
 
     fun invalidateDataSource(isRemote: Boolean) {

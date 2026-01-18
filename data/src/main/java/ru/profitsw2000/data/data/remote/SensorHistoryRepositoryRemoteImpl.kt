@@ -3,9 +3,11 @@ package ru.profitsw2000.data.data.remote
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.domain.remote.SensorHistoryRepositoryRemote
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.room.entity.SensorHistoryDataEntity
+import java.util.Date
 
 class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     override suspend fun writeHistoryItem(sensorHistoryDataEntity: SensorHistoryDataEntity) {
@@ -41,6 +43,23 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     }
 
     override suspend fun getHistoryDataEntitySize(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getGraphFirstCurveSensorHistoryList(
+        filter: SensorHistoryGraphFilterRepository,
+        limit: Int,
+        offset: Int
+    ): List<SensorHistoryDataEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getGraphSubsequentCurvesSensorHistoryList(
+        sensorIndex: Int,
+        filter: SensorHistoryGraphFilterRepository,
+        fromDate: Date,
+        toDate: Date
+    ): List<SensorHistoryDataEntity> {
         TODO("Not yet implemented")
     }
 
