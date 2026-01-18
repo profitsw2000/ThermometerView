@@ -3,6 +3,7 @@ package ru.profitsw2000.graphtab.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,10 @@ class GraphViewModel(
     val sensorHistoryListLiveData: LiveData<SensorHistoryDataLoadState> by this::_sensorHistoryListLiveData
 
     init {
-
+        viewModelScope.launch {
+            sensorHistoryGraphFilterRepository.sensorIdList = getSensorIdsList()
+        }
+        loadData(0)
     }
 
     fun setCoroutineScope(coroutineScope: CoroutineScope) {
