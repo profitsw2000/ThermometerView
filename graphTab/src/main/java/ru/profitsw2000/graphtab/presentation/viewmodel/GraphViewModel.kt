@@ -30,6 +30,7 @@ class GraphViewModel(
     private lateinit var lifecycleScope: CoroutineScope
     val selectedSensorIdsMutableList = mutableListOf<Long>()
     var offset = 0
+    val string = "str" + 2 + 2
 
     //LiveData
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
@@ -40,6 +41,8 @@ class GraphViewModel(
         viewModelScope.launch {
             sensorHistoryGraphFilterRepository.sensorIdList = getSensorIdsList()
         }
+        if (sensorHistoryGraphFilterRepository.sensorIdList.isNotEmpty())
+            selectedSensorIdsMutableList.add(sensorHistoryGraphFilterRepository.sensorIdList[0])
         loadData(0)
     }
 
@@ -66,7 +69,6 @@ class GraphViewModel(
                     false
                 )
                 sensorHistoryMapper.map(sensorHistoryDataList)
-
             } catch (exc: Exception) {
                 _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
                 arrayListOf<SensorHistoryDataModel>()
