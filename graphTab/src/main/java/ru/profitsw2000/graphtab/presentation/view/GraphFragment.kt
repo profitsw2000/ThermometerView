@@ -95,7 +95,6 @@ class GraphFragment : Fragment() {
         lineChartConfigurator.setupChart()
         lineChartConfigurator.setChartMarker(markerIsVisible)
         observeData()
-        graphViewModel.loadData(0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -135,7 +134,7 @@ class GraphFragment : Fragment() {
             is SensorHistoryDataLoadState.Success -> {
                 setProgressBarState(false)
                 lineChartConfigurator.displayTemperatureData(
-                    sensorHistoryDataLoadState.sensorHistoryDataModelList
+                    sensorHistoryDataLoadState.sensorHistoryDataModelList[0]
                 )
             }
         }

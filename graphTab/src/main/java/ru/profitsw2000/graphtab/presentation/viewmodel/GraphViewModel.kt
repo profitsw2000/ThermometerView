@@ -1,5 +1,6 @@
 package ru.profitsw2000.graphtab.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.definition.indexKey
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
@@ -41,14 +45,20 @@ class GraphViewModel(
     init {
         viewModelScope.launch {
             sensorHistoryGraphFilterRepository.sensorIdList = getSensorIdsList()
+            loadInitData()
         }
-        if (sensorHistoryGraphFilterRepository.sensorIdList.isNotEmpty())
-            selectedSensorIdsMutableList.add(sensorHistoryGraphFilterRepository.sensorIdList[0])
-        loadData(0)
     }
 
     fun setCoroutineScope(coroutineScope: CoroutineScope) {
         this.lifecycleScope = coroutineScope
+    }
+
+    private suspend fun loadInitData() {
+        val graphData = getFilteredSensorsHistoryLists()
+        if (graphData != null)
+            _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Success(graphData)
+        else
+            _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error("Database error.")
     }
 
     fun loadData(newItemsNumber: Int) {
@@ -60,24 +70,25 @@ class GraphViewModel(
             if (graphData != null)
                 _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Success(graphData)
             else
-                _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
-
+                _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error("Database error.")
         }
     }
 
     private suspend fun getFilteredSensorsHistoryLists(): List<List<SensorHistoryDataModel>>? {
         val firstSensorHistoryList = getFirstSensorHistoryList()
-        val result = if (firstSensorHistoryList != null) {
+        val result = if (!firstSensorHistoryList.isNullOrEmpty()) {
             val beginDate = firstSensorHistoryList.first().date
             val endDate = firstSensorHistoryList.last().date
             val subsequentSensorsHistoryLists = getSubsequentHistoryLists(beginDate, endDate)
-            listOf(firstSensorHistoryList) + subsequentSensorsHistoryLists
+
+            if (subsequentSensorsHistoryLists.isNullOrEmpty()) null
+            else listOf(firstSensorHistoryList) + subsequentSensorsHistoryLists
         } else null
 
         return result
     }
 
-    private suspend fun getFirstSensorHistoryList(): List<SensorHistoryDataModel>? {
+    private suspend fun getFirstSensorHistoryList(): List<SensorHistoryDataModel>? = withContext(Dispatchers.IO) {
         val deferred: Deferred<List<SensorHistoryDataModel>?> = ioCoroutineScope.async {
             try {
                 val sensorHistoryDataList = sensorHistoryInteractor.getGraphFirstCurveSensorHistoryList(
@@ -91,96 +102,33 @@ class GraphViewModel(
                 null
             }
         }
-        return deferred.await()
+        return@withContext deferred.await()
     }
 
-    private suspend fun getSubsequentHistoryLists(fromDate: Date, toDate: Date): List<List<SensorHistoryDataModel>> {
-        val sensorsNumber = if (sensorHistoryGraphFilterRepository.sensorIdList.isNotEmpty())
-            sensorHistoryGraphFilterRepository.sensorIdList.size
-        else sensorHistoryGraphFilterRepository.letterCodeList.size
-        val deferredResults = (1 until sensorsNumber).map { index ->
-            ioCoroutineScope.async {
-                try {
-                    val sensorHistoryDataList =
-                        sensorHistoryInteractor.getGraphSubsequentCurvesSensorHistoryList(
+    private suspend fun getSubsequentHistoryLists(
+        fromDate: Date,
+        toDate: Date
+    ): List<List<SensorHistoryDataModel>>? = withContext(Dispatchers.IO) {
+        runCatching {
+            coroutineScope {
+                val sensorsNumber = if (sensorHistoryGraphFilterRepository.sensorIdList.isNotEmpty())
+                    sensorHistoryGraphFilterRepository.sensorIdList.size
+                else sensorHistoryGraphFilterRepository.letterCodeList.size
+
+                (1 until sensorsNumber).map { index ->
+                    async {
+                        val sensorHistoryDataList = sensorHistoryInteractor.getGraphSubsequentCurvesSensorHistoryList(
                             sensorIndex = index,
                             filter = sensorHistoryGraphFilterRepository,
                             fromDate = fromDate,
                             toDate = toDate,
                             isRemote = false
                         )
-                    sensorHistoryMapper.map(
-                        sensorHistoryDataList
-                    )
-                } catch (exc: Exception) {
-                    null
-                }
+                        sensorHistoryMapper.map(sensorHistoryDataList)
+                    }
+                }.awaitAll()
             }
-        }
-        return deferredResults.awaitAll().filterNotNull()
-    }
-
-    private suspend fun getOneSensorHistoryListById(newItemsNumber: Int): List<SensorHistoryDataModel> {
-        val deferred: Deferred<List<SensorHistoryDataModel>> = ioCoroutineScope.async {
-            try {
-                val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
-                    sensorId = sensorHistoryGraphFilterRepository.sensorIdList[0],
-                    limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
-                    offset = offset,
-                    false
-                )
-                sensorHistoryMapper.map(sensorHistoryDataList)
-            } catch (exc: Exception) {
-                _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
-                arrayListOf<SensorHistoryDataModel>()
-            }
-        }
-        return deferred.await()
-    }
-
-    private suspend fun getMultipleSensorsHistoryDataListById(newItemsNumber: Int): List<List<SensorHistoryDataModel>> {
-        val masterSensorHistoryDataList = getOneSensorHistoryDataListById(newItemsNumber)
-        val begin = masterSensorHistoryDataList.last().date
-        val end = masterSensorHistoryDataList.first().date
-        val slaveSensorIdsList = sensorHistoryGraphFilterRepository.sensorIdList.drop(1)
-        val deferredResults = slaveSensorIdsList.map { sensorId ->
-            ioCoroutineScope.async {
-                try {
-                    val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
-                        sensorId = sensorId,
-                        limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
-                        offset = offset,
-                        false
-                    )
-                    sensorHistoryMapper.map(
-                        sensorHistoryDataList
-                    )
-                } catch (exc: Exception) {
-                    _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
-                    arrayListOf<SensorHistoryDataModel>()
-                }
-            }
-        }
-        return deferredResults.awaitAll()
-
-/*        val deferred: Deferred<SensorHistoryDataLoadState> = ioCoroutineScope.async {
-            try {
-                val sensorHistoryDataList = sensorHistoryInteractor.getSimpleSensorHistoryList(
-                    sensorId = 0x28FF5CCAC11704C5,
-                    limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
-                    offset = offset,
-                    false
-                )
-                SensorHistoryDataLoadState.Success(
-                    sensorHistoryMapper.map(
-                        sensorHistoryDataList
-                    )
-                )
-            } catch (exc: Exception) {
-                SensorHistoryDataLoadState.Error(exc.message ?: "Unknown error.")
-            }
-        }
-        return deferred.await()*/
+        }.getOrNull()
     }
 
     private suspend fun getSensorIdsList(): List<Long> {

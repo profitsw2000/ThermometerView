@@ -1,9 +1,11 @@
 package ru.profitsw2000.data.room.dao
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
