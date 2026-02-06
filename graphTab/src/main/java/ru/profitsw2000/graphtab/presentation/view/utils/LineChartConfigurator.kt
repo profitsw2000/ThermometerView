@@ -19,9 +19,13 @@ import kotlin.math.abs
 
 class LineChartConfigurator(
     val lineChart: LineChart,
+    val sensorHistoryData: List<List<SensorHistoryDataModel>>,
     val context: Context
 ) {
     private lateinit var marker: GraphMarkerView
+    private val sensorsNumber: Int by lazy {
+        sensorHistoryData.size
+    }
 
     fun setupTouchListener(gestureDetector: GestureDetector) {
         lineChart.setOnTouchListener { _, event ->
@@ -116,6 +120,7 @@ class LineChartConfigurator(
     private fun configureRightYAxis() {
         // Configure right Y axis
         val rightAxis = lineChart.axisRight
+        if (size)
         rightAxis.isEnabled = false
     }
 
