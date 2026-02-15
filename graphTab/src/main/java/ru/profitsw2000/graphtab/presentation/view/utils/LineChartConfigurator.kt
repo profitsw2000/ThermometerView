@@ -54,6 +54,12 @@ class LineChartConfigurator(
     }
 
     fun displayTemperatureData(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ) {
+        if ()
+    }
+
+    fun displayTemperatureData(
         sensorHistoryDataModelList: List<SensorHistoryDataModel>
     ) {
         // Always sort by date ascending for the chart
@@ -120,8 +126,13 @@ class LineChartConfigurator(
     private fun configureRightYAxis() {
         // Configure right Y axis
         val rightAxis = lineChart.axisRight
-        if (size)
-        rightAxis.isEnabled = false
+        if (sensorsNumber > 1) {
+            rightAxis.setDrawGridLines(true)
+            rightAxis.gridColor = Color.LTGRAY
+            rightAxis.textColor = Color.BLACK
+            rightAxis.axisLineColor = Color.DKGRAY
+            rightAxis.setDrawLabels(true)
+        } else rightAxis.isEnabled = false
     }
 
     private fun setChartDescription() {
@@ -191,5 +202,11 @@ class LineChartConfigurator(
         lineChart.xAxis.axisMaximum = last.date.time.toFloat()
         lineChart.axisLeft.axisMinimum = minTemp - padding
         lineChart.axisLeft.axisMaximum = maxTemp + padding
+    }
+
+    private fun configureViewPort(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ) {
+
     }
 }
