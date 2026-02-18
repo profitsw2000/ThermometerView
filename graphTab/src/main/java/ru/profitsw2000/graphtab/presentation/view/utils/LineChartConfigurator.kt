@@ -3,7 +3,6 @@ package ru.profitsw2000.graphtab.presentation.view.utils
 import android.content.Context
 import android.graphics.Color
 import android.view.GestureDetector
-import android.view.MotionEvent
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -15,7 +14,6 @@ import ru.profitsw2000.data.model.SensorHistoryDataModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.abs
 
 class LineChartConfigurator(
     val lineChart: LineChart,
@@ -56,7 +54,7 @@ class LineChartConfigurator(
     fun displayTemperatureData(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ) {
-        if ()
+
     }
 
     fun displayTemperatureData(
@@ -207,6 +205,50 @@ class LineChartConfigurator(
     private fun configureViewPort(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ) {
+        val first = sensorHistoryData[0].first()
+        val last = sensorHistoryData[0].last()
 
+        var minLeftTemp = 125f //sensorHistoryData[0].minOf { it.temperature }.toFloat()
+        var maxLeftTemp = -55f //sensorHistoryData[0].maxOf { it.temperature }.toFloat()
+        var paddingLeft = 0f
+        var minRightTemp = -55f //sensorHistoryData[0].minOf { it.temperature }.toFloat()
+        var maxRightTemp = 125f //sensorHistoryData[0].maxOf { it.temperature }.toFloat()
+        var paddingRight = 0f
+
+        sensorHistoryData.forEachIndexed { index, models ->
+            val minTemp = getMinTemperature(models)
+            val maxTemp = getMaxTemperature(models)
+
+            if ((index%2) == 0) {
+                if (minTemp < minLeftTemp) minLeftTemp = minTemp
+                if (maxTemp > maxLeftTemp) maxLeftTemp = maxTemp
+            } else {
+                if (minTemp < minRightTemp) minRightTemp = minTemp
+                if (maxTemp > maxRightTemp) maxRightTemp = maxTemp
+            }
+        }
+        paddingLeft = (maxLeftTemp - minLeftTemp) * 0.1f // 10% padding
+        paddingRight = (maxRightTemp - minRightTemp) * 0.1f // 10% padding
+
+        lineChart.xAxis.axisMinimum = first.date.time.toFloat()
+        lineChart.xAxis.axisMaximum = last.date.time.toFloat()
+        lineChart.axisLeft.axisMinimum = minLeftTemp - paddingLeft
+        lineChart.axisLeft.axisMaximum = maxLeftTemp + paddingLeft
+        if (sensorsNumber > 1) {
+            lineChart.axisRight.axisMinimum = minLeftTemp - paddingLeft
+            lineChart.axisRight.axisMaximum = maxRightTemp - paddingRight
+        }
+    }
+
+    private fun getMinTemperature(
+        sensorHistoryDataModelList: List<SensorHistoryDataModel>
+    ): Float {
+        return sensorHistoryDataModelList.minOf { it.temperature }.toFloat()
+    }
+
+    private fun getMaxTemperature(
+        sensorHistoryDataModelList: List<SensorHistoryDataModel>
+    ): Float {
+        return sensorHistoryDataModelList.maxOf { it.temperature }.toFloat()
     }
 }
