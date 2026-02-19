@@ -207,48 +207,59 @@ class LineChartConfigurator(
     ) {
         val first = sensorHistoryData[0].first()
         val last = sensorHistoryData[0].last()
+        var minLeftTemp: Float? = sensorHistoryData[0].minOf { it.temperature }.toFloat() ?: null
+        var maxLeftTemp: Float? = sensorHistoryData[0].maxOf { it.temperature }.toFloat() ?: null
+        var minRightTemp: Float? = sensorHistoryData[1].minOf { it.temperature }.toFloat() ?: null
+        var maxRightTemp: Float? = sensorHistoryData[1].maxOf { it.temperature }.toFloat() ?: null
 
-        var minLeftTemp = 125f //sensorHistoryData[0].minOf { it.temperature }.toFloat()
-        var maxLeftTemp = -55f //sensorHistoryData[0].maxOf { it.temperature }.toFloat()
-        var paddingLeft = 0f
-        var minRightTemp = -55f //sensorHistoryData[0].minOf { it.temperature }.toFloat()
-        var maxRightTemp = 125f //sensorHistoryData[0].maxOf { it.temperature }.toFloat()
-        var paddingRight = 0f
-
-        sensorHistoryData.forEachIndexed { index, models ->
-            val minTemp = getMinTemperature(models)
-            val maxTemp = getMaxTemperature(models)
-
-            if ((index%2) == 0) {
-                if (minTemp < minLeftTemp) minLeftTemp = minTemp
-                if (maxTemp > maxLeftTemp) maxLeftTemp = maxTemp
+        getExtremumValues(sensorHistoryData).forEachIndexed { index, pair ->
+            if (index%2 == 0) {
+                when {
+                    maxLeftTemp == null -> maxLeftTemp = pair.first
+                    maxLeftTemp < pair.first -> maxLeftTemp = pair.first
+                }
+                when {
+                    minLeftTemp == null -> minLeftTemp = pair.second
+                    minLeftTemp < pair.second -> minLeftTemp = pair.second
+                }
             } else {
-                if (minTemp < minRightTemp) minRightTemp = minTemp
-                if (maxTemp > maxRightTemp) maxRightTemp = maxTemp
+                when {
+                    maxRightTemp == null -> maxRightTemp = pair.first
+                    maxRightTemp < pair.first -> maxRightTemp = pair.first
+                }
+                when {
+                    minRightTemp == null -> minRightTemp = pair.second
+                    minRightTemp < pair.second -> minRightTemp = pair.second
+                }
             }
         }
-        paddingLeft = (maxLeftTemp - minLeftTemp) * 0.1f // 10% padding
-        paddingRight = (maxRightTemp - minRightTemp) * 0.1f // 10% padding
 
         lineChart.xAxis.axisMinimum = first.date.time.toFloat()
         lineChart.xAxis.axisMaximum = last.date.time.toFloat()
-        lineChart.axisLeft.axisMinimum = minLeftTemp - paddingLeft
-        lineChart.axisLeft.axisMaximum = maxLeftTemp + paddingLeft
-        if (sensorsNumber > 1) {
-            lineChart.axisRight.axisMinimum = minLeftTemp - paddingLeft
+        if (minLeftTemp != null && maxLeftTemp != null) {
+            val paddingLeft = (maxLeftTemp - minLeftTemp) * 0.1f
+            lineChart.axisLeft.axisMinimum = minLeftTemp - paddingLeft
+            lineChart.axisLeft.axisMaximum = maxLeftTemp + paddingLeft
+        }
+        if (minRightTemp != null && maxRightTemp != null) {
+            val paddingRight = (maxRightTemp - minRightTemp) * 0.1f // 10% padding
+            lineChart.axisRight.axisMinimum = minRightTemp - paddingRight
             lineChart.axisRight.axisMaximum = maxRightTemp - paddingRight
         }
     }
 
-    private fun getMinTemperature(
-        sensorHistoryDataModelList: List<SensorHistoryDataModel>
-    ): Float {
-        return sensorHistoryDataModelList.minOf { it.temperature }.toFloat()
-    }
-
-    private fun getMaxTemperature(
-        sensorHistoryDataModelList: List<SensorHistoryDataModel>
-    ): Float {
-        return sensorHistoryDataModelList.maxOf { it.temperature }.toFloat()
+    private fun getExtremumValues(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ): List<Pair<Float, Float>> {
+        val extremumValuesList = mutableListOf<Pair<Float, Float>>()
+        sensorHistoryData.forEach {
+            extremumValuesList.add(
+                Pair(
+                    it.maxOf { it.temperature }.toFloat(),
+                    it.minOf { it.temperature }.toFloat()
+                )
+            )
+        }
+        return extremumValuesList
     }
 }
