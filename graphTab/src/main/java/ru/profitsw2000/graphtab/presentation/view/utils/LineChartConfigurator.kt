@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.GestureDetector
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -24,6 +25,14 @@ class LineChartConfigurator(
     private val sensorsNumber: Int by lazy {
         sensorHistoryData.size
     }
+    private val colors = listOf(
+        Color.BLUE,
+        Color.RED,
+        Color.GREEN,
+        Color.YELLOW,
+        Color.MAGENTA,
+        Color.BLACK
+    )
 
     fun setupTouchListener(gestureDetector: GestureDetector) {
         lineChart.setOnTouchListener { _, event ->
@@ -54,6 +63,27 @@ class LineChartConfigurator(
     fun displayTemperatureData(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ) {
+        val dataSets = mutableListOf<LineDataSet>()
+        if (sensorHistoryData.isEmpty()){
+            lineChart.clear()
+            lineChart.invalidate()
+            return
+        }
+
+        sensorHistoryData.forEachIndexed { index, models ->
+            val entries = getEntriesList(models)
+            val dataSet = getChartDataSet(entries, colors[index%6])
+
+            if (index%2 == 0) {
+                dataSet.axisDependency = YAxis.AxisDependency.LEFT
+            } else {
+                dataSet.axisDependency = YAxis.AxisDependency.RIGHT
+            }
+            dataSets.add(dataSet)
+        }
+
+        configureViewPort(sensorHistoryData)
+        lineChart.invalidate()
 
     }
 
@@ -78,6 +108,19 @@ class LineChartConfigurator(
             if (this.isNotEmpty()) configureViewPort(this)
         }
         lineChart.invalidate()
+    }
+
+    private fun getSeparatedSensorHistoryData(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ): Pair<List<List<SensorHistoryDataModel>>, List<List<SensorHistoryDataModel>>> {
+        val leftAxisData = mutableListOf<List<SensorHistoryDataModel>>()
+        val rightAxisData = mutableListOf<List<SensorHistoryDataModel>>()
+
+        sensorHistoryData.forEachIndexed { index, models ->
+            if (index%2 == 0) leftAxisData.add(models)
+            else rightAxisData.add(models)
+        }
+        return Pair(leftAxisData, rightAxisData)
     }
 
     private fun setChartBehaviour() {
@@ -151,14 +194,14 @@ class LineChartConfigurator(
         lineChart.animateX(duration)
     }
 
-    private fun getChartDataSet(entries: ArrayList<Entry>): LineDataSet {
+    private fun getChartDataSet(entries: ArrayList<Entry>, color: Int): LineDataSet {
         // Configure dataset appearance
         val dataSet = LineDataSet(entries, "Temperature (°C)")
 
-        dataSet.color = Color.RED
+        dataSet.color = color
         dataSet.valueTextColor = Color.BLACK
         dataSet.lineWidth = 2f
-        dataSet.setCircleColor(Color.RED)
+        dataSet.setCircleColor(color)
         dataSet.circleRadius = 4f
         dataSet.setDrawCircleHole(false)
         dataSet.setDrawValues(false)
@@ -173,7 +216,7 @@ class LineChartConfigurator(
     ): ArrayList<Entry> {
         val entries = ArrayList<Entry>()
 
-        sensorHistoryDataModelList.forEach { data ->
+        sensorHistoryDataModelList.sortedBy { it.date.time }.forEach { data ->
             val xValue = data.date.time.toFloat()
             val yValue = data.temperature.toFloat()
             entries.add(Entry(xValue, yValue))
@@ -207,8 +250,8 @@ class LineChartConfigurator(
     ) {
         val first = sensorHistoryData[0].first()
         val last = sensorHistoryData[0].last()
-        var minLeftTemp: Float? = sensorHistoryData[0].minOf { it.temperature }.toFloat() ?: null
-        var maxLeftTemp: Float? = sensorHistoryData[0].maxOf { it.temperature }.toFloat() ?: null
+        var minLeftTemp: Float? = sensorHistoryData[0].minOf { it.temperature }.toFloat()
+        var maxLeftTemp: Float? = sensorHistoryData[0].maxOf { it.temperature }.toFloat()
         var minRightTemp: Float? = sensorHistoryData[1].minOf { it.temperature }.toFloat() ?: null
         var maxRightTemp: Float? = sensorHistoryData[1].maxOf { it.temperature }.toFloat() ?: null
 
@@ -246,6 +289,40 @@ class LineChartConfigurator(
             lineChart.axisRight.axisMinimum = minRightTemp - paddingRight
             lineChart.axisRight.axisMaximum = maxRightTemp - paddingRight
         }
+    }
+
+    private fun configureLeftViewPort(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ) {
+        var minTemp: Float = sensorHistoryData[0].minOf { it.temperature }.toFloat()
+        var maxTemp: Float = sensorHistoryData[0].maxOf { it.temperature }.toFloat()
+
+        getExtremumValues(sensorHistoryData).forEachIndexed { index, pair ->
+            if (index%2 == 0) {
+                if (maxTemp < pair.first) maxTemp = pair.first
+                if (minTemp > pair.second) minTemp = pair.second
+            }
+        }
+        val paddingLeft = (maxTemp - minTemp) * 0.1f
+        lineChart.axisLeft.axisMinimum = minTemp - paddingLeft
+        lineChart.axisLeft.axisMaximum = maxTemp + paddingLeft
+    }
+
+    private fun configureRightViewPort(
+        sensorHistoryData: List<List<SensorHistoryDataModel>>
+    ) {
+        var minTemp: Float = sensorHistoryData[1].minOf { it.temperature }.toFloat()
+        var maxTemp: Float = sensorHistoryData[1].maxOf { it.temperature }.toFloat()
+
+        getExtremumValues(sensorHistoryData).forEachIndexed { index, pair ->
+            if (index%2 == 1) {
+                if (maxTemp < pair.first) maxTemp = pair.first
+                if (minTemp > pair.second) minTemp = pair.second
+            }
+        }
+        val paddingLeft = (maxTemp - minTemp) * 0.1f
+        lineChart.axisRight.axisMinimum = minTemp - paddingLeft
+        lineChart.axisRight.axisMaximum = maxTemp + paddingLeft
     }
 
     private fun getExtremumValues(
