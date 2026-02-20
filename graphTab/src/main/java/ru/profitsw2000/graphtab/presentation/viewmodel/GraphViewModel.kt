@@ -21,8 +21,10 @@ import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
-import ru.profitsw2000.data.model.state.filterscreen.SensorIdsLoadState
+import ru.profitsw2000.data.model.state.sensorfilterscreen.LetterCodesLoadState
+import ru.profitsw2000.data.model.state.sensorfilterscreen.SensorIdsLoadState
 import java.util.Date
+import kotlin.getValue
 
 const val SENSOR_HISTORY_DATA_LOAD_SIZE = 48
 
@@ -41,8 +43,14 @@ class GraphViewModel(
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
         MutableLiveData<SensorHistoryDataLoadState>()
     val sensorHistoryListLiveData: LiveData<SensorHistoryDataLoadState> by this::_sensorHistoryListLiveData
-    private val _sensorIdsListLiveData: MutableLiveData<>
 
+    private val _sensorIdsListLiveData: MutableLiveData<SensorIdsLoadState> =
+        MutableLiveData<SensorIdsLoadState>()
+    val sensorIdsListLiveData: LiveData<SensorIdsLoadState> by this::_sensorIdsListLiveData
+
+    private val _letterCodesListLiveData: MutableLiveData<LetterCodesLoadState> =
+        MutableLiveData<LetterCodesLoadState>()
+    val letterCodesListLiveData: LiveData<LetterCodesLoadState> by this::_letterCodesListLiveData
 
     init {
         viewModelScope.launch {
@@ -74,6 +82,47 @@ class GraphViewModel(
             else
                 _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error("Database error.")
         }
+    }
+
+    fun loadSensorsIdsAndLetters() {
+        _sensorIdsListLiveData.value = SensorIdsLoadState.Loading
+        _letterCodesListLiveData.value = LetterCodesLoadState.Loading
+        loadSensorIds()
+        loadLetterCodes()
+    }
+
+    private fun loadSensorIds() {
+        viewModelScope.launch {
+            val sensorIds = getSensorIdsList()
+            if (sensorIds != null)
+                _sensorIdsListLiveData.value = SensorIdsLoadState.Success()
+            else
+                _sensorIdsListLiveData.value = SensorIdsLoadState.Error
+        }
+    }
+
+    private fun loadLetterCodes() {
+        viewModelScope.launch {
+            val letterCodes = getLetterCodesList()
+            if (letterCodes != null)
+                _letterCodesListLiveData.value = LetterCodesLoadState.Success()
+            else
+                _letterCodesListLiveData.value = LetterCodesLoadState.Error
+        }
+    }
+
+    private fun getSensorIdsListPair(
+        sensorIdsList: List<Long>
+    ): List<Pair<Long, Boolean>> {
+       sensorIdsList.forEach { sensorId ->
+           if (sensorHistoryGraphFilterRepository.sensorIdList.contains(sensorId))
+       }
+    }
+
+    private fun getLetterCodesListPair(
+        letterCodesList: List<Long>
+    ): List<Pair<Int, Boolean>> {
+
     }
 
     private suspend fun getFilteredSensorsHistoryLists(): List<List<SensorHistoryDataModel>>? {
@@ -143,6 +192,19 @@ class GraphViewModel(
             }
         }
         return deferred.await()
+    }
+
+    private suspend fun getLetterCodesList(): List<Int>? = withContext(Dispatchers.IO) {
+        coroutineScope {
+            async {
+                try {
+                    sensorHistoryInteractor.getAllLetterCodes(false)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }.await()
+        }
     }
 
 }
