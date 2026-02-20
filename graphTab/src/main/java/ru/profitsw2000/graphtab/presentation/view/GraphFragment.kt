@@ -1,8 +1,6 @@
 package ru.profitsw2000.graphtab.presentation.view
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,26 +10,14 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.profitsw2000.core.utils.constants.TAG
-import ru.profitsw2000.core.view.GraphMarkerView
-import ru.profitsw2000.data.model.SensorHistoryDataModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
 import ru.profitsw2000.graphtab.R
 import ru.profitsw2000.graphtab.databinding.FragmentGraphBinding
 import ru.profitsw2000.graphtab.presentation.view.utils.LineChartConfigurator
 import ru.profitsw2000.graphtab.presentation.viewmodel.GraphViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlin.math.abs
 
 class GraphFragment : Fragment() {
@@ -134,7 +120,7 @@ class GraphFragment : Fragment() {
             is SensorHistoryDataLoadState.Success -> {
                 setProgressBarState(false)
                 lineChartConfigurator.displayTemperatureData(
-                    sensorHistoryDataLoadState.sensorHistoryDataModelList[0]
+                    sensorHistoryDataLoadState.sensorHistoryDataModelList
                 )
             }
         }

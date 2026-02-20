@@ -15,4 +15,22 @@
         android:title="@string/select_sensor_menu_item_title_text"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/time_frame_selection"
+        android:icon="@drawable/drag_mode"
+        android:title="@string/time_frame_selection_menu_item_title_text"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/time_frame_data_obtaining_method_selection"
+        android:icon="@drawable/temp_sensor_icon"
+        android:title="@string/data_obtaining_method_selection_menu_item_title_text"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/date_period_selection"
+        android:icon="@drawable/temp_sensor_icon"
+        android:title="@string/date_selection_menu_item_title_text"
+        app:showAsAction="ifRoom"/>
+
 </menu>

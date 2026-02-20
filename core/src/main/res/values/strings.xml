@@ -118,4 +118,7 @@
     <string name="graph_mode_menu_item_title_text">Режим графика</string>
     <string name="graph_data_load_error_text">Ошибка загрузки данных графика</string>
     <string name="select_sensor_menu_item_title_text">Выбрать датчик</string>
+    <string name="time_frame_selection_menu_item_title_text">Выбор таймфрейма</string>
+    <string name="data_obtaining_method_selection_menu_item_title_text">Выбор способа вычисления</string>
+    <string name="date_selection_menu_item_title_text">Выбор даты</string>
 </resources>
