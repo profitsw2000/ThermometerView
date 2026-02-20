@@ -41,6 +41,8 @@ class GraphViewModel(
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
         MutableLiveData<SensorHistoryDataLoadState>()
     val sensorHistoryListLiveData: LiveData<SensorHistoryDataLoadState> by this::_sensorHistoryListLiveData
+    private val _sensorIdsListLiveData: MutableLiveData<>
+
 
     init {
         viewModelScope.launch {
