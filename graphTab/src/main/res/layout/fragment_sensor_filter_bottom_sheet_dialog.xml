@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.view.SensorFilterBottomSheetFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/sensor_selection_screen_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/king_blue"
+            android:textSize="@dimen/devices_list_title_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/sensors_title_text"/>
+
+        <TextView
+            android:id="@+id/serial_number_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/serial_number_title_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sensor_selection_screen_title_text_view" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/serial_number_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_section_title_text_view" />
+
+        <View
+            android:id="@+id/filter_elements_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_divider_thickness_size"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:background="@color/light_king_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_selection_chip_group" />
+
+        <TextView
+            android:id="@+id/letter_section_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/letter_section_title_text"
+            android:textSize="@dimen/filter_section_title_size"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_elements_divider" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/letter_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_section_title_text_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

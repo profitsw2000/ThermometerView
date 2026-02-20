@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
 import ru.profitsw2000.graphtab.R
@@ -25,7 +26,7 @@ class GraphFragment : Fragment() {
     private var _binding: FragmentGraphBinding? = null
     private val binding
         get() = _binding!!
-    private val graphViewModel: GraphViewModel by viewModel()
+    private val graphViewModel: GraphViewModel by activityViewModel()
     // Gesture detection
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
