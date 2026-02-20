@@ -96,6 +96,18 @@ class GraphFragment : Fragment() {
                 requireActivity().invalidateOptionsMenu()
                 true
             }
+            R.id.sensor_selection -> {
+                true
+            }
+            R.id.time_frame_selection -> {
+                true
+            }
+            R.id.time_frame_data_obtaining_method_selection -> {
+                true
+            }
+            R.id.date_period_selection -> {
+                true
+            }
             else -> true
         }
     }

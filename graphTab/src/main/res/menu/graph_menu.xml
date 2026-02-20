@@ -17,19 +17,19 @@
 
     <item
         android:id="@+id/time_frame_selection"
-        android:icon="@drawable/drag_mode"
+        android:icon="@drawable/time_frame_selection_icon"
         android:title="@string/time_frame_selection_menu_item_title_text"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/time_frame_data_obtaining_method_selection"
-        android:icon="@drawable/temp_sensor_icon"
+        android:icon="@drawable/data_calculation_method_icon"
         android:title="@string/data_obtaining_method_selection_menu_item_title_text"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/date_period_selection"
-        android:icon="@drawable/temp_sensor_icon"
+        android:icon="@drawable/calendar_icon"
         android:title="@string/date_selection_menu_item_title_text"
         app:showAsAction="ifRoom"/>
 
