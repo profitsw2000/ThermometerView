@@ -37,6 +37,7 @@ class GraphViewModel(
     private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var lifecycleScope: CoroutineScope
     val selectedSensorIdsMutableList = mutableListOf<Long>()
+    val letterCodesMutableList = mutableListOf<Int>()
     var offset = 0
 
     //LiveData
@@ -54,7 +55,8 @@ class GraphViewModel(
 
     init {
         viewModelScope.launch {
-            sensorHistoryGraphFilterRepository.sensorIdList = getSensorIdsList()
+            val sensorIdsList = getSensorIdsList()
+            sensorHistoryGraphFilterRepository.sensorIdList = sensorIdsList ?: listOf<Long>()
             loadInitData()
         }
     }
@@ -94,8 +96,11 @@ class GraphViewModel(
     private fun loadSensorIds() {
         viewModelScope.launch {
             val sensorIds = getSensorIdsList()
+
             if (sensorIds != null)
-                _sensorIdsListLiveData.value = SensorIdsLoadState.Success()
+                _sensorIdsListLiveData.value = SensorIdsLoadState.Success(
+                    getSensorIdsListPair(sensorIds)
+                )
             else
                 _sensorIdsListLiveData.value = SensorIdsLoadState.Error
         }
@@ -104,8 +109,11 @@ class GraphViewModel(
     private fun loadLetterCodes() {
         viewModelScope.launch {
             val letterCodes = getLetterCodesList()
+
             if (letterCodes != null)
-                _letterCodesListLiveData.value = LetterCodesLoadState.Success()
+                _letterCodesListLiveData.value = LetterCodesLoadState.Success(
+                    getLetterCodesListPair(letterCodes)
+                )
             else
                 _letterCodesListLiveData.value = LetterCodesLoadState.Error
         }
@@ -114,15 +122,27 @@ class GraphViewModel(
     private fun getSensorIdsListPair(
         sensorIdsList: List<Long>
     ): List<Pair<Long, Boolean>> {
-       sensorIdsList.forEach { sensorId ->
-           if (sensorHistoryGraphFilterRepository.sensorIdList.contains(sensorId))
-       }
+        val sensorIdsPairList = mutableListOf<Pair<Long, Boolean>>()
+
+        sensorIdsList.forEach { sensorId ->
+            sensorIdsPairList.add(
+                Pair(sensorId, sensorHistoryGraphFilterRepository.sensorIdList.contains(sensorId))
+            )
+        }
+        return sensorIdsPairList
     }
 
     private fun getLetterCodesListPair(
-        letterCodesList: List<Long>
+        letterCodesList: List<Int>
     ): List<Pair<Int, Boolean>> {
+        val letterCodesPairList = mutableListOf<Pair<Int, Boolean>>()
 
+        letterCodesList.forEach { letterCode ->
+            letterCodesPairList.add(
+                Pair(letterCode, sensorHistoryGraphFilterRepository.letterCodeList.contains(letterCode))
+            )
+        }
+        return letterCodesPairList
     }
 
     private suspend fun getFilteredSensorsHistoryLists(): List<List<SensorHistoryDataModel>>? {
@@ -182,16 +202,17 @@ class GraphViewModel(
         }.getOrNull()
     }
 
-    private suspend fun getSensorIdsList(): List<Long> {
-        val deferred: Deferred<List<Long>> = ioCoroutineScope.async {
-            try {
-                sensorHistoryInteractor.getAllSensorIds(false)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                arrayListOf<Long>()
-            }
+    private suspend fun getSensorIdsList(): List<Long>? = withContext(Dispatchers.IO) {
+        coroutineScope {
+            async {
+                try {
+                    sensorHistoryInteractor.getAllSensorIds(false)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }.await()
         }
-        return deferred.await()
     }
 
     private suspend fun getLetterCodesList(): List<Int>? = withContext(Dispatchers.IO) {
