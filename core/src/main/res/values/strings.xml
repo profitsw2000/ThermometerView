@@ -122,4 +122,6 @@
     <string name="data_obtaining_method_selection_menu_item_title_text">Выбор способа вычисления</string>
     <string name="date_selection_menu_item_title_text">Выбор даты</string>
     <string name="sensors_title_text">Датчики</string>
+    <string name="sensor_ids_load_error_text">Ошибка загрузки заводских номеров датчиков</string>
+    <string name="letter_codes_load_error_text">Ошибка загрузки буквенных кодов датчиков</string>
 </resources>

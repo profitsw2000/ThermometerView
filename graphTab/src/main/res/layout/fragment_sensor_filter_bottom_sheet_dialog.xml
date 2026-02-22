@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/filter_screen_padding_size">
 
         <TextView
             android:id="@+id/sensor_selection_screen_title_text_view"
@@ -46,6 +47,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/serial_number_section_title_text_view" />
 
+        <ProgressBar
+            android:id="@+id/sensor_id_load_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_section_title_text_view"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/sensor_id_load_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:text="@string/sensor_ids_load_error_text"
+            android:textColor="@color/red"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serial_number_section_title_text_view"
+            android:visibility="gone"/>
+
         <View
             android:id="@+id/filter_elements_divider"
             android:layout_width="match_parent"
@@ -76,6 +99,39 @@
             android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/letter_section_title_text_view" />
+
+        <ProgressBar
+            android:id="@+id/letter_codes_load_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_section_title_text_view"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/letter_codes_load_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            android:text="@string/letter_codes_load_error_text"
+            android:textColor="@color/red"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_section_title_text_view"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_filters_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/apply_filters_button_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letter_selection_chip_group" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
