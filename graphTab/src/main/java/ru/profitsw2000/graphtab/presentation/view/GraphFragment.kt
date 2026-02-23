@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.data.model.state.SensorHistoryDataLoadState
@@ -19,6 +20,7 @@ import ru.profitsw2000.graphtab.R
 import ru.profitsw2000.graphtab.databinding.FragmentGraphBinding
 import ru.profitsw2000.graphtab.presentation.view.utils.LineChartConfigurator
 import ru.profitsw2000.graphtab.presentation.viewmodel.GraphViewModel
+import ru.profitsw2000.navigator.Navigator
 import kotlin.math.abs
 
 class GraphFragment : Fragment() {
@@ -27,6 +29,7 @@ class GraphFragment : Fragment() {
     private val binding
         get() = _binding!!
     private val graphViewModel: GraphViewModel by activityViewModel()
+    private val navigator: Navigator by inject()
     // Gesture detection
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
@@ -98,6 +101,7 @@ class GraphFragment : Fragment() {
                 true
             }
             R.id.sensor_selection -> {
+                navigator.navigateToGraphSensorSelectionBottomSheet()
                 true
             }
             R.id.time_frame_selection -> {
