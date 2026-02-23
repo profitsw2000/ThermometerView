@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.data.model.state.sensorfilterscreen.LetterCodesLoadState
 import ru.profitsw2000.data.model.state.sensorfilterscreen.SensorIdsLoadState
 import ru.profitsw2000.graphtab.R
@@ -19,6 +20,12 @@ import ru.profitsw2000.graphtab.presentation.viewmodel.GraphViewModel
 
 class SensorFilterBottomSheetFragment : BottomSheetDialogFragment() {
 
+    @OptIn(ExperimentalStdlibApi::class)
+    private val hexFormat = HexFormat {
+        upperCase = true
+        number.removeLeadingZeros = true
+        number{ prefix = "0x" }
+    }
     private var _binding: FragmentSensorFilterBottomSheetDialogBinding? = null
     private val binding
         get() = _binding!!
@@ -54,6 +61,7 @@ class SensorFilterBottomSheetFragment : BottomSheetDialogFragment() {
     private fun initViews() = with(binding) {
         applyFiltersButton.setOnClickListener {
             graphViewModel.setSensorIdsAndLettersFilters()
+            this@SensorFilterBottomSheetFragment.dismiss()
         }
     }
 
@@ -100,19 +108,20 @@ class SensorFilterBottomSheetFragment : BottomSheetDialogFragment() {
         letterCodesLoadErrorTextView.visibility = View.VISIBLE
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun inflateSensorIdsChips(sensorIdsList: List<Pair<Long, Boolean>>) = with(binding) {
         sensorIdLoadProgressBar.visibility = View.GONE
         if (sensorIdsList.isNotEmpty()) {
             sensorIdsList.forEach { sensorId ->
                 val chip = Chip(requireContext())
 
-                chip.text = sensorId.first.toString()
+                chip.text = sensorId.first.toHexString(hexFormat)
                 chip.isChecked = sensorId.second
                 chip.textSize = 12f
                 chip.isCheckable = true
                 chip.setOnClickListener {
                     letterSelectionChipGroup.clearCheck()
-                    graphViewModel.addItemToSelectedSensorIdsList(sensorId.first)
+                    graphViewModel.changeSelectedSensorIdsList(sensorId.first, !((it as Chip).isChecked))
                 }
                 serialNumberSelectionChipGroup.addView(chip)
             }
@@ -125,17 +134,22 @@ class SensorFilterBottomSheetFragment : BottomSheetDialogFragment() {
             letterCodesList.forEach { letterCode ->
                 val chip = Chip(requireContext())
 
-                chip.text = letterCode.first.toString()
+                chip.text = getLetterFromCode(letterCode.first)
                 chip.isChecked = letterCode.second
                 chip.textSize = 12f
                 chip.isCheckable = true
                 chip.setOnClickListener {
                     serialNumberSelectionChipGroup.clearCheck()
-                    graphViewModel.addItemToSelectedLetterCodesList(letterCode.first)
+                    graphViewModel.changeSelectedLetterCodesList(letterCode.first, !((it as Chip).isChecked))
                 }
                 letterSelectionChipGroup.addView(chip)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

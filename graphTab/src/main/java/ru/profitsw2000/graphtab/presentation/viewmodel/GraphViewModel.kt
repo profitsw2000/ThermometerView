@@ -56,7 +56,8 @@ class GraphViewModel(
     init {
         viewModelScope.launch {
             val sensorIdsList = getSensorIdsList()
-            sensorHistoryGraphFilterRepository.sensorIdList = sensorIdsList ?: listOf<Long>()
+            if (!sensorIdsList.isNullOrEmpty())
+                sensorHistoryGraphFilterRepository.sensorIdList = listOf(sensorIdsList[0])
             loadInitData()
         }
     }
@@ -66,6 +67,7 @@ class GraphViewModel(
     }
 
     private suspend fun loadInitData() {
+        offset = 0
         val graphData = getFilteredSensorsHistoryLists()
         if (graphData != null)
             _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Success(graphData)
@@ -93,19 +95,26 @@ class GraphViewModel(
         loadLetterCodes()
     }
 
-    fun addItemToSelectedSensorIdsList(sensorId: Long) {
+    fun changeSelectedSensorIdsList(sensorId: Long, isRemove: Boolean) {
         selectedLetterCodesMutableList.clear()
-        selectedSensorIdsMutableList.add(sensorId)
+        if (isRemove) selectedSensorIdsMutableList.remove(sensorId)
+        else
+            if (!selectedSensorIdsMutableList.contains(sensorId)) selectedSensorIdsMutableList.add(sensorId)
     }
 
-    fun addItemToSelectedLetterCodesList(letterCode: Int) {
+    fun changeSelectedLetterCodesList(letterCode: Int, isRemove: Boolean) {
         selectedSensorIdsMutableList.clear()
-        selectedLetterCodesMutableList.add(letterCode)
+        if (isRemove) selectedLetterCodesMutableList.remove(letterCode)
+        else
+            if (!selectedLetterCodesMutableList.contains(letterCode)) selectedLetterCodesMutableList.add(letterCode)
     }
 
     fun setSensorIdsAndLettersFilters() {
         sensorHistoryGraphFilterRepository.sensorIdList = selectedSensorIdsMutableList
         sensorHistoryGraphFilterRepository.letterCodeList = selectedLetterCodesMutableList
+        viewModelScope.launch {
+            loadInitData()
+        }
     }
 
     private fun loadSensorIds() {
@@ -163,11 +172,11 @@ class GraphViewModel(
     private suspend fun getFilteredSensorsHistoryLists(): List<List<SensorHistoryDataModel>>? {
         val firstSensorHistoryList = getFirstSensorHistoryList()
         val result = if (!firstSensorHistoryList.isNullOrEmpty()) {
-            val beginDate = firstSensorHistoryList.first().date
-            val endDate = firstSensorHistoryList.last().date
+            val endDate = firstSensorHistoryList.first().date
+            val beginDate = firstSensorHistoryList.last().date
             val subsequentSensorsHistoryLists = getSubsequentHistoryLists(beginDate, endDate)
 
-            if (subsequentSensorsHistoryLists.isNullOrEmpty()) null
+            if (subsequentSensorsHistoryLists.isNullOrEmpty()) listOf(firstSensorHistoryList)
             else listOf(firstSensorHistoryList) + subsequentSensorsHistoryLists
         } else null
 

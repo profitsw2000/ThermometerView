@@ -10,6 +10,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import ru.profitsw2000.core.utils.constants.getLetterFromCode
 import ru.profitsw2000.core.view.GraphMarkerView
 import ru.profitsw2000.data.model.SensorHistoryDataModel
 import java.text.SimpleDateFormat
@@ -29,6 +30,12 @@ class LineChartConfigurator(
         Color.MAGENTA,
         Color.BLACK
     )
+    @OptIn(ExperimentalStdlibApi::class)
+    private val hexFormat = HexFormat {
+        upperCase = true
+        number.removeLeadingZeros = true
+        number{ prefix = "0x" }
+    }
 
     fun setupTouchListener(gestureDetector: GestureDetector) {
         lineChart.setOnTouchListener { _, event ->
@@ -56,6 +63,7 @@ class LineChartConfigurator(
         else lineChart.marker = null
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun displayTemperatureData(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ) {
@@ -66,17 +74,20 @@ class LineChartConfigurator(
             return
         }
 
-        sensorHistoryData.forEachIndexed { index, models ->
-            val entries = getEntriesList(models)
-            val dataSet = getChartDataSet(entries, colors[index%6])
+        sensorHistoryData
+            .filterNot { it.isEmpty() }
+            .forEachIndexed { index, models ->
+                val label = "${models[0].sensorId.toHexString(hexFormat)}(${getLetterFromCode(models[0].letterCode)})"
+                val entries = getEntriesList(models)
+                val dataSet = getChartDataSet(entries, colors[index%6], label)
 
-            if (index%2 == 0) {
-                dataSet.axisDependency = YAxis.AxisDependency.LEFT
-            } else {
-                dataSet.axisDependency = YAxis.AxisDependency.RIGHT
+                if (index%2 == 0) {
+                    dataSet.axisDependency = YAxis.AxisDependency.LEFT
+                } else {
+                    dataSet.axisDependency = YAxis.AxisDependency.RIGHT
+                }
+                dataSets.add(dataSet)
             }
-            dataSets.add(dataSet)
-        }
 
         configureViewPort(sensorHistoryData)
         lineChart.data = LineData(dataSets.toList())
@@ -135,6 +146,12 @@ class LineChartConfigurator(
         rightAxis.setDrawLabels(true)
     }
 
+    private fun enableRightAxis(isEnabled: Boolean) {
+        val rightAxis = lineChart.axisRight
+
+        rightAxis.isEnabled = isEnabled
+    }
+
     private fun setChartDescription() {
         // Description
         lineChart.description.isEnabled = true
@@ -153,9 +170,13 @@ class LineChartConfigurator(
         lineChart.animateX(duration)
     }
 
-    private fun getChartDataSet(entries: ArrayList<Entry>, color: Int): LineDataSet {
+    private fun getChartDataSet(
+        entries: ArrayList<Entry>,
+        color: Int,
+        label: String
+    ): LineDataSet {
         // Configure dataset appearance
-        val dataSet = LineDataSet(entries, "Temperature (°C)")
+        val dataSet = LineDataSet(entries, label)
 
         dataSet.color = color
         dataSet.valueTextColor = Color.BLACK
@@ -191,9 +212,10 @@ class LineChartConfigurator(
             configureLeftViewPort(sensorHistoryData)
         }
         if (sensorHistoryData.size > 1) {
+            enableRightAxis(true)
             configureRightYAxis()
             configureRightViewPort(sensorHistoryData)
-        }
+        } else enableRightAxis(false)
 
     }
 
@@ -209,9 +231,10 @@ class LineChartConfigurator(
                 if (minTemp > pair.second) minTemp = pair.second
             }
         }
-        val paddingLeft = (maxTemp - minTemp) * 0.1f
-        lineChart.axisLeft.axisMinimum = minTemp - paddingLeft
-        lineChart.axisLeft.axisMaximum = maxTemp + paddingLeft
+        val padding = if((maxTemp - minTemp) * 0.1f < 1) 0.5f
+        else (maxTemp - minTemp) * 0.1f
+        lineChart.axisLeft.axisMinimum = minTemp - padding
+        lineChart.axisLeft.axisMaximum = maxTemp + padding
     }
 
     private fun configureRightViewPort(
@@ -226,30 +249,37 @@ class LineChartConfigurator(
                 if (minTemp > pair.second) minTemp = pair.second
             }
         }
-        val paddingLeft = (maxTemp - minTemp) * 0.1f
-        lineChart.axisRight.axisMinimum = minTemp - paddingLeft
-        lineChart.axisRight.axisMaximum = maxTemp + paddingLeft
+        val padding = if((maxTemp - minTemp) * 0.1f < 1) 0.5f
+        else (maxTemp - minTemp) * 0.1f
+        lineChart.axisRight.axisMinimum = minTemp - padding
+        lineChart.axisRight.axisMaximum = maxTemp + padding
     }
 
     private fun configureBottomViewPort(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ) {
-        lineChart.xAxis.axisMinimum = sensorHistoryData[0].first().date.time.toFloat()
-        lineChart.xAxis.axisMaximum = sensorHistoryData[0].last().date.time.toFloat()
+        val firstTime = sensorHistoryData[0].first().date.time.toFloat()
+        val lastTime = sensorHistoryData[0].last().date.time.toFloat()
+
+        // Используем Math.min/max, чтобы порядок в списке больше не имел значения
+        lineChart.xAxis.axisMinimum = minOf(firstTime, lastTime)
+        lineChart.xAxis.axisMaximum = maxOf(firstTime, lastTime)
     }
 
     private fun getExtremumValues(
         sensorHistoryData: List<List<SensorHistoryDataModel>>
     ): List<Pair<Float, Float>> {
         val extremumValuesList = mutableListOf<Pair<Float, Float>>()
-        sensorHistoryData.forEach {
-            extremumValuesList.add(
-                Pair(
-                    it.maxOf { it.temperature }.toFloat(),
-                    it.minOf { it.temperature }.toFloat()
+        sensorHistoryData
+            .filterNot { it.isEmpty() }
+            .forEach {
+                extremumValuesList.add(
+                    Pair(
+                        it.maxOf { it.temperature }.toFloat(),
+                        it.minOf { it.temperature }.toFloat()
+                    )
                 )
-            )
-        }
+            }
         return extremumValuesList
     }
 }

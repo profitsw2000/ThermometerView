@@ -101,6 +101,7 @@ class GraphFragment : Fragment() {
                 true
             }
             R.id.sensor_selection -> {
+                graphViewModel.loadSensorsIdsAndLetters()
                 navigator.navigateToGraphSensorSelectionBottomSheet()
                 true
             }
