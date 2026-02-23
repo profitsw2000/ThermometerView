@@ -37,7 +37,7 @@ class GraphViewModel(
     private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var lifecycleScope: CoroutineScope
     val selectedSensorIdsMutableList = mutableListOf<Long>()
-    val letterCodesMutableList = mutableListOf<Int>()
+    val selectedLetterCodesMutableList = mutableListOf<Int>()
     var offset = 0
 
     //LiveData
@@ -91,6 +91,21 @@ class GraphViewModel(
         _letterCodesListLiveData.value = LetterCodesLoadState.Loading
         loadSensorIds()
         loadLetterCodes()
+    }
+
+    fun addItemToSelectedSensorIdsList(sensorId: Long) {
+        selectedLetterCodesMutableList.clear()
+        selectedSensorIdsMutableList.add(sensorId)
+    }
+
+    fun addItemToSelectedLetterCodesList(letterCode: Int) {
+        selectedSensorIdsMutableList.clear()
+        selectedLetterCodesMutableList.add(letterCode)
+    }
+
+    fun setSensorIdsAndLettersFilters() {
+        sensorHistoryGraphFilterRepository.sensorIdList = selectedSensorIdsMutableList
+        sensorHistoryGraphFilterRepository.letterCodeList = selectedLetterCodesMutableList
     }
 
     private fun loadSensorIds() {
