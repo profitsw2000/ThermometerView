@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.definition.indexKey
 import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
@@ -114,6 +115,19 @@ class GraphViewModel(
         sensorHistoryGraphFilterRepository.letterCodeList = selectedLetterCodesMutableList
         viewModelScope.launch {
             loadInitData()
+        }
+    }
+
+    fun getTimeFrameFilter(): Long {
+        return sensorHistoryGraphFilterRepository.timeFrameMillis
+    }
+
+    fun setTimeFrameFilter(timeFrameMillis: Long) {
+        if (timeFrameMillis != sensorHistoryGraphFilterRepository.timeFrameMillis) {
+            sensorHistoryGraphFilterRepository.timeFrameMillis = timeFrameMillis
+            viewModelScope.launch {
+                loadInitData()
+            }
         }
     }
 

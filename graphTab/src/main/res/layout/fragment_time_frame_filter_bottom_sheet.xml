@@ -95,6 +95,17 @@
 
         </com.google.android.material.chip.ChipGroup>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_filters_button"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/apply_filters_button_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_interval_selection_chip_group" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
