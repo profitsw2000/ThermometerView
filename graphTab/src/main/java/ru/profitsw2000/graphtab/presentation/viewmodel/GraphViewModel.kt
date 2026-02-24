@@ -18,6 +18,7 @@ import org.koin.core.definition.indexKey
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
+import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
 import ru.profitsw2000.data.mappers.SensorHistoryMapper
 import ru.profitsw2000.data.model.SensorHistoryDataModel
@@ -125,6 +126,19 @@ class GraphViewModel(
     fun setTimeFrameFilter(timeFrameMillis: Long) {
         if (timeFrameMillis != sensorHistoryGraphFilterRepository.timeFrameMillis) {
             sensorHistoryGraphFilterRepository.timeFrameMillis = timeFrameMillis
+            viewModelScope.launch {
+                loadInitData()
+            }
+        }
+    }
+
+    fun getTimeFrameDataObtainingMethodFilter(): TimeFrameDataObtainingMethod {
+        return sensorHistoryGraphFilterRepository.timeFrameDataObtainingMethod
+    }
+
+    fun setTimeFrameDataObtainingMethodFilter(timeFrameDataObtainingMethod: TimeFrameDataObtainingMethod) {
+        if (timeFrameDataObtainingMethod != sensorHistoryGraphFilterRepository.timeFrameDataObtainingMethod) {
+            sensorHistoryGraphFilterRepository.timeFrameDataObtainingMethod = timeFrameDataObtainingMethod
             viewModelScope.launch {
                 loadInitData()
             }
