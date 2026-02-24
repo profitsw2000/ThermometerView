@@ -38,6 +38,8 @@ class DataObtainingMethodSelectionFragment : BottomSheetDialogFragment() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         val layout: CoordinatorLayout = binding.rootCoordinatorLayout
         layout.minimumHeight = 500
+
+        initViews()
     }
 
     private fun initViews() {

@@ -94,6 +94,11 @@ class LineChartConfigurator(
         lineChart.invalidate()
     }
 
+    fun clearChart() {
+        lineChart.clear()
+        lineChart.invalidate()
+    }
+
     private fun setChartBehaviour() {
         lineChart.setTouchEnabled(true)
         lineChart.isDragEnabled = true

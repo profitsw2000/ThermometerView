@@ -155,10 +155,8 @@ class GraphViewModel(
     }
 
     fun setGraphFilterDatePeriod() {
-        if (
-            this.fromDate != sensorHistoryGraphFilterRepository.fromDate ||
-            this.toDate != sensorHistoryGraphFilterRepository.toDate
-        ) {
+        if (this.fromDate != sensorHistoryGraphFilterRepository.fromDate ||
+            this.toDate != sensorHistoryGraphFilterRepository.toDate) {
             sensorHistoryGraphFilterRepository.fromDate = this.fromDate
             sensorHistoryGraphFilterRepository.toDate = this.toDate
             viewModelScope.launch {

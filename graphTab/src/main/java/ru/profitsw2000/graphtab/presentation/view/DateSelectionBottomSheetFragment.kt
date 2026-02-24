@@ -57,6 +57,7 @@ class DateSelectionBottomSheetFragment : BottomSheetDialogFragment() {
     private fun initButton() = with(binding) {
         applyFiltersButton.setOnClickListener {
             graphViewModel.setGraphFilterDatePeriod()
+            this@DateSelectionBottomSheetFragment.dismiss()
         }
     }
 

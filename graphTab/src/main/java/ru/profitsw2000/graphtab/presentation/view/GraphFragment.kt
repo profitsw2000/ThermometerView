@@ -136,7 +136,7 @@ class GraphFragment : Fragment() {
 
     private fun renderData(sensorHistoryDataLoadState: SensorHistoryDataLoadState) {
         when(sensorHistoryDataLoadState) {
-            is SensorHistoryDataLoadState.Error -> {}
+            is SensorHistoryDataLoadState.Error -> lineChartConfigurator.clearChart()
             SensorHistoryDataLoadState.Loading -> setProgressBarState(true)
             is SensorHistoryDataLoadState.Success -> {
                 setProgressBarState(false)
