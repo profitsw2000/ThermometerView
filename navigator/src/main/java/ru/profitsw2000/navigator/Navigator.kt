@@ -19,5 +19,9 @@ interface Navigator {
 
     fun navigateToGraphTimeFrameSelectionBottomSheet()
 
+    fun navigateToGraphDataObtainingMethodSelectionBottomSheet()
+
+    fun navigateToGraphDatePeriodSelectionBottomSheet()
+
     fun navigateUp()
 }

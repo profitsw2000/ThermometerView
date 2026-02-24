@@ -110,9 +110,11 @@ class GraphFragment : Fragment() {
                 true
             }
             R.id.time_frame_data_obtaining_method_selection -> {
+                navigator.navigateToGraphDataObtainingMethodSelectionBottomSheet()
                 true
             }
             R.id.date_period_selection -> {
+                navigator.navigateToGraphDatePeriodSelectionBottomSheet()
                 true
             }
             else -> true
