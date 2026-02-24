@@ -124,4 +124,5 @@
     <string name="sensors_title_text">Датчики</string>
     <string name="sensor_ids_load_error_text">Ошибка загрузки заводских номеров датчиков</string>
     <string name="letter_codes_load_error_text">Ошибка загрузки буквенных кодов датчиков</string>
+    <string name="data_obtaining_method_dialog_title_text">Температура в интервале</string>
 </resources>

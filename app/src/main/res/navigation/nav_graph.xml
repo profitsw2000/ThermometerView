@@ -49,6 +49,10 @@
         <action
             android:id="@+id/action_graph_to_sensor_filter_fragment"
             app:destination="@+id/sensor_graph_selection_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_graph_to_time_frame_filter_fragment"
+            app:destination="@+id/time_frame_graph_selection_bottom_sheet"/>
     </fragment>
 
     <dialog
@@ -98,6 +102,12 @@
         android:id="@+id/sensor_graph_selection_bottom_sheet"
         android:name="ru.profitsw2000.graphtab.presentation.view.SensorFilterBottomSheetFragment"
         tools:layout="@layout/fragment_sensor_filter_bottom_sheet_dialog">
+    </dialog>
+
+    <dialog
+        android:id="@+id/time_frame_graph_selection_bottom_sheet"
+        android:name="ru.profitsw2000.graphtab.presentation.view.TimeFrameFilterBottomSheetFragment"
+        tools:layout="@layout/fragment_time_frame_filter_bottom_sheet">
     </dialog>
 
 </navigation>

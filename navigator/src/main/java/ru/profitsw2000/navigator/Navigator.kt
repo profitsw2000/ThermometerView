@@ -17,5 +17,7 @@ interface Navigator {
 
     fun navigateToGraphSensorSelectionBottomSheet()
 
+    fun navigateToGraphTimeFrameSelectionBottomSheet()
+
     fun navigateUp()
 }

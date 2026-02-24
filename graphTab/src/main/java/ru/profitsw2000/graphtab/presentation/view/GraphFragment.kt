@@ -106,6 +106,7 @@ class GraphFragment : Fragment() {
                 true
             }
             R.id.time_frame_selection -> {
+                navigator.navigateToGraphTimeFrameSelectionBottomSheet()
                 true
             }
             R.id.time_frame_data_obtaining_method_selection -> {
