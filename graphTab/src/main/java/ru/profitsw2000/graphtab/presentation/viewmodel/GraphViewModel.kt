@@ -40,6 +40,8 @@ class GraphViewModel(
     private lateinit var lifecycleScope: CoroutineScope
     val selectedSensorIdsMutableList = mutableListOf<Long>()
     val selectedLetterCodesMutableList = mutableListOf<Int>()
+    private var fromDate: Date? = null
+    private var toDate: Date? = null
     var offset = 0
 
     //LiveData
@@ -143,6 +145,31 @@ class GraphViewModel(
                 loadInitData()
             }
         }
+    }
+
+    fun getGraphFilterDatePeriod(): Pair<Date?, Date?> {
+        return Pair(
+            sensorHistoryGraphFilterRepository.fromDate,
+            sensorHistoryGraphFilterRepository.toDate
+        )
+    }
+
+    fun setGraphFilterDatePeriod() {
+        if (
+            this.fromDate != sensorHistoryGraphFilterRepository.fromDate ||
+            this.toDate != sensorHistoryGraphFilterRepository.toDate
+        ) {
+            sensorHistoryGraphFilterRepository.fromDate = this.fromDate
+            sensorHistoryGraphFilterRepository.toDate = this.toDate
+            viewModelScope.launch {
+                loadInitData()
+            }
+        }
+    }
+
+    fun changeDatePeriod(fromDate: Date?, toDate: Date?) {
+        this.fromDate = fromDate
+        this.toDate = toDate
     }
 
     private fun loadSensorIds() {
