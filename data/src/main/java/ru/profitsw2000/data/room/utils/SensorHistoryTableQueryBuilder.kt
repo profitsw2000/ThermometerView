@@ -20,6 +20,8 @@ private const val SEVENTH_QUERY = 7
 private const val EIGHTH_QUERY = 8
 private const val NINTH_QUERY = 9
 private const val TENTH_QUERY = 10
+private const val ELEVENTH_QUERY = 11
+private const val TWELVE_QUERY = 12
 
 class SensorHistoryTableQueryBuilder(
     val sensorHistoryTableFilterRepository: SensorHistoryTableFilterRepository
@@ -119,7 +121,7 @@ class SensorHistoryTableQueryBuilder(
         return when(sensorHistoryTableFilterRepository.timeFrameDataObtainingMethod) {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> SEVENTH_QUERY
             TimeFrameDataObtainingMethod.TimeFrameBegin -> TENTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameEnd -> TENTH_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> TWELVE_QUERY
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> EIGHTH_QUERY
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> NINTH_QUERY
         }
@@ -129,39 +131,111 @@ class SensorHistoryTableQueryBuilder(
         return when(sensorHistoryTableFilterRepository.timeFrameDataObtainingMethod) {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> THIRD_QUERY
             TimeFrameDataObtainingMethod.TimeFrameBegin -> SIXTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameEnd -> SIXTH_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> ELEVENTH_QUERY
             TimeFrameDataObtainingMethod.TimeFrameMaximum -> FOURTH_QUERY
             TimeFrameDataObtainingMethod.TimeFrameMinimum -> FIFTH_QUERY
         }
     }
 
-    //QUERY STRINGS
-    private fun getQuerySelectPartCore(): String {
+    //QUERY PAIR
+    private fun getQuerySelectPartCore(): Pair<String, List<Any>> {
         val queryNumber = getQueryNumber()
         val pseudonymsStringQuery = "MIN(id) AS id, sensorId, localId, letterCode, MIN(date) AS date "
         val pseudonymsStringWindowQuery = "MIN(date) OVER w AS date, id, sensorId, localId, letterCode "
 
         return when(queryNumber) {
-            FIRST_QUERY, SECOND_QUERY -> "* "
-            THIRD_QUERY, SEVENTH_QUERY -> "AVG(temperature) AS temperature, $pseudonymsStringQuery"
-            FOURTH_QUERY, EIGHTH_QUERY -> "MAX(temperature) AS temperature, $pseudonymsStringQuery"
-            FIFTH_QUERY, NINTH_QUERY -> "MIN(temperature) AS temperature, $pseudonymsStringQuery"
-            SIXTH_QUERY, TENTH_QUERY -> "DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, $pseudonymsStringWindowQuery"
-            else -> "* "
+            FIRST_QUERY, SECOND_QUERY -> Pair("* ", listOf())
+            THIRD_QUERY, SEVENTH_QUERY -> Pair("AVG(temperature) AS temperature, $pseudonymsStringQuery", listOf())
+            FOURTH_QUERY, EIGHTH_QUERY -> Pair("MAX(temperature) AS temperature, $pseudonymsStringQuery", listOf())
+            FIFTH_QUERY, NINTH_QUERY -> Pair("MIN(temperature) AS temperature, $pseudonymsStringQuery", listOf())
+            SIXTH_QUERY, TENTH_QUERY, ELEVENTH_QUERY, TWELVE_QUERY -> Pair("DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, $pseudonymsStringWindowQuery", listOf())
+            else -> Pair("* ", listOf())
         }
     }
 
-    //QUERY STRINGS
-    private fun getQueryWhereMainPartCore(): String {
+    private fun getQueryWhereMainPartCore(): Pair<String, List<Any>> {
         val queryNumber = getQueryNumber()
-        val pseudonymsStringQuery = "MIN(id) AS id, sensorId, localId, letterCode, MIN(date) AS date "
-        val pseudonymsStringWindowQuery = "MIN(date) OVER w AS date, id, sensorId, localId, letterCode "
 
         return when(queryNumber) {
-            SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY -> "(sensorId IN ? " +
-                    "OR localId IN ? " +
-                    "OR letterCode IN ?) "
-            else -> ""
+            FIRST_QUERY ->
+                Pair(
+                    first = "date BETWEEN (:fromDate) AND (:toDate) ",
+                    second = listOf(
+                        sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
+                        sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE)
+                )
+            SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY, ELEVENTH_QUERY ->
+                Pair(
+                    first = "(sensorId IN ?  OR localId IN ?  OR letterCode IN ?) ",
+                    second = listOf(
+                            sensorHistoryTableFilterRepository.sensorIdList,
+                            sensorHistoryTableFilterRepository.localIdList,
+                            sensorHistoryTableFilterRepository.letterCodeList)
+                )
+            else -> Pair(first = "", second = listOf())
+        }
+    }
+
+    private fun getQueryWhereAdditionalPartCore(): Pair<String, List<Any>> {
+        val queryNumber = getQueryNumber()
+
+        return when(queryNumber) {
+            SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY,
+            SEVENTH_QUERY, EIGHTH_QUERY, NINTH_QUERY, TENTH_QUERY, ELEVENTH_QUERY, TWELVE_QUERY ->
+                Pair(
+                    first = "date BETWEEN (:fromDate) AND (:toDate) ",
+                    second = listOf(
+                        sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
+                        sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE
+                    )
+                )
+            else -> Pair(first = "", second = listOf())
+        }
+    }
+
+    private fun getQueryGroupByPartCore(): Pair<String, List<Any>> {
+        val queryNumber = getQueryNumber()
+
+        return when(queryNumber) {
+            THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY,
+            SEVENTH_QUERY, EIGHTH_QUERY, NINTH_QUERY, TENTH_QUERY,
+            ELEVENTH_QUERY, TWELVE_QUERY ->
+                Pair(
+                    first = "GROUP BY sensorId, date/(:timeFrameInMillis) ",
+                    second = listOf(
+                        sensorHistoryTableFilterRepository.timeFrameMillis)
+                )
+            else -> Pair(first = "", second = listOf())
+        }
+    }
+
+    private fun getQueryWindowPartCore(): Pair<String, List<Any>> {
+        val queryNumber = getQueryNumber()
+
+        return when(queryNumber) {
+            SIXTH_QUERY, TENTH_QUERY ->
+                Pair(
+                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
+                            "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
+                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC)",
+                    second = listOf(
+                        sensorHistoryTableFilterRepository.timeFrameMillis,
+                        true,
+                        true
+                    )
+                )
+            ELEVENTH_QUERY, TWELVE_QUERY ->
+                Pair(
+                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
+                            "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
+                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC)",
+                    second = listOf(
+                        sensorHistoryTableFilterRepository.timeFrameMillis,
+                        false,
+                        false
+                    )
+                )
+            else -> Pair(first = "", second = listOf())
         }
     }
 
