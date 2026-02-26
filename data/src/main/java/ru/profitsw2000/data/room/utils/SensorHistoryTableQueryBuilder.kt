@@ -79,30 +79,30 @@ class SensorHistoryTableQueryBuilder(
         return when(queryNumber) {
             FIRST_QUERY, SECOND_QUERY ->
                 Pair(
-                    "SELECT *",
+                    "SELECT * $fromEntityStringQuery ",
                     listOf()
                 )
             THIRD_QUERY, SEVENTH_QUERY ->
                 Pair(
-                    "SELECT AVG(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery",
+                    "SELECT AVG(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery ",
                     listOf()
                 )
             FOURTH_QUERY, EIGHTH_QUERY ->
                 Pair(
-                    "SELECT MAX(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery",
+                    "SELECT MAX(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery ",
                     listOf()
                 )
             FIFTH_QUERY, NINTH_QUERY ->
                 Pair(
-                    "SELECT MIN(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery",
+                    "SELECT MIN(temperature) AS temperature, $pseudonymsStringQuery $fromEntityStringQuery ",
                     listOf()
                 )
             SIXTH_QUERY, TENTH_QUERY, ELEVENTH_QUERY, TWELVE_QUERY ->
                 Pair(
-                    "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, $pseudonymsStringWindowQuery $fromEntityStringQuery",
+                    "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, $pseudonymsStringWindowQuery $fromEntityStringQuery ",
                     listOf()
                 )
-            else -> Pair("SELECT *", listOf())
+            else -> Pair("SELECT * $fromEntityStringQuery ", listOf())
         }
     }
 
@@ -112,14 +112,14 @@ class SensorHistoryTableQueryBuilder(
         return when(queryNumber) {
             SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY, ELEVENTH_QUERY ->
                 Pair(
-                    first = "WHERE (sensorId IN ?  OR localId IN ?  OR letterCode IN ?)",
+                    first = "WHERE (sensorId IN ? OR localId IN ? OR letterCode IN ?) ",
                     second = listOf(
                             sensorHistoryTableFilterRepository.sensorIdList,
                             sensorHistoryTableFilterRepository.localIdList,
                             sensorHistoryTableFilterRepository.letterCodeList)
                 )
             else -> Pair(
-                first = "WHERE date BETWEEN ? AND ?",
+                first = "WHERE date BETWEEN ? AND ? ",
                 second = listOf(
                     sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
                     sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE)
@@ -133,7 +133,7 @@ class SensorHistoryTableQueryBuilder(
         return when(queryNumber) {
             SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY, ELEVENTH_QUERY ->
                 Pair(
-                    first = "AND date BETWEEN ? AND ?",
+                    first = "AND date BETWEEN ? AND ? ",
                     second = listOf(
                         sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
                         sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE
@@ -167,7 +167,7 @@ class SensorHistoryTableQueryBuilder(
                 Pair(
                     first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
                             "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
-                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC)",
+                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC) ",
                     second = listOf(
                         sensorHistoryTableFilterRepository.timeFrameMillis,
                         true,
@@ -178,7 +178,7 @@ class SensorHistoryTableQueryBuilder(
                 Pair(
                     first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
                             "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
-                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC)",
+                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC) ",
                     second = listOf(
                         sensorHistoryTableFilterRepository.timeFrameMillis,
                         false,
@@ -194,7 +194,7 @@ class SensorHistoryTableQueryBuilder(
             "ORDER BY " +
                    "CASE WHEN ? THEN date END ASC, " +
                    "CASE WHEN NOT ? THEN date END DESC " +
-                   "LIMIT ? OFFSET ? ",
+                   "LIMIT ? OFFSET ?",
             listOf(
                     sensorHistoryTableFilterRepository.isAscendingOrder,
                     sensorHistoryTableFilterRepository.isAscendingOrder,
@@ -205,13 +205,13 @@ class SensorHistoryTableQueryBuilder(
     }
 
     fun getQuery(limit: Int, offset: Int): Pair<String, List<Any>> {
-        val queryString = "${getQuerySelectPartCore().first} " +
-                "${getQueryWhereMainPartCore().first} " +
-                "${getQueryWhereAdditionalPartCore().first} " +
-                "${getQueryGroupByPartCore().first} " +
-                "${getQueryWindowPartCore().first} " +
-                "${getQueryLastPart(limit, offset)}"
-        val args = getQueryWindowPartCore().second +
+        val queryString = "${getQuerySelectPartCore().first}" +
+                "${getQueryWhereMainPartCore().first}" +
+                "${getQueryWhereAdditionalPartCore().first}" +
+                "${getQueryGroupByPartCore().first}" +
+                "${getQueryWindowPartCore().first}" +
+                "${getQueryLastPart(limit, offset).first}"
+        val args = getQuerySelectPartCore().second +
                 getQueryWhereMainPartCore().second +
                 getQueryWhereAdditionalPartCore().second +
                 getQueryGroupByPartCore().second +
