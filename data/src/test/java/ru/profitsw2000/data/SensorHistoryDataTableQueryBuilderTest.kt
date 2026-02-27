@@ -885,4 +885,2339 @@ class SensorHistoryDataTableQueryBuilderTest {
         assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
         assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
     }
+
+    ////27.02.2026 11:44
+    @Test
+    fun fifthAQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthBQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.localIdList = localIdList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthCQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthDQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthAQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthBQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        filter.localIdList = localIdList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthCQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun fifthDQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    //27.02.2026  13:18
+
+    @Test
+    fun sixthAQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthBQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.localIdList = localIdList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthCQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthDQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthAQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthBQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            ONE_WEEK_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        filter.localIdList = localIdList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthCQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun sixthDQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            ONE_DAY_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    ////27.02.2026 13:39
+    @Test
+    fun eleventhAQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhBQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.localIdList = localIdList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhCQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhDQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            TWELVE_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhAQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            listOf<Int>(),
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.sensorIdList = sensorIdList
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhBQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            localIdList,
+            listOf<Int>(),
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        filter.localIdList = localIdList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhCQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            listOf<Int>(),
+            listOf<Int>(),
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eleventhDQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE (sensorId IN ? " +
+                "OR localId IN ? " +
+                "OR letterCode IN ?) " +
+                "AND date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            sensorIdList,
+            localIdList,
+            letterCodeList,
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        filter.sensorIdList = sensorIdList
+        filter.localIdList = localIdList
+        filter.letterCodeList = letterCodeList
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    ////27.02.2026    15:18///////////////////////////
+
+
+    @Test
+    fun seventhAQueryDescTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhBQueryDescTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhCQueryDescTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhDQueryDescTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhAQueryAscTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhBQueryAscTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhCQueryAscTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun seventhDQueryAscTest() {
+        val queryString = "SELECT AVG(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthAQueryDescTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthBQueryDescTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthCQueryDescTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthDQueryDescTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthAQueryAscTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthBQueryAscTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthCQueryAscTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun eighthDQueryAscTest() {
+        val queryString = "SELECT MAX(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    ////27.02.2026 11:44
+    @Test
+    fun ninthAQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthBQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthCQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthDQueryDescTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthAQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthBQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthCQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun ninthDQueryAscTest() {
+        val queryString = "SELECT MIN(temperature) AS temperature, " +
+                "MIN(id) AS id, " +
+                "sensorId, localId, letterCode, MIN(date) AS date " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    //27.02.2026  13:18
+
+    @Test
+    fun tenthAQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthBQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthCQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthDQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            TWELVE_HOURS_FRAME_MILLIS,
+            false,
+            false,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthAQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthBQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            ONE_WEEK_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthCQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun tenthDQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            ONE_DAY_FRAME_MILLIS,
+            false,
+            false,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    ////27.02.2026 13:39
+    @Test
+    fun twelveAQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveBQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveCQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            FOUR_HOURS_FRAME_MILLIS,
+            FOUR_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveDQueryDescTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            TWELVE_HOURS_FRAME_MILLIS,
+            TWELVE_HOURS_FRAME_MILLIS,
+            true,
+            true,
+            false,
+            false,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = TWELVE_HOURS_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveAQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        filter.isAscendingOrder = true
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveBQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_WEEK_FRAME_MILLIS,
+            ONE_WEEK_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_WEEK_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveCQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            THIRTY_MINUTES_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = THIRTY_MINUTES_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
+
+    @Test
+    fun twelveDQueryAscTest() {
+        val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
+                "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
+                "FROM SensorHistoryDataEntity " +
+                "WHERE date BETWEEN ? AND ? " +
+                "GROUP BY sensorId, date/? " +
+                "WINDOW w AS (" +
+                "PARTITION BY " +
+                "sensorId, date/? " +
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END DESC, " +                    //end
+                "CASE WHEN NOT ? THEN date END ASC) " +                  //begin
+                "ORDER BY " +
+                "CASE WHEN ? THEN date END ASC, " +
+                "CASE WHEN NOT ? THEN date END DESC " +
+                "LIMIT ? OFFSET ?"
+        val queryArgs = listOf<Any>(
+            Long.MIN_VALUE,
+            Long.MAX_VALUE,
+            ONE_DAY_FRAME_MILLIS,
+            ONE_DAY_FRAME_MILLIS,
+            true,
+            true,
+            true,
+            true,
+            LIMIT,
+            OFFSET
+        )
+        filter.isAscendingOrder = true
+        filter.timeFrameMillis = ONE_DAY_FRAME_MILLIS
+        filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
+        val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
+
+        assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
+        assertEquals(queryArgs, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).second)
+    }
 }

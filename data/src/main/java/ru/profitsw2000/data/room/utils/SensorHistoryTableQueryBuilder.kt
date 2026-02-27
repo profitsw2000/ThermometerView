@@ -166,23 +166,23 @@ class SensorHistoryTableQueryBuilder(
             SIXTH_QUERY, TENTH_QUERY ->
                 Pair(
                     first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
-                            "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
-                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC) ",
+                            "CASE WHEN ? THEN date END DESC, " +
+                            "CASE WHEN NOT ? THEN date END ASC) ",
                     second = listOf(
                         sensorHistoryTableFilterRepository.timeFrameMillis,
-                        true,
-                        true
+                        false,
+                        false
                     )
                 )
             ELEVENTH_QUERY, TWELVE_QUERY ->
                 Pair(
                     first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY " +
-                            "CASE WHEN ? THEN SensorHistoryDataEntity.date END DESC, " +
-                            "CASE WHEN NOT ? THEN SensorHistoryDataEntity.date END ASC) ",
+                            "CASE WHEN ? THEN date END DESC, " +
+                            "CASE WHEN NOT ? THEN date END ASC) ",
                     second = listOf(
                         sensorHistoryTableFilterRepository.timeFrameMillis,
-                        false,
-                        false
+                        true,
+                        true
                     )
                 )
             else -> Pair(first = "", second = listOf())
