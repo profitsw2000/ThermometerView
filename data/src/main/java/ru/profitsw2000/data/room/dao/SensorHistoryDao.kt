@@ -1492,7 +1492,7 @@ interface SensorHistoryDao {
     }
 
     @RawQuery
-    suspend fun getSensorHistoryList(query: SupportSQLiteQuery): List<SensorHistoryDataEntity>
+    suspend fun getSqlSensorHistoryList(query: SupportSQLiteQuery): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
     suspend fun getAllSensorsIdList(): List<Long>
