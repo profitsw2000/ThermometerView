@@ -5,6 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
@@ -1488,6 +1490,9 @@ interface SensorHistoryDao {
                 )
         }
     }
+
+    @RawQuery
+    suspend fun getSensorHistoryList(query: SupportSQLiteQuery): List<SensorHistoryDataEntity>
 
     @Query("SELECT DISTINCT sensorId FROM SensorHistoryDataEntity")
     suspend fun getAllSensorsIdList(): List<Long>
