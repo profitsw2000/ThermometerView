@@ -70,8 +70,7 @@ class SensorHistoryTableQueryBuilder(
     }
 
     //QUERY PAIR
-    private fun getQuerySelectPartCore(): Pair<String, List<Any>> {
-        val queryNumber = getQueryNumber()
+    private fun getQuerySelectPartCore(queryNumber: Int): Pair<String, List<Any>> {
         val pseudonymsStringQuery = "MIN(id) AS id, sensorId, localId, letterCode, MIN(date) AS date"
         val pseudonymsStringWindowQuery = "MIN(date) OVER w AS date, id, sensorId, localId, letterCode"
         val fromEntityStringQuery = "FROM SensorHistoryDataEntity"
@@ -106,46 +105,41 @@ class SensorHistoryTableQueryBuilder(
         }
     }
 
-    private fun getQueryWhereMainPartCore(): Pair<String, List<Any>> {
-        val queryNumber = getQueryNumber()
+    private fun getQueryWhereMainPartCore(queryNumber: Int): Pair<String, List<Any>> {
 
         return when(queryNumber) {
             SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY, ELEVENTH_QUERY ->
                 Pair(
-                    first = "WHERE (sensorId IN ? OR localId IN ? OR letterCode IN ?) ",
-                    second = listOf(
-                            sensorHistoryTableFilterRepository.sensorIdList,
-                            sensorHistoryTableFilterRepository.localIdList,
-                            sensorHistoryTableFilterRepository.letterCodeList)
+                    first = "WHERE (sensorId IN (${sensorHistoryTableFilterRepository.sensorIdList.toPlaceholders()}) " +
+                            "OR localId IN (${sensorHistoryTableFilterRepository.localIdList.toPlaceholders()}) " +
+                            "OR letterCode IN (${sensorHistoryTableFilterRepository.letterCodeList.toPlaceholders()})) ",
+                    second = sensorHistoryTableFilterRepository.sensorIdList +
+                            sensorHistoryTableFilterRepository.localIdList +
+                            sensorHistoryTableFilterRepository.letterCodeList
                 )
             else -> Pair(
                 first = "WHERE date BETWEEN ? AND ? ",
                 second = listOf(
-                    sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
-                    sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE)
+                    sensorHistoryTableFilterRepository.fromDate?.time ?: Long.MIN_VALUE,
+                    sensorHistoryTableFilterRepository.toDate?.time ?: Long.MAX_VALUE)
             )
         }
     }
 
-    private fun getQueryWhereAdditionalPartCore(): Pair<String, List<Any>> {
-        val queryNumber = getQueryNumber()
-
+    private fun getQueryWhereAdditionalPartCore(queryNumber: Int): Pair<String, List<Any>> {
         return when(queryNumber) {
             SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY, ELEVENTH_QUERY ->
                 Pair(
                     first = "AND date BETWEEN ? AND ? ",
                     second = listOf(
-                        sensorHistoryTableFilterRepository.fromDate ?: Long.MIN_VALUE,
-                        sensorHistoryTableFilterRepository.toDate ?: Long.MAX_VALUE
+                        sensorHistoryTableFilterRepository.fromDate?.time ?: Long.MIN_VALUE,
+                        sensorHistoryTableFilterRepository.toDate?.time ?: Long.MAX_VALUE
                     )
                 )
             else -> Pair(first = "", second = listOf())
         }
     }
-
-    private fun getQueryGroupByPartCore(): Pair<String, List<Any>> {
-        val queryNumber = getQueryNumber()
-
+    private fun getQueryGroupByPartCore(queryNumber: Int): Pair<String, List<Any>> {
         return when(queryNumber) {
             THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY,
             SEVENTH_QUERY, EIGHTH_QUERY, NINTH_QUERY, TENTH_QUERY,
@@ -159,9 +153,7 @@ class SensorHistoryTableQueryBuilder(
         }
     }
 
-    private fun getQueryWindowPartCore(): Pair<String, List<Any>> {
-        val queryNumber = getQueryNumber()
-
+    private fun getQueryWindowPartCore(queryNumber: Int): Pair<String, List<Any>> {
         return when(queryNumber) {
             SIXTH_QUERY, TENTH_QUERY ->
                 Pair(
@@ -193,7 +185,7 @@ class SensorHistoryTableQueryBuilder(
         return Pair(
             "ORDER BY " +
                    "CASE WHEN ? THEN date END ASC, " +
-                   "CASE WHEN NOT ? THEN date END DESC " +
+                   "CASE WHEN NOT ? THEN date END DESC, " +
                    "LIMIT ? OFFSET ?",
             listOf(
                     sensorHistoryTableFilterRepository.isAscendingOrder,
@@ -205,20 +197,25 @@ class SensorHistoryTableQueryBuilder(
     }
 
     fun getQuery(limit: Int, offset: Int): Pair<String, List<Any>> {
-        val queryString = "${getQuerySelectPartCore().first}" +
-                "${getQueryWhereMainPartCore().first}" +
-                "${getQueryWhereAdditionalPartCore().first}" +
-                "${getQueryGroupByPartCore().first}" +
-                "${getQueryWindowPartCore().first}" +
-                "${getQueryLastPart(limit, offset).first}"
-        val args = getQuerySelectPartCore().second +
-                getQueryWhereMainPartCore().second +
-                getQueryWhereAdditionalPartCore().second +
-                getQueryGroupByPartCore().second +
-                getQueryWindowPartCore().second +
+        val queryNumber = getQueryNumber()
+
+        val queryString = getQuerySelectPartCore(queryNumber).first +
+                getQueryWhereMainPartCore(queryNumber).first +
+                getQueryWhereAdditionalPartCore(queryNumber).first +
+                getQueryGroupByPartCore(queryNumber).first +
+                getQueryWindowPartCore(queryNumber).first +
+                getQueryLastPart(limit, offset).first
+        val args = getQuerySelectPartCore(queryNumber).second +
+                getQueryWhereMainPartCore(queryNumber).second +
+                getQueryWhereAdditionalPartCore(queryNumber).second +
+                getQueryGroupByPartCore(queryNumber).second +
+                getQueryWindowPartCore(queryNumber).second +
                 getQueryLastPart(limit, offset).second
 
         return Pair(queryString, args)
     }
+
+    private fun List<*>.toPlaceholders(): String =
+        if (this.isEmpty()) "NULL" else joinToString(separator = ",") { "?" }
 
 }

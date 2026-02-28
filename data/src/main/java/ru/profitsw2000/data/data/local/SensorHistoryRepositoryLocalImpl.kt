@@ -45,7 +45,7 @@ class SensorHistoryRepositoryLocalImpl(
             PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false,
-                initialLoadSize = 40
+                initialLoadSize = 20
             ),
             pagingSourceFactory = { HistoryListPagingSource(
                 database = database,

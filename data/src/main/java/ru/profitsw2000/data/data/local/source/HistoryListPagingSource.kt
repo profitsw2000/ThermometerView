@@ -24,6 +24,7 @@ class HistoryListPagingSource(
         val page = params.key ?: 0
 
         return try {
+            Log.d(TAG, "load: limit = ${params.loadSize}, offset = ${page*params.loadSize}")
 /*            val sensorHistoryListPage = database.sensorHistoryDao.getSensorHistoryList(
                 sensorHistoryTableFilterRepository,
                 params.loadSize,
@@ -36,7 +37,7 @@ class HistoryListPagingSource(
             LoadResult.Page(
                 data = sensorHistoryMapper.map(sensorHistoryListPage),
                 prevKey = if (page == 0) null else page - 1,
-                nextKey = if (sensorHistoryListPage.isEmpty()) null else page + 1
+                nextKey = if (sensorHistoryListPage.size < params.loadSize) null else page + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -44,14 +45,17 @@ class HistoryListPagingSource(
     }
 
     override fun getRefreshKey(state: PagingState<Int, SensorHistoryDataModel>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+        return null
+/*        return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        }
+        }*/
     }
 
     private fun getSqliteQuery(limit: Int, offset: Int): SimpleSQLiteQuery {
         val queryPair = sensorHistoryTableQueryBuilder.getQuery(limit, offset)
+        Log.d(TAG, "getSqliteQuery: ${queryPair.first}")
+        Log.d(TAG, "getSqliteQuery: ${queryPair.second}")
 
         return SimpleSQLiteQuery(queryPair.first, queryPair.second.toTypedArray())
     }

@@ -57,16 +57,16 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondAQueryDescTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
                 "CASE WHEN NOT ? THEN date END DESC " +
                 "LIMIT ? OFFSET ?"
         val queryArgs = listOf<Any>(
-            sensorIdList,
+            listOf(23L, 45L),
             listOf<Int>(),
             listOf<Int>(),
             Long.MIN_VALUE,
@@ -76,7 +76,7 @@ class SensorHistoryDataTableQueryBuilderTest {
             LIMIT,
             OFFSET
         )
-        filter.sensorIdList = sensorIdList
+        filter.sensorIdList = listOf(23L, 45L)
         val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
 
         assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
@@ -86,9 +86,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondBQueryDescTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -96,7 +96,7 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "LIMIT ? OFFSET ?"
         val queryArgs = listOf<Any>(
             listOf<Int>(),
-            localIdList,
+            listOf(23, 56),
             listOf<Int>(),
             Long.MIN_VALUE,
             Long.MAX_VALUE,
@@ -105,7 +105,7 @@ class SensorHistoryDataTableQueryBuilderTest {
             LIMIT,
             OFFSET
         )
-        filter.localIdList = localIdList
+        filter.localIdList = listOf(23, 56)
         val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(filter)
 
         assertEquals(queryString, sensorHistoryTableQueryBuilder.getQuery(LIMIT, OFFSET).first)
@@ -115,9 +115,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondCQueryDescTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -144,9 +144,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondDQueryDescTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -175,9 +175,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondAQueryAscTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -205,9 +205,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondBQueryAscTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -235,9 +235,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondCQueryAscTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -265,9 +265,9 @@ class SensorHistoryDataTableQueryBuilderTest {
     @Test
     fun secondDQueryAscTest() {
         val queryString = "SELECT * FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "ORDER BY " +
                 "CASE WHEN ? THEN date END ASC, " +
@@ -300,9 +300,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -336,9 +336,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -372,9 +372,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -408,9 +408,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -446,9 +446,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -483,9 +483,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -520,9 +520,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -557,9 +557,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -596,9 +596,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -632,9 +632,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -668,9 +668,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -704,9 +704,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -742,9 +742,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -779,9 +779,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -816,9 +816,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -853,9 +853,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -893,9 +893,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -929,9 +929,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -965,9 +965,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1001,9 +1001,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1039,9 +1039,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1076,9 +1076,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1113,9 +1113,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1150,9 +1150,9 @@ class SensorHistoryDataTableQueryBuilderTest {
                 "MIN(id) AS id, " +
                 "sensorId, localId, letterCode, MIN(date) AS date " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "ORDER BY " +
@@ -1190,9 +1190,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1234,9 +1234,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1278,9 +1278,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1322,9 +1322,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1368,9 +1368,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1413,9 +1413,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1458,9 +1458,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1503,9 +1503,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1551,9 +1551,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1595,9 +1595,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1639,9 +1639,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1683,9 +1683,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1729,9 +1729,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN NULL " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1774,9 +1774,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN NULL) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1819,9 +1819,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN NULL " +
+                "OR localId IN NULL " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
@@ -1864,9 +1864,9 @@ class SensorHistoryDataTableQueryBuilderTest {
         val queryString = "SELECT DISTINCT FIRST_VALUE(temperature) OVER w AS temperature, " +
                 "MIN(date) OVER w AS date, id, sensorId, localId, letterCode " +
                 "FROM SensorHistoryDataEntity " +
-                "WHERE (sensorId IN ? " +
-                "OR localId IN ? " +
-                "OR letterCode IN ?) " +
+                "WHERE (sensorId IN ?,?,? " +
+                "OR localId IN ?,?,? " +
+                "OR letterCode IN ?,?,?) " +
                 "AND date BETWEEN ? AND ? " +
                 "GROUP BY sensorId, date/? " +
                 "WINDOW w AS (" +
