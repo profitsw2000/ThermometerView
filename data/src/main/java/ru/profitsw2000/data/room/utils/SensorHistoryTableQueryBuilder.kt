@@ -4,12 +4,6 @@ import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 
-private const val SELECT_KEY_WORD = "SELECT "
-private const val FROM_KEY_WORD = "FROM SensorHistoryDataEntity "
-private const val WHERE_KEY_WORD = "WHERE "
-private const val AND_KEY_WORD = "AND "
-private const val GROUP_KEY_WORD = "GROUP "
-private const val ORDER_KEY_WORD = "ORDER "
 private const val FIRST_QUERY = 1
 private const val SECOND_QUERY = 2
 private const val THIRD_QUERY = 3
@@ -185,7 +179,7 @@ class SensorHistoryTableQueryBuilder(
         return Pair(
             "ORDER BY " +
                    "CASE WHEN ? THEN date END ASC, " +
-                   "CASE WHEN NOT ? THEN date END DESC, " +
+                   "CASE WHEN NOT ? THEN date END DESC " +
                    "LIMIT ? OFFSET ?",
             listOf(
                     sensorHistoryTableFilterRepository.isAscendingOrder,
