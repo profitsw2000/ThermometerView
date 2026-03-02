@@ -102,13 +102,16 @@ class SensorHistoryGraphQueryBuilder(
     ): Pair<String, List<Any>> {
 
         val dateStringQuery = "AND date BETWEEN ? AND ? "
+        val sensorId = if (sensorHistoryGraphFilterRepository.sensorIdList.size > sensorIndex)
+            sensorHistoryGraphFilterRepository.sensorIdList[sensorIndex]
+        else 0L
 
         return when(queryNumber) {
             FIRST_QUERY, SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY ->
                 Pair(
                     first = "WHERE sensorId LIKE ? " +
                             dateStringQuery,
-                    second = listOf(sensorHistoryGraphFilterRepository.sensorIdList[sensorIndex],
+                    second = listOf(sensorId,
                         sensorHistoryGraphFilterRepository.fromDate?.time ?: Long.MIN_VALUE,
                         sensorHistoryGraphFilterRepository.toDate?.time ?: Long.MAX_VALUE
                     )
@@ -155,7 +158,7 @@ class SensorHistoryGraphQueryBuilder(
 
     private fun getQueryOrderPart(): Pair<String, List<Any>> {
         return Pair(
-            "ORDER BY DESC",
+            "ORDER BY date DESC",
             listOf()
         )
     }
