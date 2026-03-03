@@ -54,10 +54,10 @@ class SensorHistoryGraphQueryBuilder(
     private fun getQueryNumberTimeFrameWithLetterCodeFilter(): Int {
         return when(sensorHistoryGraphFilterRepository.timeFrameDataObtainingMethod) {
             TimeFrameDataObtainingMethod.TimeFrameAverage -> EIGHTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameBegin -> NINTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameEnd -> TENTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameMaximum -> ELEVENTH_QUERY
-            TimeFrameDataObtainingMethod.TimeFrameMinimum -> TWELVE_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameMaximum -> NINTH_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameMinimum -> TENTH_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameBegin -> ELEVENTH_QUERY
+            TimeFrameDataObtainingMethod.TimeFrameEnd -> TWELVE_QUERY
         }
     }
 
@@ -105,6 +105,9 @@ class SensorHistoryGraphQueryBuilder(
         val sensorId = if (sensorHistoryGraphFilterRepository.sensorIdList.size > sensorIndex)
             sensorHistoryGraphFilterRepository.sensorIdList[sensorIndex]
         else 0L
+        val letterCode = if (sensorHistoryGraphFilterRepository.letterCodeList.size > sensorIndex)
+            sensorHistoryGraphFilterRepository.letterCodeList[sensorIndex]
+        else 0
 
         return when(queryNumber) {
             FIRST_QUERY, SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY ->
@@ -119,7 +122,7 @@ class SensorHistoryGraphQueryBuilder(
             else -> Pair(
                 first = "WHERE letterCode LIKE ? " +
                         dateStringQuery,
-                second = listOf(sensorHistoryGraphFilterRepository.letterCodeList[sensorIndex],
+                second = listOf(letterCode,
                     sensorHistoryGraphFilterRepository.fromDate?.time ?: Long.MIN_VALUE,
                     sensorHistoryGraphFilterRepository.toDate?.time ?: Long.MAX_VALUE
                 )
@@ -144,12 +147,12 @@ class SensorHistoryGraphQueryBuilder(
         return when(queryNumber) {
             FIFTH_QUERY, ELEVENTH_QUERY ->
                 Pair(
-                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY date DESC) ",
+                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY date ASC) ",
                     second = listOf(sensorHistoryGraphFilterRepository.timeFrameMillis)
                 )
             SIXTH_QUERY, TWELVE_QUERY ->
                 Pair(
-                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY date ASC) ",
+                    first = "WINDOW w AS (PARTITION BY sensorId, date/? ORDER BY date DESC) ",
                     second = listOf(sensorHistoryGraphFilterRepository.timeFrameMillis)
                 )
             else -> Pair(first = "", second = listOf())
@@ -187,7 +190,7 @@ class SensorHistoryGraphQueryBuilder(
         return Pair(queryString, args)
     }
 
-    fun getFirstCurveQuery(limit: Int, offset: Int): Pair<String, List<Any>> {
+    fun getQuery(limit: Int, offset: Int): Pair<String, List<Any>> {
         val queryString = getQuery(0).first +
                 getQueryLastPart(limit, offset).first
         val args = getQuery(0).second +
@@ -195,5 +198,4 @@ class SensorHistoryGraphQueryBuilder(
 
         return Pair(queryString, args)
     }
-
 }
