@@ -102,10 +102,10 @@ class SensorHistoryGraphQueryBuilder(
     ): Pair<String, List<Any>> {
 
         val dateStringQuery = "AND date BETWEEN ? AND ? "
-        val sensorId = if (sensorHistoryGraphFilterRepository.sensorIdList.size > sensorIndex)
+        val sensorId = if (sensorHistoryGraphFilterRepository.sensorIdList.size > sensorIndex && sensorIndex >= 0)
             sensorHistoryGraphFilterRepository.sensorIdList[sensorIndex]
         else 0L
-        val letterCode = if (sensorHistoryGraphFilterRepository.letterCodeList.size > sensorIndex)
+        val letterCode = if (sensorHistoryGraphFilterRepository.letterCodeList.size > sensorIndex && sensorIndex >= 0)
             sensorHistoryGraphFilterRepository.letterCodeList[sensorIndex]
         else 0
 
