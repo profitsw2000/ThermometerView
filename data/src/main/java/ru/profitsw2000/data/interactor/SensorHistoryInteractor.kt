@@ -62,29 +62,27 @@ class SensorHistoryInteractor(
     }
 
     suspend fun getGraphFirstCurveSensorHistoryList(
-        filter: SensorHistoryGraphFilterRepository,
         limit: Int,
         offset: Int,
         isRemote: Boolean
     ): List<SensorHistoryDataEntity> {
         return if (isRemote) {
-            sensorHistoryRepositoryRemote.getGraphFirstCurveSensorHistoryList(filter, limit, offset)
+            sensorHistoryRepositoryRemote.getGraphFirstCurveSensorHistoryList(limit, offset)
         } else {
-            sensorHistoryRepositoryLocal.getGraphFirstCurveSensorHistoryList(filter, limit, offset)
+            sensorHistoryRepositoryLocal.getGraphFirstCurveSensorHistoryList(limit, offset)
         }
     }
 
     suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
-        filter: SensorHistoryGraphFilterRepository,
         fromDate: Date,
         toDate: Date,
         isRemote: Boolean
     ): List<SensorHistoryDataEntity> {
         return if (isRemote) {
-            sensorHistoryRepositoryRemote.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, filter, fromDate, toDate)
+            sensorHistoryRepositoryRemote.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, fromDate, toDate)
         } else {
-            sensorHistoryRepositoryLocal.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, filter, fromDate, toDate)
+            sensorHistoryRepositoryLocal.getGraphSubsequentCurvesSensorHistoryList(sensorIndex, fromDate, toDate)
         }
     }
 

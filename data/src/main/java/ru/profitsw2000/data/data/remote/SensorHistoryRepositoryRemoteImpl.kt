@@ -47,7 +47,6 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
     }
 
     override suspend fun getGraphFirstCurveSensorHistoryList(
-        filter: SensorHistoryGraphFilterRepository,
         limit: Int,
         offset: Int
     ): List<SensorHistoryDataEntity> {
@@ -56,7 +55,6 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
 
     override suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
-        filter: SensorHistoryGraphFilterRepository,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity> {

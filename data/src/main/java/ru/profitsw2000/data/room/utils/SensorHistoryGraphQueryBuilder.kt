@@ -3,6 +3,7 @@ package ru.profitsw2000.data.room.utils
 import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
+import java.util.Date
 import kotlin.collections.plus
 
 private const val FIRST_QUERY = 1
@@ -98,6 +99,42 @@ class SensorHistoryGraphQueryBuilder(
     }
 
     private fun getQueryWherePart(
+        queryNumber: Int,
+        sensorIndex: Int,
+        fromDate: Date,
+        toDate: Date
+    ): Pair<String, List<Any>> {
+
+        val dateStringQuery = "AND date BETWEEN ? AND ? "
+        val sensorId = if (sensorHistoryGraphFilterRepository.sensorIdList.size > sensorIndex && sensorIndex >= 0)
+            sensorHistoryGraphFilterRepository.sensorIdList[sensorIndex]
+        else 0L
+        val letterCode = if (sensorHistoryGraphFilterRepository.letterCodeList.size > sensorIndex && sensorIndex >= 0)
+            sensorHistoryGraphFilterRepository.letterCodeList[sensorIndex]
+        else 0
+
+        return when(queryNumber) {
+            FIRST_QUERY, SECOND_QUERY, THIRD_QUERY, FOURTH_QUERY, FIFTH_QUERY, SIXTH_QUERY ->
+                Pair(
+                    first = "WHERE sensorId LIKE ? " +
+                            dateStringQuery,
+                    second = listOf(sensorId,
+                        fromDate.time,
+                        toDate.time
+                    )
+                )
+            else -> Pair(
+                first = "WHERE letterCode LIKE ? " +
+                        dateStringQuery,
+                second = listOf(letterCode,
+                    fromDate.time,
+                    toDate.time
+                )
+            )
+        }
+    }
+
+    private fun getQueryWherePart(
         queryNumber: Int, sensorIndex: Int
     ): Pair<String, List<Any>> {
 
@@ -173,11 +210,11 @@ class SensorHistoryGraphQueryBuilder(
         )
     }
 
-    fun getQuery(sensorIndex: Int): Pair<String, List<Any>> {
+    fun getQuery(sensorIndex: Int, fromDate: Date, toDate: Date): Pair<String, List<Any>> {
         val queryNumber = getQueryNumber()
 
         val queryString = getQuerySelectPart(queryNumber).first +
-                getQueryWherePart(queryNumber, sensorIndex).first +
+                getQueryWherePart(queryNumber, sensorIndex, fromDate, toDate).first +
                 getQueryGroupByPart(queryNumber).first +
                 getQueryWindowPart(queryNumber).first +
                 getQueryOrderPart().first
@@ -191,9 +228,19 @@ class SensorHistoryGraphQueryBuilder(
     }
 
     fun getQuery(limit: Int, offset: Int): Pair<String, List<Any>> {
-        val queryString = getQuery(0).first +
+        val queryNumber = getQueryNumber()
+
+        val queryString = getQuerySelectPart(queryNumber).first +
+                getQueryWherePart(queryNumber, 0).first +
+                getQueryGroupByPart(queryNumber).first +
+                getQueryWindowPart(queryNumber).first +
+                getQueryOrderPart().first +
                 getQueryLastPart(limit, offset).first
-        val args = getQuery(0).second +
+        val args = getQuerySelectPart(queryNumber).second +
+                getQueryWherePart(queryNumber, 0).second +
+                getQueryGroupByPart(queryNumber).second +
+                getQueryWindowPart(queryNumber).second +
+                getQueryOrderPart().second +
                 getQueryLastPart(limit, offset).second
 
         return Pair(queryString, args)

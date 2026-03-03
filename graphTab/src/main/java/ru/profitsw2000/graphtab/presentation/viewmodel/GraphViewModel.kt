@@ -240,7 +240,6 @@ class GraphViewModel(
         val deferred: Deferred<List<SensorHistoryDataModel>?> = ioCoroutineScope.async {
             try {
                 val sensorHistoryDataList = sensorHistoryInteractor.getGraphFirstCurveSensorHistoryList(
-                    filter = sensorHistoryGraphFilterRepository,
                     limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
                     offset = offset,
                     false
@@ -267,7 +266,6 @@ class GraphViewModel(
                     async {
                         val sensorHistoryDataList = sensorHistoryInteractor.getGraphSubsequentCurvesSensorHistoryList(
                             sensorIndex = index,
-                            filter = sensorHistoryGraphFilterRepository,
                             fromDate = fromDate,
                             toDate = toDate,
                             isRemote = false

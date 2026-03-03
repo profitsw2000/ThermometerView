@@ -26,11 +26,10 @@ interface SensorHistoryRepository {
 
     suspend fun getHistoryDataEntitySize(): Int
 
-    suspend fun getGraphFirstCurveSensorHistoryList(filter: SensorHistoryGraphFilterRepository, limit: Int, offset: Int): List<SensorHistoryDataEntity>
+    suspend fun getGraphFirstCurveSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
     suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
-        filter: SensorHistoryGraphFilterRepository,
         fromDate: Date,
         toDate: Date
     ): List<SensorHistoryDataEntity>

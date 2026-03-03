@@ -13,6 +13,7 @@ import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.room.utils.SensorHistoryGraphQueryBuilder
 import ru.profitsw2000.data.room.utils.SensorHistoryTableQueryBuilder
+import java.util.Date
 
 class SensorHistoryDataGraphQueryBuilderTest {
     private val filter = SensorHistoryGraphFilterRepositoryImpl()
@@ -46,8 +47,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         val sensorHistoryGraphQueryBuilder = SensorHistoryGraphQueryBuilder(filter)
         filter.sensorIdList = listOf(23L, 45L)
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -60,8 +61,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         val sensorHistoryGraphQueryBuilder = SensorHistoryGraphQueryBuilder(filter)
         filter.sensorIdList = sensorIdList
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -73,8 +74,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         val queryArgs = listOf<Any>(0, Long.MIN_VALUE, Long.MAX_VALUE)
         val sensorHistoryGraphQueryBuilder = SensorHistoryGraphQueryBuilder(filter)
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -114,8 +115,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -134,8 +135,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -153,8 +154,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -195,8 +196,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = ONE_HOUR_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -215,8 +216,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -278,8 +279,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = ONE_HOUR_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -298,8 +299,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -317,8 +318,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -360,8 +361,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -381,8 +382,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -445,8 +446,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -466,8 +467,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -486,8 +487,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     ///////03.03.2026   16:11
@@ -518,8 +519,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         val sensorHistoryGraphQueryBuilder = SensorHistoryGraphQueryBuilder(filter)
         filter.letterCodeList = listOf(23, 45)
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -532,8 +533,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         val sensorHistoryGraphQueryBuilder = SensorHistoryGraphQueryBuilder(filter)
         filter.letterCodeList = letterCodeList
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -587,8 +588,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -607,8 +608,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -626,8 +627,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameAverage
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -668,8 +669,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = ONE_HOUR_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -688,8 +689,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -707,8 +708,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMaximum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -750,8 +751,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = ONE_HOUR_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -770,8 +771,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = FOUR_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameMinimum
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(4, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -834,8 +835,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -854,8 +855,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -875,8 +876,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameBegin
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -918,8 +919,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(2, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -939,8 +940,8 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(10, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 
     @Test
@@ -959,7 +960,7 @@ class SensorHistoryDataGraphQueryBuilderTest {
         filter.timeFrameMillis = EIGHT_HOURS_FRAME_MILLIS
         filter.timeFrameDataObtainingMethod = TimeFrameDataObtainingMethod.TimeFrameEnd
 
-        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1).first)
-        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1).second)
+        assertEquals(queryString, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).first)
+        assertEquals(queryArgs, sensorHistoryGraphQueryBuilder.getQuery(1, Date(Long.MIN_VALUE),Date(Long.MAX_VALUE)).second)
     }
 }

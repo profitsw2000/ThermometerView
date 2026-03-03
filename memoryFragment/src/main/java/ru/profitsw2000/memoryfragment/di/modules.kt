@@ -15,7 +15,7 @@ import ru.profitsw2000.memoryfragment.presentation.viewmodel.MemoryViewModel
 val memoryModule = module{
     single { MemoryViewModel(get(), get(), get(), get()) }
     single<SensorHistoryTableFilterRepository> { SensorHistoryTableFilterRepositoryImpl() }
-    single<SensorHistoryRepositoryLocal> { SensorHistoryRepositoryLocalImpl(get(), get(), get()) }
+    single<SensorHistoryRepositoryLocal> { SensorHistoryRepositoryLocalImpl(get(), get(), get(), get()) }
     single<SensorHistoryRepositoryRemote> { SensorHistoryRepositoryRemoteImpl() }
     factory { SensorHistoryInteractor(get(), get()) }
     factory { SensorHistoryMapper() }
