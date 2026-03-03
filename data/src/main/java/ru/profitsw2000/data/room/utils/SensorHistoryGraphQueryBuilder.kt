@@ -63,6 +63,15 @@ class SensorHistoryGraphQueryBuilder(
     }
 
     //QUERY PAIR
+    private fun getCountQuerySelectPart(queryNumber: Int): Pair<String, List<Any>> {
+        return Pair(
+            "SELECT COUNT(*) FROM (" +
+                    "SELECT 1 " +
+                    "FROM SensorHistoryDataEntity ",
+            listOf()
+        )
+    }
+
     private fun getQuerySelectPart(queryNumber: Int): Pair<String, List<Any>> {
         val pseudonymsStringQuery = "MIN(id) AS id, sensorId, localId, letterCode, MIN(date) AS date"
         val pseudonymsStringWindowQuery = "MIN(date) OVER w AS date, id, sensorId, localId, letterCode"
@@ -242,6 +251,20 @@ class SensorHistoryGraphQueryBuilder(
                 getQueryWindowPart(queryNumber).second +
                 getQueryOrderPart().second +
                 getQueryLastPart(limit, offset).second
+
+        return Pair(queryString, args)
+    }
+
+    fun getCountQuery(): Pair<String, List<Any>> {
+        val queryNumber = getQueryNumber()
+
+        val queryString = getCountQuerySelectPart(queryNumber).first +
+                getQueryWherePart(queryNumber, 0).first +
+                getQueryGroupByPart(queryNumber).first +
+                ")"
+        val args = getQuerySelectPart(queryNumber).second +
+                getQueryWherePart(queryNumber, 0).second +
+                getQueryGroupByPart(queryNumber).second
 
         return Pair(queryString, args)
     }
