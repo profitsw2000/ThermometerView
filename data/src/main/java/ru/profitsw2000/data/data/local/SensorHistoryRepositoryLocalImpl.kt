@@ -93,7 +93,7 @@ class SensorHistoryRepositoryLocalImpl(
     }
 
     override suspend fun getGraphSensorHistoryListCount(): Int {
-        TODO("Not yet implemented")
+        return database.sensorHistoryDao.getSqlSensorHistoryListCount(getSqliteQueryForCount())
     }
 
     override suspend fun getGraphSubsequentCurvesSensorHistoryList(
@@ -106,6 +106,12 @@ class SensorHistoryRepositoryLocalImpl(
 
     override fun invalidateDataSource() {
         currentPagingSource?.invalidate()
+    }
+
+    private fun getSqliteQueryForCount(): SimpleSQLiteQuery {
+        val queryPair = sensorHistoryGraphQueryBuilder.getCountQuery()
+
+        return SimpleSQLiteQuery(queryPair.first, queryPair.second.toTypedArray())
     }
 
     private fun getSqliteQuery(limit: Int, offset: Int): SimpleSQLiteQuery {
