@@ -61,6 +61,11 @@ class SensorHistoryInteractor(
         else sensorHistoryRepositoryLocal.getHistoryDataEntitySize()
     }
 
+    suspend fun getGraphSensorHistoryListCount(isRemote: Boolean): Int {
+        return if (isRemote) sensorHistoryRepositoryRemote.getGraphSensorHistoryListCount()
+        else sensorHistoryRepositoryLocal.getGraphSensorHistoryListCount()
+    }
+
     suspend fun getGraphFirstCurveSensorHistoryList(
         limit: Int,
         offset: Int,

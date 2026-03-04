@@ -43,6 +43,7 @@ class GraphViewModel(
     private var fromDate: Date? = null
     private var toDate: Date? = null
     var offset = 0
+    var totalQueryCount: Int = 0
 
     //LiveData
     private val _sensorHistoryListLiveData: MutableLiveData<SensorHistoryDataLoadState> =
@@ -72,16 +73,21 @@ class GraphViewModel(
 
     private suspend fun loadInitData() {
         offset = 0
+        totalQueryCount = getFirstSensorHistoryListSize()
         val graphData = getFilteredSensorsHistoryLists()
-        if (graphData != null)
+        if (graphData != null && totalQueryCount != -1)
             _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Success(graphData)
         else
             _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Error("Database error.")
     }
 
     fun loadData(newItemsNumber: Int) {
-        offset = if (offset + newItemsNumber < 0) 0
-        else offset + newItemsNumber
+        offset = when {
+            (offset + newItemsNumber) < 0 -> 0
+            totalQueryCount < (offset + SENSOR_HISTORY_DATA_LOAD_SIZE) -> offset
+            (offset + newItemsNumber) > totalQueryCount -> (totalQueryCount - (offset + SENSOR_HISTORY_DATA_LOAD_SIZE)) + offset
+            else -> offset + newItemsNumber
+        }
 
         lifecycleScope.launch {
             val graphData = getFilteredSensorsHistoryLists()
@@ -237,7 +243,21 @@ class GraphViewModel(
     }
 
     private suspend fun getFirstSensorHistoryList(): List<SensorHistoryDataModel>? = withContext(Dispatchers.IO) {
-        val deferred: Deferred<List<SensorHistoryDataModel>?> = ioCoroutineScope.async {
+        coroutineScope {
+            async {
+                try {
+                    val sensorHistoryDataList = sensorHistoryInteractor.getGraphFirstCurveSensorHistoryList(
+                        limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
+                        offset = offset,
+                        false
+                    )
+                    sensorHistoryMapper.map(sensorHistoryDataList)
+                } catch (exception: Exception) {
+                    null
+                }
+            }.await()
+        }
+        /*val deferred: Deferred<List<SensorHistoryDataModel>?> = ioCoroutineScope.async {
             try {
                 val sensorHistoryDataList = sensorHistoryInteractor.getGraphFirstCurveSensorHistoryList(
                     limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
@@ -249,7 +269,19 @@ class GraphViewModel(
                 null
             }
         }
-        return@withContext deferred.await()
+        return@withContext deferred.await()*/
+    }
+
+    private suspend fun getFirstSensorHistoryListSize(): Int = withContext(Dispatchers.IO) {
+        coroutineScope {
+            async {
+                try {
+                    sensorHistoryInteractor.getGraphSensorHistoryListCount(false)
+                } catch (exception: Exception) {
+                    -1
+                }
+            }.await()
+        }
     }
 
     private suspend fun getSubsequentHistoryLists(
