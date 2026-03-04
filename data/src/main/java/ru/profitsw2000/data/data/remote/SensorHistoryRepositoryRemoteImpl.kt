@@ -53,6 +53,10 @@ class SensorHistoryRepositoryRemoteImpl: SensorHistoryRepositoryRemote {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getGraphSensorHistoryListCount(): Int {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
         fromDate: Date,

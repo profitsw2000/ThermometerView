@@ -28,6 +28,8 @@ interface SensorHistoryRepository {
 
     suspend fun getGraphFirstCurveSensorHistoryList(limit: Int, offset: Int): List<SensorHistoryDataEntity>
 
+    suspend fun getGraphSensorHistoryListCount(): Int
+
     suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
         fromDate: Date,

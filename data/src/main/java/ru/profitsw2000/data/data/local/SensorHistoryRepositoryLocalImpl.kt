@@ -92,6 +92,10 @@ class SensorHistoryRepositoryLocalImpl(
         return database.sensorHistoryDao.getSqlSensorHistoryList(getSqliteQuery(limit, offset))//getGraphFirstCurveSensorHistoryList(filter, limit, offset)
     }
 
+    override suspend fun getGraphSensorHistoryListCount(): Int {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getGraphSubsequentCurvesSensorHistoryList(
         sensorIndex: Int,
         fromDate: Date,
