@@ -82,14 +82,14 @@ class GraphViewModel(
     }
 
     fun loadData(newItemsNumber: Int) {
+        offset += newItemsNumber
         offset = when {
-            (offset + newItemsNumber) < 0 -> 0
-            totalQueryCount < (offset + SENSOR_HISTORY_DATA_LOAD_SIZE) -> offset
-            (offset + newItemsNumber) > totalQueryCount -> (totalQueryCount - (offset + SENSOR_HISTORY_DATA_LOAD_SIZE)) + offset
-            else -> offset + newItemsNumber
+            (offset > totalQueryCount - SENSOR_HISTORY_DATA_LOAD_SIZE) && (totalQueryCount > SENSOR_HISTORY_DATA_LOAD_SIZE) -> totalQueryCount - SENSOR_HISTORY_DATA_LOAD_SIZE
+            offset < 0 -> 0
+            else -> offset
         }
 
-        lifecycleScope.launch {
+        viewModelScope.launch {
             val graphData = getFilteredSensorsHistoryLists()
             if (graphData != null)
                 _sensorHistoryListLiveData.value = SensorHistoryDataLoadState.Success(graphData)
