@@ -1,35 +1,35 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="32" android:viewportWidth="32" android:width="24dp">
       
-    <path android:fillColor="@color/king_blue" android:pathData="M27,32H5V0H27V32ZM6,1V31H26V1H6Z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M28,31H5V0H28V31ZM8,3V28H25V3H8Z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M0,3h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M0,2h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M0,11h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M0,10h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M0,19h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M0,18h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M0,27h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M0,26h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M27,3h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M27,2h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M27,11h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M27,10h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M27,19h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M27,18h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M27,27h5v2h-5z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M27,26h5v3h-5z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M17,17.084C19.838,17.56 22,20.027 22,23C22,26.314 19.314,29 16,29C12.686,29 10,26.314 10,23C10,20.027 12.162,17.56 15,17.084V18.1C12.718,18.563 11,20.581 11,23C11,25.761 13.239,28 16,28C18.761,28 21,25.761 21,23C21,20.581 19.282,18.563 17,18.1V17.084Z"/>
+    <path android:fillColor="@color/king_blue" android:fillType="evenOdd" android:pathData="M17,16.084C19.837,16.52 22,18.78 22,21.503C22,24.538 19.314,27 16,27C12.686,27 10,24.538 10,21.503C10,18.78 12.163,16.52 15,16.084V17.015C12.718,17.439 11,19.287 11,21.503C11,24.033 13.239,26.084 16,26.084C18.761,26.084 21,24.033 21,21.503C21,19.287 19.282,17.439 17,17.015V16.084Z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M16,4C17.105,4 18,4.895 18,6V18H17V7C17,6.448 16.552,6 16,6C15.448,6 15,6.448 15,7V18H14V6C14,4.895 14.895,4 16,4Z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M16,4C17.105,4 18,4.895 18,6V17H17V6.857C17,6.305 16.552,5.857 16,5.857C15.448,5.857 15,6.305 15,6.857V17H14V6C14,4.895 14.895,4 16,4Z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M16,23m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M16,22m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M10,7h3v1h-3z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M10,6h3v1h-3z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M10,13h3v1h-3z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M10,12h3v1h-3z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M10,11h3v1h-3z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M10,10h3v1h-3z"/>
       
-    <path android:fillColor="@color/king_blue" android:pathData="M10,9h3v1h-3z"/>
+    <path android:fillColor="@color/king_blue" android:pathData="M10,8h3v1h-3z"/>
     
 </vector>

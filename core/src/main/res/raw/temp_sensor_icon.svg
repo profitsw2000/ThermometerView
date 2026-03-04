@@ -1,18 +1,18 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M27 32H5V0H27V32ZM6 1V31H26V1H6Z" fill="black"/>
-<rect y="3" width="5" height="2" fill="black"/>
-<rect y="11" width="5" height="2" fill="black"/>
-<rect y="19" width="5" height="2" fill="black"/>
-<rect y="27" width="5" height="2" fill="black"/>
-<rect x="27" y="3" width="5" height="2" fill="black"/>
-<rect x="27" y="11" width="5" height="2" fill="black"/>
-<rect x="27" y="19" width="5" height="2" fill="black"/>
-<rect x="27" y="27" width="5" height="2" fill="black"/>
-<path d="M17 17.084C19.8376 17.5601 22 20.0271 22 23C22 26.3137 19.3137 29 16 29C12.6863 29 10 26.3137 10 23C10 20.0271 12.1624 17.5601 15 17.084V18.0996C12.7177 18.5628 11 20.581 11 23C11 25.7614 13.2386 28 16 28C18.7614 28 21 25.7614 21 23C21 20.581 19.2823 18.5628 17 18.0996V17.084Z" fill="black"/>
-<path d="M16 4C17.1046 4 18 4.89543 18 6V18H17V7C17 6.44773 16.5523 6 16 6C15.4477 6 15 6.44773 15 7V18H14V6C14 4.89543 14.8954 4 16 4Z" fill="black"/>
-<circle cx="16" cy="23" r="2" fill="black"/>
-<rect x="10" y="7" width="3" height="1" fill="black"/>
-<rect x="10" y="13" width="3" height="1" fill="black"/>
-<rect x="10" y="11" width="3" height="1" fill="black"/>
-<rect x="10" y="9" width="3" height="1" fill="black"/>
+<path d="M28 31H5V0H28V31ZM8 3V28H25V3H8Z" fill="black"/>
+<rect y="2" width="5" height="3" fill="black"/>
+<rect y="10" width="5" height="3" fill="black"/>
+<rect y="18" width="5" height="3" fill="black"/>
+<rect y="26" width="5" height="3" fill="black"/>
+<rect x="27" y="2" width="5" height="3" fill="black"/>
+<rect x="27" y="10" width="5" height="3" fill="black"/>
+<rect x="27" y="18" width="5" height="3" fill="black"/>
+<rect x="27" y="26" width="5" height="3" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M17 16.084C19.8374 16.5201 21.9997 18.7797 22 21.5029C22 24.5385 19.3137 27 16 27C12.6863 27 10 24.5385 10 21.5029C10.0003 18.7797 12.1626 16.5201 15 16.084V17.0146C12.718 17.439 11.0003 19.2872 11 21.5029C11 24.0326 13.2386 26.084 16 26.084C18.7614 26.084 21 24.0326 21 21.5029C20.9997 19.2872 19.282 17.439 17 17.0146V16.084Z" fill="black"/>
+<path d="M16 4C17.1046 4 18 4.89543 18 6V17H17V6.85742C17 6.30514 16.5523 5.85742 16 5.85742C15.4477 5.85742 15 6.30514 15 6.85742V17H14V6C14 4.89543 14.8954 4 16 4Z" fill="black"/>
+<circle cx="16" cy="22" r="2" fill="black"/>
+<rect x="10" y="6" width="3" height="1" fill="black"/>
+<rect x="10" y="12" width="3" height="1" fill="black"/>
+<rect x="10" y="10" width="3" height="1" fill="black"/>
+<rect x="10" y="8" width="3" height="1" fill="black"/>
 </svg>
