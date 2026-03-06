@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/graph_mode"
+        android:icon="@drawable/drag_mode"
+        android:title="@string/graph_mode_menu_item_title_text"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/sensor_selection"
+        android:icon="@drawable/temp_sensor_icon"
+        android:title="@string/select_sensor_menu_item_title_text"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/time_frame_selection"
+        android:icon="@drawable/time_frame_selection_icon"
+        android:title="@string/time_frame_selection_menu_item_title_text"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/time_frame_data_obtaining_method_selection"
+        android:icon="@drawable/data_calculation_method_icon"
+        android:title="@string/data_obtaining_method_selection_menu_item_title_text"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/date_period_selection"
+        android:icon="@drawable/calendar_icon"
+        android:title="@string/date_selection_menu_item_title_text"
+        app:showAsAction="always"/>
+
+</menu>

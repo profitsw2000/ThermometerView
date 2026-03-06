@@ -31,6 +31,22 @@ class NavigatorImpl(private val navController: NavController) : Navigator {
         navController.navigate(ru.profitsw2000.thermometerview.R.id.action_table_to_date_selection_fragment)
     }
 
+    override fun navigateToGraphSensorSelectionBottomSheet() {
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.action_graph_to_sensor_filter_fragment)
+    }
+
+    override fun navigateToGraphTimeFrameSelectionBottomSheet() {
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.action_graph_to_time_frame_filter_fragment)
+    }
+
+    override fun navigateToGraphDataObtainingMethodSelectionBottomSheet() {
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.action_graph_to_data_obtaining_method_filter_fragment)
+    }
+
+    override fun navigateToGraphDatePeriodSelectionBottomSheet() {
+        navController.navigate(ru.profitsw2000.thermometerview.R.id.action_graph_to_date_period_selection_filter_fragment)
+    }
+
     override fun navigateUp() {
         navController.navigateUp()
     }

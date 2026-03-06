@@ -45,6 +45,22 @@
         android:name="ru.profitsw2000.graphtab.presentation.view.GraphFragment"
         android:label="@string/bottom_nav_graph_tab_text"
         tools:layout="@layout/fragment_graph">
+
+        <action
+            android:id="@+id/action_graph_to_sensor_filter_fragment"
+            app:destination="@+id/sensor_graph_selection_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_graph_to_time_frame_filter_fragment"
+            app:destination="@+id/time_frame_graph_selection_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_graph_to_data_obtaining_method_filter_fragment"
+            app:destination="@+id/data_obtaining_method_selection_bottom_sheet"/>
+
+        <action
+            android:id="@+id/action_graph_to_date_period_selection_filter_fragment"
+            app:destination="@+id/date_period_graph_selection_bottom_sheet"/>
     </fragment>
 
     <dialog
@@ -88,6 +104,30 @@
         android:id="@+id/date_time_period_selection_bottom_sheet"
         android:name="ru.profitsw2000.tabletab.presentation.view.DateTimePeriodSelectionBottomSheetFragment"
         tools:layout="@layout/fragment_date_time_period_selection_bottom_sheet">
+    </dialog>
+
+    <dialog
+        android:id="@+id/sensor_graph_selection_bottom_sheet"
+        android:name="ru.profitsw2000.graphtab.presentation.view.SensorFilterBottomSheetFragment"
+        tools:layout="@layout/fragment_sensor_filter_bottom_sheet_dialog">
+    </dialog>
+
+    <dialog
+        android:id="@+id/time_frame_graph_selection_bottom_sheet"
+        android:name="ru.profitsw2000.graphtab.presentation.view.TimeFrameFilterBottomSheetFragment"
+        tools:layout="@layout/fragment_time_frame_filter_bottom_sheet">
+    </dialog>
+
+    <dialog
+        android:id="@+id/data_obtaining_method_selection_bottom_sheet"
+        android:name="ru.profitsw2000.graphtab.presentation.view.DataObtainingMethodSelectionFragment"
+        tools:layout="@layout/fragment_data_obtaining_method_selection">
+    </dialog>
+
+    <dialog
+        android:id="@+id/date_period_graph_selection_bottom_sheet"
+        android:name="ru.profitsw2000.graphtab.presentation.view.DateSelectionBottomSheetFragment"
+        tools:layout="@layout/fragment_date_selection_bottom_sheet">
     </dialog>
 
 </navigation>
