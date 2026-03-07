@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.MainFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/screens_main_padding_size"
+        android:paddingTop="@dimen/screens_main_padding_size"
+        android:paddingEnd="@dimen/screens_main_padding_size">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/data_exchange_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/category_field_padding_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/main_screen_item_background">
+
+            <TextView
+                android:id="@+id/data_exchange_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/data_exchange_field_title_text"
+                android:textColor="@color/king_blue"
+                android:textSize="@dimen/data_fields_title_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/data_exchange_status_button"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:layout_width="@dimen/data_exchange_indicator_size"
+                android:layout_height="@dimen/data_exchange_indicator_size"
+                android:backgroundTint="@color/red"
+                app:cornerRadius="@dimen/data_exchange_indicator_rounding_size"
+                app:layout_constraintBottom_toBottomOf="@+id/data_exchange_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/data_exchange_text_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/date_time_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/category_field_padding_size"
+            android:layout_marginTop="@dimen/margin_between_data_category_size"
+            app:layout_constraintTop_toBottomOf="@id/data_exchange_constraint_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/main_screen_item_background">
+
+            <TextView
+                android:id="@+id/time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_time_field_title_text"
+                android:textColor="@color/king_blue"
+                android:textSize="@dimen/data_fields_title_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/time_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/field_title_divider_height_size"
+                android:background="?android:attr/colorPrimary"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/time_text_view" />
+
+            <TextView
+                android:id="@+id/phone_time_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_time_field_title_text"
+                android:textStyle="bold"
+                android:textSize="@dimen/sub_field_title_text_size"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/time_divider"/>
+
+            <TextView
+                android:id="@+id/phone_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_time_default_text"
+                android:textSize="@dimen/sub_field_title_text_size"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:textColor="@color/dark_green"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phone_time_title_text_view"/>
+
+            <TextView
+                android:id="@+id/thermometer_time_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thermometer_time_field_title_text"
+                android:textStyle="bold"
+                android:textSize="@dimen/sub_field_title_text_size"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phone_time_text_view"/>
+
+            <TextView
+                android:id="@+id/thermometer_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thermometer_time_default_text"
+                android:textSize="@dimen/sub_field_title_text_size"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:textColor="@color/dark_red"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/thermometer_time_title_text_view"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/update_time_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/update_time_button_text"
+                app:layout_constraintBottom_toBottomOf="@+id/thermometer_time_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/thermometer_time_text_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/memory_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/category_field_padding_size"
+            android:layout_marginTop="@dimen/margin_between_data_category_size"
+            app:layout_constraintTop_toBottomOf="@id/date_time_constraint_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/main_screen_item_background">
+
+            <TextView
+                android:id="@+id/memory_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/memory_field_title_text"
+                android:textColor="@color/king_blue"
+                android:textSize="@dimen/data_fields_title_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/memory_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/field_title_divider_height_size"
+                android:background="?android:attr/colorPrimary"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/memory_text_view" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:min="0"
+                android:max="131072"
+                android:layout_marginTop="@dimen/main_progress_indicator_margin_top_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/memory_divider" />
+
+            <TextView
+                android:id="@+id/memory_space_percentage_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
+                app:layout_constraintStart_toStartOf="@id/progressBar"
+                app:layout_constraintEnd_toEndOf="@id/progressBar"
+                android:text="@string/memory_percentage_value_default_text"
+                android:textStyle="bold"
+                android:textColor="@color/white_aluminium"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/change_memory_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/memory_space_percentage_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                android:text="@string/change_memory_button_text"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/temperature_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/category_field_padding_size"
+            android:layout_marginTop="@dimen/margin_between_data_category_size"
+            app:layout_constraintTop_toBottomOf="@id/memory_constraint_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/main_screen_item_background">
+
+            <TextView
+                android:id="@+id/temperature_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/temperature_field_title_text"
+                android:textColor="@color/king_blue"
+                android:textSize="@dimen/data_fields_title_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/temperature_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/field_title_divider_height_size"
+                android:background="?android:attr/colorPrimary"
+                android:layout_marginTop="@dimen/field_margin_between_elements_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/temperature_text_view" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sensors_temperature_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/temperature_divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

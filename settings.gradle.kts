@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -16,9 +17,16 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "ThermometerView"
 include(":app")
- 
+include(":tableTab")
+include(":graphTab")
+include(":core")
+include(":data")
+include(":mainFragment")
+include(":navigator")
+include(":memoryFragment")

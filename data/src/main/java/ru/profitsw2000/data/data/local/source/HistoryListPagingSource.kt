@@ -1,0 +1,50 @@
+package ru.profitsw2000.data.data.local.source
+
+import android.util.Log
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
+import ru.profitsw2000.core.utils.constants.TAG
+import ru.profitsw2000.data.domain.filter.SensorHistoryTableFilterRepository
+import ru.profitsw2000.data.mappers.SensorHistoryMapper
+import ru.profitsw2000.data.model.SensorHistoryDataModel
+import ru.profitsw2000.data.room.database.AppDatabase
+import ru.profitsw2000.data.room.utils.SensorHistoryTableQueryBuilder
+
+class HistoryListPagingSource(
+    private val database: AppDatabase,
+    private val sensorHistoryMapper: SensorHistoryMapper,
+    private val sensorHistoryTableFilterRepository: SensorHistoryTableFilterRepository
+) : PagingSource<Int, SensorHistoryDataModel>() {
+
+    private val sensorHistoryTableQueryBuilder = SensorHistoryTableQueryBuilder(sensorHistoryTableFilterRepository)
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SensorHistoryDataModel> {
+        val page = params.key ?: 0
+
+        return try {
+            val sensorHistoryListPage = database.sensorHistoryDao.getSqlSensorHistoryList(
+                getSqliteQuery(params.loadSize, page*params.loadSize)
+            )
+
+            LoadResult.Page(
+                data = sensorHistoryMapper.map(sensorHistoryListPage),
+                prevKey = if (page == 0) null else page - 1,
+                nextKey = if (sensorHistoryListPage.size < params.loadSize) null else page + 1
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, SensorHistoryDataModel>): Int? {
+        return null
+    }
+
+    private fun getSqliteQuery(limit: Int, offset: Int): SimpleSQLiteQuery {
+        val queryPair = sensorHistoryTableQueryBuilder.getQuery(limit, offset)
+
+        return SimpleSQLiteQuery(queryPair.first, queryPair.second.toTypedArray())
+    }
+}

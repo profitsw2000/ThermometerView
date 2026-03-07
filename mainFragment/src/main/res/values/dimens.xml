@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screens_main_padding_size">12dp</dimen>
+    <dimen name="category_field_padding_size">8dp</dimen>
+    <dimen name="data_fields_title_size">24sp</dimen>
+    <dimen name="data_exchange_indicator_size">24dp</dimen>
+    <dimen name="data_exchange_indicator_rounding_size">12dp</dimen>
+    <dimen name="margin_between_data_category_size">16dp</dimen>
+    <dimen name="field_title_divider_height_size">2dp</dimen>
+    <dimen name="field_margin_between_elements_size">8dp</dimen>
+    <dimen name="sub_field_title_text_size">20sp</dimen>
+</resources>

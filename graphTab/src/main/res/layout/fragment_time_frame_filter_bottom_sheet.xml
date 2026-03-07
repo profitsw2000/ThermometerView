@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/filter_screen_padding_size"
+    tools:context=".presentation.view.TimeFrameFilterBottomSheetFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/time_frame_filter_screen_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/king_blue"
+            android:textSize="@dimen/devices_list_title_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/interval_section_title_text"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/time_interval_selection_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:checkedChip="@id/ten_min_chip"
+            app:chipSpacingHorizontal="@dimen/horizontal_space_between_chips"
+            app:chipSpacingVertical="@dimen/vertical_space_between_chips"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_frame_filter_screen_title"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ten_min_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ten_minutes_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/thirty_min_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thirty_minutes_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/one_hour_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/one_hour_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/two_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/two_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/four_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/four_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/eight_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/eight_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/twelve_hours_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/twelve_hours_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/day_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/day_interval_select_text"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/week_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/week_interval_select_text"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_filters_button"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/apply_filters_button_text"
+            android:layout_marginTop="@dimen/filter_screen_vertical_margin_between_views_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_interval_selection_chip_group" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
