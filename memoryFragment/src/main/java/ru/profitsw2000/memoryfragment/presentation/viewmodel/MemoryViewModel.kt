@@ -61,6 +61,7 @@ class MemoryViewModel(
     private var sensorHistoryDataModelList: MutableList<SensorHistoryDataModel> = mutableListOf()
     private var memoryAddressCounter = 0
     private var needToClearMemory = false
+    private var wrongPacketsNumber = 0
 
     private val bluetoothRequestResult: LiveData<BluetoothRequestResultStatus> = bluetoothPacketManager.bluetoothRequestResult.asLiveData()
     //информация о памяти термометра
@@ -176,6 +177,7 @@ class MemoryViewModel(
         }
 
         memoryAddressCounter = 0
+        wrongPacketsNumber = 0
         sensorHistoryDataModelList.clear()
         loadFirstMemoryDataPacket()
         return if (localIds.size == sensorsLetterCodes.size
@@ -183,7 +185,8 @@ class MemoryViewModel(
             MemoryDataLoadState.MemoryHistoryDataLoading(
                 percentProgress = (memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat())*100f,
                 memoryAddressCounter,
-                currentMemoryAddress
+                currentMemoryAddress,
+                wrongPacketsNumber
             )
         } else MemoryDataLoadState.InvalidMemoryData(MemoryDataLoadState.MemoryServiceDataLoading)
     }
@@ -214,9 +217,20 @@ class MemoryViewModel(
             MemoryDataLoadState.MemoryHistoryDataLoading(
                 percentProgress = (memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat())*100f,
                 memoryAddressCounter,
-                currentMemoryAddress
+                currentMemoryAddress,
+                wrongPacketsNumber
             )
-        } else MemoryDataLoadState.InvalidMemoryData(memoryLoadLiveData.value!!)
+        } else {
+            memoryAddressCounter += 8
+            wrongPacketsNumber++
+            loadNextMemoryDataPacket()
+            MemoryDataLoadState.MemoryHistoryDataLoading(
+                percentProgress = (memoryAddressCounter.toFloat()/currentMemoryAddress.toFloat())*100f,
+                memoryAddressCounter,
+                currentMemoryAddress,
+                wrongPacketsNumber
+            )
+        }
     }
 
     private fun getFinalState(): MemoryDataLoadState {
@@ -337,7 +351,7 @@ class MemoryViewModel(
         lifecycleScope.launch {
             sendLoadMemoryDataRequest(
                 memoryLoadFirstDataPacket,
-                MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress)
+                MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress, wrongPacketsNumber)
             )
         }
     }
@@ -350,7 +364,7 @@ class MemoryViewModel(
         lifecycleScope.launch {
             sendLoadMemoryDataRequest(
                 memoryLoadDataPacket,
-                MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress)
+                MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress, wrongPacketsNumber)
             )
         }
     }

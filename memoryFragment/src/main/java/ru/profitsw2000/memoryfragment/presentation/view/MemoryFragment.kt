@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.profitsw2000.core.utils.constants.TOTAL_MEMORY_BYTE_SIZE
 import ru.profitsw2000.data.model.state.memoryscreen.MemoryClearState
@@ -27,7 +28,7 @@ class MemoryFragment : Fragment() {
 
     private var _binding: FragmentMemoryBinding? = null
     private val binding get() = _binding!!
-    private val memoryViewModel: MemoryViewModel by viewModel()
+    private val memoryViewModel: MemoryViewModel by activityViewModel()
     private val navigator: Navigator by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,7 +209,12 @@ class MemoryFragment : Fragment() {
             }
             is MemoryDataLoadState.MemoryHistoryDataLoading -> setProgressIndicator(
                 memoryDataLoadState.percentProgress,
-                getString(ru.profitsw2000.core.R.string.memory_history_data_load_status, memoryDataLoadState.loadedMemory, memoryDataLoadState.memoryToLoad)
+                getString(
+                    ru.profitsw2000.core.R.string.memory_history_data_load_status,
+                    memoryDataLoadState.loadedMemory,
+                    memoryDataLoadState.memoryToLoad,
+                    memoryDataLoadState.wrongPacketsNumber
+                )
             )
             MemoryDataLoadState.MemoryServiceDataLoading -> setProgressIndicator(
                 0f,

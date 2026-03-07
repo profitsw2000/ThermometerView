@@ -4,7 +4,7 @@ sealed class MemoryDataLoadState {
     data object MemoryDataLoadInitialState: MemoryDataLoadState()
     data object MemoryServiceDataLoading: MemoryDataLoadState()
     data class InvalidMemoryData(val prevMemoryDataLoadState: MemoryDataLoadState): MemoryDataLoadState()
-    data class MemoryHistoryDataLoading(val percentProgress: Float, val loadedMemory: Int, val memoryToLoad: Int): MemoryDataLoadState()
+    data class MemoryHistoryDataLoading(val percentProgress: Float, val loadedMemory: Int, val memoryToLoad: Int, val wrongPacketsNumber: Int): MemoryDataLoadState()
     data object MemoryDataLoadClearRequest: MemoryDataLoadState()
     data object MemoryDataLoadClearSuccess: MemoryDataLoadState()
     data object MemoryDataLoadDatabaseWriteExecution: MemoryDataLoadState()
