@@ -1,12 +1,10 @@
 package ru.profitsw2000.graphtab.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
@@ -14,9 +12,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.definition.indexKey
-import ru.profitsw2000.core.utils.constants.TAG
-import ru.profitsw2000.core.utils.constants.TEN_MINUTES_FRAME_MILLIS
 import ru.profitsw2000.data.domain.filter.SensorHistoryGraphFilterRepository
 import ru.profitsw2000.data.enumer.TimeFrameDataObtainingMethod
 import ru.profitsw2000.data.interactor.SensorHistoryInteractor
@@ -258,19 +253,6 @@ class GraphViewModel(
                 }
             }.await()
         }
-        /*val deferred: Deferred<List<SensorHistoryDataModel>?> = ioCoroutineScope.async {
-            try {
-                val sensorHistoryDataList = sensorHistoryInteractor.getGraphFirstCurveSensorHistoryList(
-                    limit = SENSOR_HISTORY_DATA_LOAD_SIZE,
-                    offset = offset,
-                    false
-                )
-                sensorHistoryMapper.map(sensorHistoryDataList)
-            } catch (exception: Exception) {
-                null
-            }
-        }
-        return@withContext deferred.await()*/
     }
 
     private suspend fun getFirstSensorHistoryListSize(): Int = withContext(Dispatchers.IO) {
@@ -335,65 +317,4 @@ class GraphViewModel(
             }.await()
         }
     }
-
-    /*
-    Чтобы выполнить оба запроса (получение данных и подсчет общего количества) максимально быстро и эффективно, лучше всего запустить их параллельно с помощью корутин.
-Вот как это реализовать в вашем репозитории или ViewModel:
-1. Подготовка DAO
-Убедитесь, что у вас есть оба метода. Обратите внимание: в count запросе нет ORDER BY, LIMIT и OFFSET.
-kotlin
-@Dao
-interface SensorDao {
-    // Основной запрос с лимитами
-    @Query("SELECT MAX(temperature) AS temperature, MIN(id) AS id, sensorId, localId, letterCode, MIN(date) AS date " +
-            "FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :sensorId AND date BETWEEN :fromDate AND :toDate " +
-            "GROUP BY sensorId, (date + 10800000) / :timeFrameInMillis " +
-            "ORDER BY date DESC LIMIT :limit OFFSET :offset")
-    suspend fun getData(sensorId: String, fromDate: Long, toDate: Long, timeFrameInMillis: Long, limit: Int, offset: Int): List<SensorHistoryDataEntity>
-
-    // Запрос на общее количество
-    @Query("SELECT COUNT(*) FROM (SELECT 1 FROM SensorHistoryDataEntity " +
-            "WHERE sensorId LIKE :sensorId AND date BETWEEN :fromDate AND :toDate " +
-            "GROUP BY sensorId, (date + 10800000) / :timeFrameInMillis)")
-    suspend fun getTotalCount(sensorId: String, fromDate: Long, toDate: Long, timeFrameInMillis: Long): Int
-}
-Используйте код с осторожностью.
-
-2. Параллельный вызов в коде
-Используйте async, чтобы не ждать выполнения запросов по очереди. Это сэкономит время, так как база данных сможет начать подготовку второго запроса, пока обрабатывается первый.
-kotlin
-suspend fun getSensorDataWithTotal(
-    sensorId: String,
-    fromDate: Long,
-    toDate: Long,
-    timeFrame: Long,
-    limit: Int,
-    offset: Int
-): Pair<List<SensorHistoryDataEntity>, Int> = coroutineScope {
-
-    // Запускаем оба запроса одновременно
-    val itemsDeferred = async { dao.getData(sensorId, fromDate, toDate, timeFrame, limit, offset) }
-    val countDeferred = async { dao.getTotalCount(sensorId, fromDate, toDate, timeFrame) }
-
-    // Ждем завершения обоих и возвращаем результат
-    val items = itemsDeferred.await()
-    val totalCount = countDeferred.await()
-
-    return@coroutineScope Pair(items, totalCount)
-}
-Используйте код с осторожностью.
-
-Почему это круто:
-Скорость: Если getData занимает 50мс и getTotalCount 40мс, то благодаря async вы получите результат примерно через 50-60мс, а не через 90мс.
-Чистота: Вы возвращаете Pair (или создайте свой data class Result), который содержит и данные для текущей страницы, и общее число строк для отрисовки пагинации в UI.
-Важный совет по UI
-Если вы планируете отображать это в списке с бесконечной прокруткой, рассмотрите возможность использования Paging 3. Она сама делает этот COUNT под капотом, когда это необходимо, и упрощает работу с RecyclerView.
-Хотите, чтобы я показал, как создать индекс на выражение (Functional Index) через миграцию, чтобы группировка по (date + 10800000) / timeFrame работала мгновенно?
-
-
-
-
-     */
-
 }

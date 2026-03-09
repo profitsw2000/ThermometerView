@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +15,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.profitsw2000.core.utils.constants.MEMORY_DATA_PACKET_TIMEOUT_INTERVAL
 import ru.profitsw2000.core.utils.constants.TAG
 import ru.profitsw2000.core.utils.constants.clearMemoryRequestPacket
@@ -47,8 +50,7 @@ class MemoryViewModel(
     private val sensorHistoryMapper: SensorHistoryMapper
 ) : ViewModel() {
     //coroutine
-    private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private lateinit var lifecycleScope: CoroutineScope
+    //private val ioCoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var requestTimeIntervalJob: Job? = null
     private var sequentialTimeoutErrors = 0
 
@@ -249,41 +251,38 @@ class MemoryViewModel(
     }
 
     private fun memoryInfoTimeoutIntervalJob() {
-        requestTimeIntervalJob = ioCoroutineScope.launch {
+        requestTimeIntervalJob?.cancel()
+        requestTimeIntervalJob = viewModelScope.launch {
             delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
-            lifecycleScope.launch {
-                _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoTimeoutError
-            }
+            _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoTimeoutError
         }
     }
 
     private fun memoryClearTimeoutIntervalJob() {
-        requestTimeIntervalJob = ioCoroutineScope.launch {
+        requestTimeIntervalJob?.cancel()
+        requestTimeIntervalJob = viewModelScope.launch {
             delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
-            lifecycleScope.launch {
-                _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearTimeoutError
-            }
+            _memoryClearRequestLiveData.value = MemoryClearState.MemoryClearTimeoutError
         }
     }
 
     private fun memoryDataLoadTimeoutIntervalJob() {
-        requestTimeIntervalJob = ioCoroutineScope.launch {
+        requestTimeIntervalJob?.cancel()
+        requestTimeIntervalJob = viewModelScope.launch {
             delay(MEMORY_DATA_PACKET_TIMEOUT_INTERVAL)
             sequentialTimeoutErrors++
             if (sequentialTimeoutErrors < ATTEMPTS_NUMBER) {
                 continueMemoryDataLoad(memoryLoadLiveData.value!!)
             } else {
                 sequentialTimeoutErrors = 0
-                lifecycleScope.launch {
-                    _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadTimeoutError(memoryLoadLiveData.value!!)
-                }
+                _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadTimeoutError(memoryLoadLiveData.value!!)
             }
         }
     }
 
     fun getMemoryInfo() {
         memoryInfoTimeoutIntervalJob()
-        lifecycleScope.launch {
+        viewModelScope.launch {
             sendMemoryInfoRequest()
         }
     }
@@ -298,7 +297,7 @@ class MemoryViewModel(
 
     fun clearMemory() {
         memoryClearTimeoutIntervalJob()
-        lifecycleScope.launch {
+        viewModelScope.launch {
             sendClearMemoryRequest()
         }
     }
@@ -317,7 +316,6 @@ class MemoryViewModel(
     }
 
     fun continueMemoryDataLoad(memoryDataLoadState: MemoryDataLoadState) {
-        //Log.d(TAG, "continueMemoryDataLoad: /////////////////////////////////////////////////////////////////////////////////////")
         when(memoryDataLoadState) {
             is MemoryDataLoadState.MemoryHistoryDataLoading -> loadFirstMemoryDataPacket()
             MemoryDataLoadState.MemoryDataLoadClearRequest -> memoryDataLoadClear()
@@ -330,7 +328,7 @@ class MemoryViewModel(
     fun memoryDataLoadClear() {
         if (needToClearMemory) {
             memoryDataLoadTimeoutIntervalJob()
-            lifecycleScope.launch {
+            viewModelScope.launch {
                 sendLoadMemoryDataRequest(clearMemoryRequestPacket, MemoryDataLoadState.MemoryDataLoadClearRequest)
             }
         } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
@@ -338,7 +336,7 @@ class MemoryViewModel(
 
     fun loadMemoryServiceDataPacket() {
         memoryDataLoadTimeoutIntervalJob()
-        lifecycleScope.launch {
+        viewModelScope.launch {
             sendLoadMemoryDataRequest(memoryLoadServicePacket, MemoryDataLoadState.MemoryServiceDataLoading)
         }
     }
@@ -348,7 +346,7 @@ class MemoryViewModel(
         else 0f
 
         memoryDataLoadTimeoutIntervalJob()
-        lifecycleScope.launch {
+        viewModelScope.launch {
             sendLoadMemoryDataRequest(
                 memoryLoadFirstDataPacket,
                 MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress, wrongPacketsNumber)
@@ -361,7 +359,7 @@ class MemoryViewModel(
         else 0f
 
         memoryDataLoadTimeoutIntervalJob()
-        lifecycleScope.launch {
+        viewModelScope.launch {
             sendLoadMemoryDataRequest(
                 memoryLoadDataPacket,
                 MemoryDataLoadState.MemoryHistoryDataLoading(loadPercentage, memoryAddressCounter, currentMemoryAddress, wrongPacketsNumber)
@@ -371,7 +369,7 @@ class MemoryViewModel(
 
     fun checkMemoryLoadAndStop() {
         if (memoryLoadLiveData.value != MemoryDataLoadState.MemoryDataLoadInitialState) {
-            lifecycleScope.launch {
+            viewModelScope.launch {
                 val writeSuccess = bluetoothRepository.writeByteArray(memoryLoadStopDataTransferPacket)
             }
         }
@@ -380,22 +378,23 @@ class MemoryViewModel(
     fun writeLoadedMemoryToDatabase() {
         if (sensorHistoryDataModelList.isNotEmpty()) {
             _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution
-            lifecycleScope.launch {
+            viewModelScope.launch {
                 _memoryLoadRequestLiveData.value = insertHistoryDataList()
             }
         } else _memoryLoadRequestLiveData.value = MemoryDataLoadState.MemoryDataLoadSuccess
     }
 
-    private suspend fun insertHistoryDataList(): MemoryDataLoadState {
-        val deferred: Deferred<MemoryDataLoadState> = ioCoroutineScope.async {
-            try {
-                sensorHistoryInteractor.writeHistoryItemList(sensorHistoryMapper.map(sensorHistoryDataModelList) , false)
-                MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess
-            } catch (exception: Exception) {
-                MemoryDataLoadState.MemoryDataLoadDatabaseWriteError(MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution)
-            }
+    private suspend fun insertHistoryDataList(): MemoryDataLoadState = withContext(Dispatchers.IO) {
+        coroutineScope {
+            async {
+                try {
+                    sensorHistoryInteractor.writeHistoryItemList(sensorHistoryMapper.map(sensorHistoryDataModelList) , false)
+                    MemoryDataLoadState.MemoryDataLoadDatabaseWriteSuccess
+                } catch (exception: Exception) {
+                    MemoryDataLoadState.MemoryDataLoadDatabaseWriteError(MemoryDataLoadState.MemoryDataLoadDatabaseWriteExecution)
+                }
+            }.await()
         }
-        return deferred.await()
     }
 
     private suspend fun sendLoadMemoryDataRequest(
@@ -415,10 +414,6 @@ class MemoryViewModel(
                 memoryLoadLiveData.value == MemoryDataLoadState.MemoryDataLoadInitialState)
     }
 
-    fun setCoroutineScope(coroutineScope: CoroutineScope) {
-        this.lifecycleScope = coroutineScope
-    }
-
     fun setMemoryInfoToInitialState() {
         _memoryInfoRequestLiveData.value = MemoryInfoState.MemoryInfoInitialState
     }
@@ -432,7 +427,6 @@ class MemoryViewModel(
     }
 
     fun setInitialState() {
-        lifecycleScope.cancel()
         setMemoryInfoToInitialState()
         setMemoryClearToInitialState()
         setMemoryDataLoadToInitialState()

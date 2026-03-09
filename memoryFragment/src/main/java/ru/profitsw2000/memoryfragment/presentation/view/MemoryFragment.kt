@@ -41,7 +41,7 @@ class MemoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        memoryViewModel.setCoroutineScope(viewLifecycleOwner.lifecycleScope)
+        //memoryViewModel.setCoroutineScope(viewLifecycleOwner.lifecycleScope)
         if (savedInstanceState == null) memoryViewModel.getMemoryInfo()
         _binding = FragmentMemoryBinding.bind(inflater.inflate(R.layout.fragment_memory, container, false))
         return binding.root
